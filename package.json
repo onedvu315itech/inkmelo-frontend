@@ -11,12 +11,23 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
+    "sass": "node-sass -w src/style/scss -o src/style/css",
     "preview": "vite preview",
     "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\"",
     "prettier": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\""
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.5.2",
+    "@fortawesome/free-brands-svg-icons": "^6.5.2",
+    "@fortawesome/free-regular-svg-icons": "^6.5.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@react-oauth/google": "^0.12.1",
+    "axios": "^1.7.2",
+    "bootstrap": "^5.3.3",
+    "classnames": "^2.5.1",
+    "react-scripts": "5.0.1",
     "@ant-design/colors": "^7.0.2",
     "@ant-design/icons": "^5.3.1",
     "@emotion/cache": "^11.11.0",

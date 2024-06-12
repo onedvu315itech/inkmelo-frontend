@@ -1,0 +1,41 @@
+.info-container h1 {
+  color: #000000;
+  font-size: 24px;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-top: 2rem; }
+
+.info-container h2 {
+  color: #000000;
+  font-size: 20px;
+  text-align: left;
+  font-weight: 600;
+  margin-top: 1rem; }
+
+.info-container h3 {
+  color: #000000;
+  font-size: 18px;
+  text-align: left;
+  font-weight: 600;
+  margin-top: 1rem; }
+
+.info-container .main-list {
+  list-style: decimal-leading-zero;
+  color: #000000;
+  padding-left: 1.65rem; }
+
+.info-container .sub-list {
+  color: #000000; }
+
+.info-container p {
+  font-size: 16px;
+  color: #000000;
+  text-align: justify; }
+
+.info-container .inkmelo {
+  color: #dc7800;
+  font-weight: 600; }
+
+.info-container .basic-info {
+  font-weight: 600; }

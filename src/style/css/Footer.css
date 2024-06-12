@@ -1,0 +1,34 @@
+.main-footer {
+  background: #FFFFFF;
+  font-family: 'Be Vietnam Pro'; }
+  .main-footer .head-footer .footer-start {
+    color: gray; }
+    .main-footer .head-footer .footer-start img {
+      width: 120px; }
+    .main-footer .head-footer .footer-start .footer-start-name {
+      margin-top: 1rem;
+      font-weight: 600; }
+    .main-footer .head-footer .footer-start .footer-start-text {
+      font-size: 12px; }
+  .main-footer .head-footer .footer-middle .footer-middle-contact {
+    color: gray;
+    font-size: 14px; }
+  .main-footer .head-footer .footer-middle .footer-middle-link {
+    color: gray;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer; }
+  .main-footer .head-footer .footer-middle .footer-start-title {
+    color: gray;
+    font-weight: 600;
+    text-transform: uppercase; }
+  .main-footer .end-footer {
+    color: gray; }
+    .main-footer .end-footer img {
+      width: 150px; }
+    .main-footer .end-footer p {
+      font-weight: 600; }
+    .main-footer .end-footer .end-footer-logo {
+      color: black; }
+    .main-footer .end-footer .end-footer-image-container {
+      margin: 2rem 1rem; }

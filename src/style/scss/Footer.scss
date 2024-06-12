@@ -1,0 +1,65 @@
+.main-footer {
+    background: #FFFFFF;
+    font-family: 'Be Vietnam Pro';
+
+    .head-footer {
+
+        .footer-start {
+            color: gray;
+
+            img {
+                width: 120px;
+            }
+
+            .footer-start-name {
+                margin-top: 1rem;
+                font-weight: 600;
+            }
+
+            .footer-start-text {
+                font-size: 12px;
+            }
+        }
+
+        .footer-middle {
+            .footer-middle-contact {
+                color: gray;
+                font-size: 14px;
+            }
+
+            .footer-middle-link {
+                color: gray;
+                font-size: 14px;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+            .footer-start-title {
+                color: gray;
+                font-weight: 600;
+                text-transform: uppercase;
+            }
+        }
+    }
+
+    .end-footer {
+        color: gray;
+
+        img {
+            width: 150px;
+        }
+
+        p {
+            font-weight: 600;
+        }
+
+        .end-footer-logo {
+            color: black;
+        }
+
+        .end-footer-image-container {
+            margin: 2rem 1rem;
+        }
+    }
+
+}
