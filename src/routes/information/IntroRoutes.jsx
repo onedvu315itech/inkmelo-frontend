@@ -1,7 +1,7 @@
 import Loadable from "components/Loadable";
 import { lazy } from "react";
 
-const Intro = Loadable(lazy(() => import('../../pages/information/InkMeloIntroduction')));
+const Intro = Loadable(lazy(() => import('pages/information/InkMeloIntroduction')));
 
 const IntroRoutes = {
     path: '/inkmelo-introduction',
