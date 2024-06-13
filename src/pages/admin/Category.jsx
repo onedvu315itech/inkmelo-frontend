@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import MainCard from 'components/MainCard';
 import productService from "service/productServices";
 import { useEffect, useState } from "react";
+import ModalCategory from 'modal/ModalCategory';
 
 
 // ==============================|| SAMPLE PAGE ||============================== //
@@ -23,12 +24,20 @@ const Category = () => {
         else return status;
     }
 
-    const handleUpdate = () => {
-
+    const handleAddNewCatergory = () => {
+        alert('Click me')
     }
+
 
     return (
         <>
+            <div className='mx-1'>
+
+                <button className='btn btn-primary px'
+                    onClick={handleAddNewCatergory}>
+                    Add
+                </button>
+            </div>
             <table className="table">
                 <thead>
                     <tr>
