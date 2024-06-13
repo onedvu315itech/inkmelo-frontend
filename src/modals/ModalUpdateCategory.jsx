@@ -1,5 +1,7 @@
 import { Component } from "react";
-import { Box, Modal, Typography, Input, TextField } from "@mui/material";
+import { Box, Modal } from "@mui/material";
+import 'style/css/Category.css'
+import _ from 'lodash'
 
 class ModalUpdateCategory extends Component {
     constructor(props) {
@@ -12,12 +14,23 @@ class ModalUpdateCategory extends Component {
             lastUpdatedTime: '',
             lastChangedBy: '',
             status: '',
-            isOpened: '',
+            isOpened: false,
         }
     }
 
     componentDidMount() {
-
+        let category = this.props.currentCategory
+        if (category && !_.isEmpty(category)) {
+            this.setState({
+                id: category.id,
+                name: category.name,
+                description: category.description,
+                createdAt: category.createdAt,
+                lastUpdatedTime: category.lastUpdatedTime,
+                lastChangedBy: category.lastChangedBy,
+                status: category.status
+            })
+        }
     }
 
     style = {
@@ -25,20 +38,31 @@ class ModalUpdateCategory extends Component {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: 400,
+        width: 550,
         bgcolor: 'background.paper',
         border: '2px solid #000',
         boxShadow: 10,
         p: 4,
     };
 
-    handleClose = () => this.setState({ isOpened: false });
+    handleClose = () => this.props.toggle();
+    handleOnChangeInput = (event, id) => {
+        let copyState = { ...this.state };
+        copyState[id] = event.target.value;
+        this.setState({
+            ...copyState
+        });
+    }
+
+    handleSaveCategory = () => {
+        this.props.updateCategory(this.state);
+    }
 
     render() {
         return (
             <>
                 <Modal
-                    open={true}
+                    open={this.props.open}
                     onClose={this.handleClose}
                     aria-labelledby="modal-title"
                     aria-describedby="modal-description"
@@ -49,15 +73,71 @@ class ModalUpdateCategory extends Component {
                         noValidate
                         autoComplete="off"
                     >
-                        <div className="modal-title">
-                            <h5 className="modal-title" id="readCategoryLongTitle">Chi tiết loại sản phẩm</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div className="modal-header">
+                            <h5 className="modal-title" style={{ display: "inline-block" }}>Chi tiết loại sản phẩm</h5>
+                            <span className="justify-content-end inline-block">
+                                <button type="button" className="btn-close"
+                                    onClick={this.handleClose}></button>
+                            </span>
                         </div>
-                        <label>ID:</label>
-                        <TextField
-                            id="id"
-                            disabled
-                        />
+                        <div className="modal-body pop-up-body">
+                            <div className="form-group col-12">
+                                <div className="col-1">
+                                    <label htmlFor="category-name" className="col-form-label">ID:</label>
+                                    <input type="text" className="form-control" readOnly
+                                        onChange={(event) => { this.handleOnChangeInput(event, "id") }}
+                                        value={this.state.id}
+                                    />
+                                </div>
+                                <div className="col-12">
+                                    <label htmlFor="category-name" className="col-form-label">Tên:</label>
+                                    <input type="text" className="form-control" id="category-name"
+                                        style={{ width: 473 + "px" }}
+                                        onChange={(event) => { this.handleOnChangeInput(event, "name") }}
+                                        value={this.state.name}
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="message-text" className="col-form-label">Mô tả:</label>
+                                <textarea className="form-control" id="message-text"
+                                    style={{ width: 473 + "px" }}
+                                    onChange={(event) => { this.handleOnChangeInput(event, "description") }}
+                                    value={this.state.description}
+                                ></textarea>
+                            </div>
+                            <div className="form-group date">
+                                <label htmlFor="category-name" className="col-form-label">Ngày tạo:</label>
+                                <input type="text" className="form-control" id="category-createdDate" readOnly
+                                    onChange={(event) => { this.handleOnChangeInput(event, "createdAt") }}
+                                    value={this.state.createdAt} />
+                                <label htmlFor="category-name" className="col-form-label">Cập nhật mới:</label>
+                                <input type="text" className="form-control" readOnly
+                                    onChange={(event) => { this.handleOnChangeInput(event, "lastUpdatedTime") }}
+                                    value={this.state.lastUpdatedTime} />
+                            </div>
+                            <div className="form-group status-person">
+                                <label htmlFor="category-name" className="col-form-label">Trạng thái</label>
+                                <input type="text" className="form-control" id="category-status"
+                                    onChange={(event) => { this.handleOnChangeInput(event, "status") }}
+                                    value={this.state.status} />
+                                <label htmlFor="category-name" className="col-form-label">Người cập nhật:</label>
+                                <input type="text" className="form-control" readOnly
+                                    onChange={(event) => { this.handleOnChangeInput(event, "lastChangedBy") }}
+                                    value={this.state.lastChangedBy} />
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-update"
+                                style={{
+                                    backgroundColor: "rgb(220, 120, 0)",
+                                    color: "white"
+                                }}
+                                onClick={() => { this.handleSaveCategory() }}
+                            >Lưu thay đổi</button>
+                            <button type="button" className="btn btn-secondary btn-cancel"
+                                onClick={this.handleClose}>Đóng</button>
+                        </div>
                     </Box>
                 </Modal>
             </>

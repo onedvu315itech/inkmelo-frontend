@@ -1,0 +1,39 @@
+.pop-up-body {
+    .date {
+        display: inline-flex;
+        margin-top: 15px;
+
+        #category-createdDate {
+            margin-right: 10px;
+            margin-inline-start: -26px;
+
+        }
+
+        label {
+            width: 8.4rem;
+        }
+
+        input {
+            width: 110px;
+        }
+    }
+
+    .status-person {
+        display: inline-flex;
+        margin-top: 15px;
+
+        #category-status {
+            margin-right: 10px;
+            margin-inline-start: -26px;
+
+        }
+
+        label {
+            width: 8.4rem;
+        }
+
+        input {
+            width: 110px;
+        }
+    }
+}
