@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import MainCard from 'components/MainCard';
 import productService from "service/productServices";
 import { useEffect, useState } from "react";
-import ModalCategory from 'modal/ModalCategory';
+import ModalCategory from 'modals/ModalCategory';
 
 
 // ==============================|| SAMPLE PAGE ||============================== //
@@ -32,7 +32,7 @@ const Category = () => {
     return (
         <>
             <div className='mx-1'>
-
+                <ModalCategory />
                 <button className='btn btn-primary px'
                     onClick={handleAddNewCatergory}>
                     Add

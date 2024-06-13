@@ -1,11 +1,10 @@
-import { connect } from "formik";
 import React, { Component } from 'react'
 import Box from '@mui/material/Box';
 
 import Modal from '@mui/material/Modal';
 
 
-class ModelCategory extends Component {
+class ModalCategory extends Component {
 
     constructor(props) {
         super(props)
@@ -62,17 +61,7 @@ class ModelCategory extends Component {
     }
 }
 
-const mapStateteToProps = state => {
-    return {
-    };
-};
-
-const mapDispatchToProps = dispatch => {
-    return {
-    };
-};
-
-export default connect(mapStateteToProps, mapDispatchToProps)(ModelCategory)
+export default ModalCategory;
 
 
 
