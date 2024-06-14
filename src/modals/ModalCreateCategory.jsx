@@ -2,6 +2,7 @@ import { Component } from "react";
 import { Box, Modal } from "@mui/material";
 import 'style/css/Category.css'
 import _ from "lodash";
+import { emitter } from "utils/emitter";
 
 class ModalCreateCategory extends Component {
     constructor(props) {
@@ -16,6 +17,22 @@ class ModalCreateCategory extends Component {
             status: '',
             isOpened: false,
         }
+
+        this.listenToEmitter();
+    }
+
+    listenToEmitter() {
+        emitter.on('EVENT_CLEAR_MODAL_DATA', () => {
+            this.setState({
+                id: '',
+                name: '',
+                description: '',
+                createdAt: '',
+                lastUpdatedTime: '',
+                lastChangedBy: '',
+                status: '',
+            })
+        })
     }
 
     componentDidMount() {

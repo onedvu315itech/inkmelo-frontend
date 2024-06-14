@@ -9,6 +9,7 @@ import ModalUpdateCategory from 'modals/ModalUpdateCategory';
 import ModalCreateCategory from 'modals/ModalCreateCategory';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { emitter } from 'utils/emitter';
 
 
 // ==============================|| SAMPLE PAGE ||============================== //
@@ -65,6 +66,7 @@ class Category extends Component {
                     listCategory: category,
                 })
                 await this.getAllCategory();
+                emitter.emit('EVENT_CLEAR_MODAL_DATA');
             }
 
         } catch (error) {
@@ -80,7 +82,6 @@ class Category extends Component {
         });
     }
 
-    // checking
     doUpdateCategory = async (category) => {
         try {
             let res = await productService.updateCategory(category);
@@ -89,6 +90,24 @@ class Category extends Component {
                     isOpenedModalUpdateCategory: false,
                     listCategory: category,
                 })
+                await this.getAllCategory();
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    // For delete category
+    handleDeleteCategory = async (category) => {
+        try {
+            let res = await productService.deleteCategory(category.id);
+            if (res) {
+                console.log(res)
+                this.setState({
+                    isOpenedModalUpdateCategory: false,
+                    listCategory: category,
+                })
+                console.log(category)
                 await this.getAllCategory();
             }
         } catch (err) {
@@ -155,7 +174,10 @@ class Category extends Component {
                                                         backgroundColor: "#FF4B4B",
                                                         color: "white",
                                                         marginLeft: 1 + "rem"
-                                                    }}>Xóa</button>
+                                                    }}
+                                                    onClick={() => { this.handleDeleteCategory(data) }}>
+                                                    Xóa
+                                                </button>
                                             </td >
                                         </tr >
                                     );
