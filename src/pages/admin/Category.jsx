@@ -37,10 +37,13 @@ class Category extends Component {
         });
     }
 
-    componentDidMount() {
-        productService.getAllCategory().then((res) => {
-            this.setState({ listCategory: res.data })
-        });
+    async componentDidMount() {
+        await this.getAllCategory();
+    }
+
+    getAllCategory = async () => {
+        let res = await productService.getAllCategory();
+        if (res) this.setState({ listCategory: res.data })
     }
 
     // For add new category
@@ -61,7 +64,7 @@ class Category extends Component {
                     isOpenedModalCreateCategory: false,
                     listCategory: category,
                 })
-                await productService.getAllCategory();
+                await this.getAllCategory();
             }
 
         } catch (error) {
@@ -86,7 +89,7 @@ class Category extends Component {
                     isOpenedModalUpdateCategory: false,
                     listCategory: category,
                 })
-                await productService.getAllCategory();
+                await this.getAllCategory();
             }
         } catch (err) {
             console.log(err)
@@ -102,6 +105,7 @@ class Category extends Component {
                         <FontAwesomeIcon icon={faPlus} /> Thêm mới
                     </button>
                     {
+                        this.state.isOpenedModalCreateCategory &&
                         <ModalCreateCategory
                             open={this.state.isOpenedModalCreateCategory}
                             toggle={this.toggleCreateCategoryModal}
@@ -131,30 +135,31 @@ class Category extends Component {
                     </thead>
                     <tbody>
                         {
-                            this.state.listCategory && this.state.listCategory.map((data, i) => {
-                                return (
-                                    <tr key={i}>
-                                        <td>{data.id}</td>
-                                        <td>{data.name}</td>
-                                        <td>{data.description}</td>
-                                        <td>
-                                            {data.status}
-                                        </td>
-                                        <td>
-                                            <button type="button" className="btn btn-primary"
-                                                onClick={() => { this.handleUpdateCategory(data) }}>
-                                                Cập nhật
-                                            </button>
-                                            <button type="button" className="btn btn-delete"
-                                                style={{
-                                                    backgroundColor: "#FF4B4B",
-                                                    color: "white",
-                                                    marginLeft: 1 + "rem"
-                                                }}>Xóa</button>
-                                        </td >
-                                    </tr >
-                                );
-                            })
+                            this.state.listCategory &&
+                                Array.isArray(this.state.listCategory) ? this.state.listCategory.map((data, i) => {
+                                    return (
+                                        <tr key={i}>
+                                            <td>{data.id}</td>
+                                            <td>{data.name}</td>
+                                            <td>{data.description}</td>
+                                            <td>
+                                                {data.status}
+                                            </td>
+                                            <td>
+                                                <button type="button" className="btn btn-primary"
+                                                    onClick={() => { this.handleUpdateCategory(data) }}>
+                                                    Cập nhật
+                                                </button>
+                                                <button type="button" className="btn btn-delete"
+                                                    style={{
+                                                        backgroundColor: "#FF4B4B",
+                                                        color: "white",
+                                                        marginLeft: 1 + "rem"
+                                                    }}>Xóa</button>
+                                            </td >
+                                        </tr >
+                                    );
+                                }) : null
                         }
                     </tbody >
                 </table >
