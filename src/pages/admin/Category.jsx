@@ -21,6 +21,7 @@ class Category extends Component {
             isOpenedModalCreateCategory: false,
             isOpenedModalUpdateCategory: false,
             categoryUpdate: {},
+            categoryCreate: {},
         }
     }
 
@@ -48,10 +49,30 @@ class Category extends Component {
     }
 
     // For add new category
-    handleAddNewCatergory = () => {
+    handleAddNewCatergory = (category) => {
         this.setState({
-            isOpenedModalCreateCategory: true
+            isOpenedModalCreateCategory: true,
+            categoryCreate: category
         });
+    }
+
+    // Do 
+    doCreateCategory = async (category) => {
+        try {
+            // let res = await productService.createCategory(category);
+            // console.log('Res from create category ', res);
+            let res = await productService.createCategory(category);
+            if (res) {
+                this.setState({
+                    isOpenedModalCreateCategory: false,
+                    listCategory: category,
+                })
+                await productService.getAllCategory();
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     //For update category
@@ -84,6 +105,8 @@ class Category extends Component {
                         <ModalCreateCategory
                             open={this.state.isOpenedModalCreateCategory}
                             toggle={this.toggleCreateCategoryModal}
+                            categoryInfor={this.state.categoryCreate}
+                            createCategory={this.doCreateCategory}
                         />
                     }
                     {
