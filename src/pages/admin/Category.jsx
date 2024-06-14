@@ -21,12 +21,8 @@ class Category extends Component {
             isOpenedModalCreateCategory: false,
             isOpenedModalUpdateCategory: false,
             categoryUpdate: {},
+            categoryCreate: {},
         }
-    }
-
-    readStatus = (status) => {
-        if (!status) return 'Không hoạt động';
-        else return status;
     }
 
     toggleUpdateCategoryModal = () => {
@@ -48,10 +44,29 @@ class Category extends Component {
     }
 
     // For add new category
-    handleAddNewCatergory = () => {
+    handleAddNewCatergory = (category) => {
         this.setState({
-            isOpenedModalCreateCategory: true
+            isOpenedModalCreateCategory: true,
+            categoryCreate: category
         });
+    }
+
+    doCreateCategory = async (category) => {
+        try {
+            // let res = await productService.createCategory(category);
+            // console.log('Res from create category ', res);
+            let res = await productService.createCategory(category);
+            if (res) {
+                this.setState({
+                    isOpenedModalCreateCategory: false,
+                    listCategory: category,
+                })
+                await productService.getAllCategory();
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     //For update category
@@ -66,7 +81,13 @@ class Category extends Component {
     doUpdateCategory = async (category) => {
         try {
             let res = await productService.updateCategory(category);
-            console.log('Res from updated category: ', res);
+            if (res) {
+                this.setState({
+                    isOpenedModalUpdateCategory: false,
+                    listCategory: category,
+                })
+                await productService.getAllCategory();
+            }
         } catch (err) {
             console.log(err)
         }
@@ -84,6 +105,8 @@ class Category extends Component {
                         <ModalCreateCategory
                             open={this.state.isOpenedModalCreateCategory}
                             toggle={this.toggleCreateCategoryModal}
+                            categoryInfor={this.state.categoryCreate}
+                            createCategory={this.doCreateCategory}
                         />
                     }
                     {
@@ -115,11 +138,10 @@ class Category extends Component {
                                         <td>{data.name}</td>
                                         <td>{data.description}</td>
                                         <td>
-                                            {this.readStatus(data.status)}
+                                            {data.status}
                                         </td>
                                         <td>
                                             <button type="button" className="btn btn-primary"
-                                                data-bs-toggle="modal" data-bs-target="#readCategory"
                                                 onClick={() => { this.handleUpdateCategory(data) }}>
                                                 Cập nhật
                                             </button>

@@ -1,6 +1,7 @@
 import { Component } from "react";
 import { Box, Modal } from "@mui/material";
 import 'style/css/Category.css'
+import _ from "lodash";
 
 class ModalCreateCategory extends Component {
     constructor(props) {
@@ -18,7 +19,18 @@ class ModalCreateCategory extends Component {
     }
 
     componentDidMount() {
-
+        let category = this.props.categoryInfo
+        if (category && !_.isEmpty(category)) {
+            this.setState({
+                id: category.id,
+                name: category.name,
+                description: category.description,
+                createdAt: category.createdAt,
+                lastUpdatedTime: category.lastUpdatedTime,
+                lastChangedBy: category.lastChangedBy,
+                status: category.status
+            })
+        }
     }
 
     style = {
@@ -32,6 +44,25 @@ class ModalCreateCategory extends Component {
         boxShadow: 10,
         p: 4,
     };
+
+    checkValidInput = () => {
+        let isValid = true;
+        let arrInput = ['name', 'description'];
+        for (let i = 0; i < arrInput.length; i++) {
+            if (!this.state[arrInput[i]]) {
+                isValid = false;
+                alert('Thông tin không được để trống: ' + arrInput[i]);
+                break;
+            }
+        }
+        return isValid;
+    }
+
+    handleAddCategory = () => {
+        let isValid = this.checkValidInput();
+        if (isValid)
+            this.props.createCategory(this.state);
+    }
 
     handleClose = () => this.props.toggle();
     handleOnChangeInput = (event, id) => {
@@ -104,7 +135,11 @@ class ModalCreateCategory extends Component {
                                 <label htmlFor="category-name" className="col-form-label">Trạng thái</label>
                                 <input type="text" className="form-control" id="category-status"
                                     onChange={(event) => { this.handleOnChangeInput(event, "status") }}
-                                    value={this.state.status} />
+                                    value={this.state.status} list="status" />
+                                <datalist id="status">
+                                    <option value="ACTIVE" />
+                                    <option value="INACTIVE" />
+                                </datalist>
                                 <label htmlFor="category-name" className="col-form-label">Người cập nhật:</label>
                                 <input type="text" className="form-control" readOnly
                                     onChange={(event) => { this.handleOnChangeInput(event, "lastChangedBy") }}
@@ -117,6 +152,7 @@ class ModalCreateCategory extends Component {
                                     backgroundColor: "rgb(220, 120, 0)",
                                     color: "white"
                                 }}
+                                onClick={this.handleAddCategory}
                             >Thêm mới</button>
                             <button type="button" className="btn btn-secondary btn-cancel"
                                 onClick={this.handleClose}>Đóng</button>

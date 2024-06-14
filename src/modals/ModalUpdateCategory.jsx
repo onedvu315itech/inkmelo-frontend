@@ -45,6 +45,19 @@ class ModalUpdateCategory extends Component {
         p: 4,
     };
 
+    checkValidInput = () => {
+        let isValid = true;
+        let arrInput = ['name', 'description', 'status'];
+        for (let i = 0; i < arrInput.length; i++) {
+            if (!this.state[arrInput[i]]) {
+                isValid = false;
+                alert('Thông tin không được để trống: ' + arrInput[i]);
+                break;
+            }
+        }
+        return isValid;
+    }
+
     handleClose = () => this.props.toggle();
     handleOnChangeInput = (event, id) => {
         let copyState = { ...this.state };
@@ -55,7 +68,10 @@ class ModalUpdateCategory extends Component {
     }
 
     handleSaveCategory = () => {
-        this.props.updateCategory(this.state);
+        let isValid = this.checkValidInput();
+        if (isValid)
+            this.props.updateCategory(this.state);
+        console.log(this.state)
     }
 
     render() {
@@ -86,7 +102,7 @@ class ModalUpdateCategory extends Component {
                                     <label htmlFor="category-name" className="col-form-label">ID:</label>
                                     <input type="text" className="form-control" readOnly
                                         onChange={(event) => { this.handleOnChangeInput(event, "id") }}
-                                        value={this.state.id}
+                                        value={this.state.id == null ? '' : this.state.id}
                                     />
                                 </div>
                                 <div className="col-12">
@@ -94,7 +110,7 @@ class ModalUpdateCategory extends Component {
                                     <input type="text" className="form-control" id="category-name"
                                         style={{ width: 473 + "px" }}
                                         onChange={(event) => { this.handleOnChangeInput(event, "name") }}
-                                        value={this.state.name}
+                                        value={this.state.name == null ? '' : this.state.name}
                                     />
                                 </div>
                             </div>
@@ -103,28 +119,33 @@ class ModalUpdateCategory extends Component {
                                 <textarea className="form-control" id="message-text"
                                     style={{ width: 473 + "px" }}
                                     onChange={(event) => { this.handleOnChangeInput(event, "description") }}
-                                    value={this.state.description}
+                                    value={this.state.description == null ? '' : this.state.description}
                                 ></textarea>
                             </div>
                             <div className="form-group date">
                                 <label htmlFor="category-name" className="col-form-label">Ngày tạo:</label>
                                 <input type="text" className="form-control" id="category-createdDate" readOnly
                                     onChange={(event) => { this.handleOnChangeInput(event, "createdAt") }}
-                                    value={this.state.createdAt} />
+                                    value={this.state.createdAt == null ? '' : this.state.createdAt} />
                                 <label htmlFor="category-name" className="col-form-label">Cập nhật mới:</label>
                                 <input type="text" className="form-control" readOnly
                                     onChange={(event) => { this.handleOnChangeInput(event, "lastUpdatedTime") }}
-                                    value={this.state.lastUpdatedTime} />
+                                    value={this.state.lastUpdatedTime == null ? '' : this.state.lastUpdatedTime} />
                             </div>
                             <div className="form-group status-person">
                                 <label htmlFor="category-name" className="col-form-label">Trạng thái</label>
                                 <input type="text" className="form-control" id="category-status"
                                     onChange={(event) => { this.handleOnChangeInput(event, "status") }}
-                                    value={this.state.status} />
+                                    value={this.state.status == null ? '' : this.state.status}
+                                    list="status" />
+                                <datalist id="status">
+                                    <option value="ACTIVE" />
+                                    <option value="INACTIVE" />
+                                </datalist>
                                 <label htmlFor="category-name" className="col-form-label">Người cập nhật:</label>
                                 <input type="text" className="form-control" readOnly
                                     onChange={(event) => { this.handleOnChangeInput(event, "lastChangedBy") }}
-                                    value={this.state.lastChangedBy} />
+                                    value={this.state.lastChangedBy == null ? '' : this.state.lastChangedBy} />
                             </div>
                         </div>
                         <div className="modal-footer">
