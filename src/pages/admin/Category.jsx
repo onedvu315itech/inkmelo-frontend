@@ -5,8 +5,10 @@ import Typography from '@mui/material/Typography';
 import MainCard from 'components/MainCard';
 import productService from "services/productServices";
 import { Component, useEffect, useState } from "react";
-import ModalCategory from 'modals/ModalCategory';
 import ModalUpdateCategory from 'modals/ModalUpdateCategory';
+import ModalCreateCategory from 'modals/ModalCreateCategory';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 
 // ==============================|| SAMPLE PAGE ||============================== //
@@ -16,6 +18,7 @@ class Category extends Component {
         super(props);
         this.state = {
             listCategory: [],
+            isOpenedModalCreateCategory: false,
             isOpenedModalUpdateCategory: false,
             categoryUpdate: {},
         }
@@ -26,9 +29,15 @@ class Category extends Component {
         else return status;
     }
 
-    toggleCategoryModal = () => {
+    toggleUpdateCategoryModal = () => {
         this.setState({
             isOpenedModalUpdateCategory: !this.state.isOpenedModalUpdateCategory
+        });
+    }
+
+    toggleCreateCategoryModal = () => {
+        this.setState({
+            isOpenedModalCreateCategory: !this.state.isOpenedModalCreateCategory
         });
     }
 
@@ -40,7 +49,9 @@ class Category extends Component {
 
     // For add new category
     handleAddNewCatergory = () => {
-        alert('Click me')
+        this.setState({
+            isOpenedModalCreateCategory: true
+        });
     }
 
     //For update category
@@ -65,16 +76,21 @@ class Category extends Component {
         return (
             <>
                 <div className='mx-1'>
-                    {/* <ModalCategory /> */}
                     <button className='btn btn-primary px'
                         onClick={this.handleAddNewCatergory}>
-                        Add
+                        <FontAwesomeIcon icon={faPlus} /> Thêm mới
                     </button>
+                    {
+                        <ModalCreateCategory
+                            open={this.state.isOpenedModalCreateCategory}
+                            toggle={this.toggleCreateCategoryModal}
+                        />
+                    }
                     {
                         this.state.isOpenedModalUpdateCategory &&
                         <ModalUpdateCategory
                             open={this.state.isOpenedModalUpdateCategory}
-                            toggle={this.toggleCategoryModal}
+                            toggle={this.toggleUpdateCategoryModal}
                             currentCategory={this.state.categoryUpdate}
                             updateCategory={this.doUpdateCategory}
                         />
