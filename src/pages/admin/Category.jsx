@@ -92,7 +92,7 @@ class Category extends Component {
                     </thead>
                     <tbody>
                         {
-                            this.state.listCategory.map((data, i) => {
+                            this.state.listCategory && this.state.listCategory.map((data, i) => {
                                 return (
                                     <tr key={i}>
                                         <td>{data.id}</td>
