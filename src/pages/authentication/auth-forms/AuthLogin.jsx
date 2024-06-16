@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Component } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
 // material-ui
@@ -19,7 +19,7 @@ import Typography from '@mui/material/Typography';
 
 // third party
 import * as Yup from 'yup';
-import { Formik } from 'formik';
+import { Formik, useFormik, withFormik } from 'formik';
 
 // project import
 import AnimateButton from 'components/@extended/AnimateButton';
@@ -43,46 +43,65 @@ export default function AuthLogin({ isDemo = false }) {
     event.preventDefault();
   };
 
+  const handleOnChangeInput = (event) => {
+    useFormik({
+      initialValues: {
+        username: event.target.value,
+        password: event.target.value,
+      }
+    });
+  }
+
+  const handleLogin = () => {
+
+  }
+
   return (
     <>
       <Formik
         initialValues={{
-          email: '',
+          username: '',
           password: '',
           submit: null
         }}
         validationSchema={Yup.object().shape({
-          email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-          password: Yup.string().max(255).required('Password is required')
+          username: Yup.string()
+            .min(4, "Tài khoản quá ngắn!")
+            .max(255)
+            .required('Tài khoản là bắt buộc'),
+          password: Yup.string()
+            .min(2, "Mật khẩu quá ngắn!")
+            .max(255)
+            .required('Mật khẩu là bắt buộc')
         })}
       >
-        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+        {({ errors, handleBlur, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="email-login">Email Address</InputLabel>
+                  <InputLabel htmlFor="username-login">Tài khoản</InputLabel>
                   <OutlinedInput
-                    id="email-login"
-                    type="email"
-                    value={values.email}
-                    name="email"
+                    id="username-login"
+                    type="text"
+                    value={values.username}
+                    name="username"
                     onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Enter email address"
+                    onChange={(event) => handleOnChangeInput(event)}
+                    placeholder="Nhập tên tài khoản"
                     fullWidth
-                    error={Boolean(touched.email && errors.email)}
+                    error={Boolean(touched.username && errors.username)}
                   />
                 </Stack>
-                {touched.email && errors.email && (
-                  <FormHelperText error id="standard-weight-helper-text-email-login">
-                    {errors.email}
+                {touched.username && errors.username && (
+                  <FormHelperText error id="standard-weight-helper-text-username-login">
+                    {errors.username}
                   </FormHelperText>
                 )}
               </Grid>
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="password-login">Password</InputLabel>
+                  <InputLabel htmlFor="password-login">Mật khẩu</InputLabel>
                   <OutlinedInput
                     fullWidth
                     error={Boolean(touched.password && errors.password)}
@@ -91,7 +110,7 @@ export default function AuthLogin({ isDemo = false }) {
                     value={values.password}
                     name="password"
                     onBlur={handleBlur}
-                    onChange={handleChange}
+                    onChange={(event) => handleOnChangeInput(event)}
                     endAdornment={
                       <InputAdornment position="end">
                         <IconButton
@@ -105,7 +124,7 @@ export default function AuthLogin({ isDemo = false }) {
                         </IconButton>
                       </InputAdornment>
                     }
-                    placeholder="Enter password"
+                    placeholder="Nhập mật khẩu"
                   />
                 </Stack>
                 {touched.password && errors.password && (
@@ -127,10 +146,10 @@ export default function AuthLogin({ isDemo = false }) {
                         size="small"
                       />
                     }
-                    label={<Typography variant="h6">Keep me sign in</Typography>}
+                    label={<Typography variant="h6">Giữ tôi đăng nhập</Typography>}
                   />
                   <Link variant="h6" component={RouterLink} color="text.primary">
-                    Forgot Password?
+                    Quên mật khẩu?
                   </Link>
                 </Stack>
               </Grid>
@@ -141,14 +160,16 @@ export default function AuthLogin({ isDemo = false }) {
               )}
               <Grid item xs={12}>
                 <AnimateButton>
-                  <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-                    Login
+                  <Button disableElevation disabled={isSubmitting} fullWidth size="large"
+                    type="submit" variant="contained" color="primary"
+                    onClick={() => handleLogin}>
+                    Đăng nhập
                   </Button>
                 </AnimateButton>
               </Grid>
               <Grid item xs={12}>
                 <Divider>
-                  <Typography variant="caption"> Login with</Typography>
+                  <Typography variant="caption"> Đăng nhập với</Typography>
                 </Divider>
               </Grid>
               <Grid item xs={12}>
