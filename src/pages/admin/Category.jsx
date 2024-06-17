@@ -1,10 +1,7 @@
-// material-ui
-import Typography from '@mui/material/Typography';
-
 // project import
 import MainCard from 'components/MainCard';
 import productService from "services/productServices";
-import { Component, useEffect, useState } from "react";
+import { Component } from "react";
 import ModalUpdateCategory from 'modals/ModalUpdateCategory';
 import ModalCreateCategory from 'modals/ModalCreateCategory';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -118,73 +115,76 @@ class Category extends Component {
     render() {
         return (
             <>
-                <div className='mx-1'>
-                    <button className='btn btn-primary px'
-                        onClick={this.handleAddNewCatergory}>
-                        <FontAwesomeIcon icon={faPlus} /> Thêm mới
-                    </button>
-                    {
-                        this.state.isOpenedModalCreateCategory &&
-                        <ModalCreateCategory
-                            open={this.state.isOpenedModalCreateCategory}
-                            toggle={this.toggleCreateCategoryModal}
-                            categoryInfor={this.state.categoryCreate}
-                            createCategory={this.doCreateCategory}
-                        />
-                    }
-                    {
-                        this.state.isOpenedModalUpdateCategory &&
-                        <ModalUpdateCategory
-                            open={this.state.isOpenedModalUpdateCategory}
-                            toggle={this.toggleUpdateCategoryModal}
-                            currentCategory={this.state.categoryUpdate}
-                            updateCategory={this.doUpdateCategory}
-                        />
-                    }
-                </div>
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Tên sách</th>
-                            <th scope="col">Mô tả</th>
-                            <th scope="col">Trạng thái</th>
-                            <th scope="col">Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <MainCard>
+                    <div className='mx-1'>
+                        <button className='btn btn-primary px'
+                            style={{ backgroundColor: "green", marginBottom: 2 + "rem" }}
+                            onClick={this.handleAddNewCatergory}>
+                            <FontAwesomeIcon icon={faPlus} /> Thêm mới
+                        </button>
                         {
-                            this.state.listCategory &&
-                                Array.isArray(this.state.listCategory) ? this.state.listCategory.map((data, i) => {
-                                    return (
-                                        <tr key={i}>
-                                            <td>{data.id}</td>
-                                            <td>{data.name}</td>
-                                            <td>{data.description}</td>
-                                            <td>
-                                                {data.status}
-                                            </td>
-                                            <td>
-                                                <button type="button" className="btn btn-primary"
-                                                    onClick={() => { this.handleUpdateCategory(data) }}>
-                                                    Cập nhật
-                                                </button>
-                                                <button type="button" className="btn btn-delete"
-                                                    style={{
-                                                        backgroundColor: "#FF4B4B",
-                                                        color: "white",
-                                                        marginLeft: 1 + "rem"
-                                                    }}
-                                                    onClick={() => { this.handleDeleteCategory(data) }}>
-                                                    Xóa
-                                                </button>
-                                            </td >
-                                        </tr >
-                                    );
-                                }) : null
+                            this.state.isOpenedModalCreateCategory &&
+                            <ModalCreateCategory
+                                open={this.state.isOpenedModalCreateCategory}
+                                toggle={this.toggleCreateCategoryModal}
+                                categoryInfor={this.state.categoryCreate}
+                                createCategory={this.doCreateCategory}
+                            />
                         }
-                    </tbody >
-                </table >
+                        {
+                            this.state.isOpenedModalUpdateCategory &&
+                            <ModalUpdateCategory
+                                open={this.state.isOpenedModalUpdateCategory}
+                                toggle={this.toggleUpdateCategoryModal}
+                                currentCategory={this.state.categoryUpdate}
+                                updateCategory={this.doUpdateCategory}
+                            />
+                        }
+                    </div>
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Tên sách</th>
+                                <th scope="col">Mô tả</th>
+                                <th scope="col">Trạng thái</th>
+                                <th scope="col">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                this.state.listCategory &&
+                                    Array.isArray(this.state.listCategory) ? this.state.listCategory.map((data, i) => {
+                                        return (
+                                            <tr key={i}>
+                                                <td>{data.id}</td>
+                                                <td>{data.name}</td>
+                                                <td>{data.description}</td>
+                                                <td>
+                                                    {data.status}
+                                                </td>
+                                                <td>
+                                                    <button type="button" className="btn btn-primary"
+                                                        onClick={() => { this.handleUpdateCategory(data) }}>
+                                                        Cập nhật
+                                                    </button>
+                                                    <button type="button" className="btn btn-delete"
+                                                        style={{
+                                                            backgroundColor: "#FF4B4B",
+                                                            color: "white",
+                                                            marginLeft: 1 + "rem"
+                                                        }}
+                                                        onClick={() => { this.handleDeleteCategory(data) }}>
+                                                        Xóa
+                                                    </button>
+                                                </td >
+                                            </tr >
+                                        );
+                                    }) : null
+                            }
+                        </tbody>
+                    </table>
+                </MainCard>
             </>
         )
     }
