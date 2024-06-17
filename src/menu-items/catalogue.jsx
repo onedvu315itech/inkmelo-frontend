@@ -16,24 +16,21 @@ const catalogue = {
             title: 'Loại sản phẩm',
             type: 'item',
             url: '/admin/category',
-            icon: icons.ProjectOutlined,
-            target: true
+            icon: icons.ProjectOutlined
         },
         {
             id: 'genre',
             title: 'Thể loại',
             type: 'item',
             url: '/admin/genre',
-            icon: icons.ProductOutlined,
-            target: true
+            icon: icons.ProductOutlined
         },
         {
             id: 'publisher',
             title: 'Nhà xuất bản',
             type: 'item',
             url: '/admin/publisher',
-            icon: icons.UserOutlined,
-            target: true
+            icon: icons.UserOutlined
         }
     ]
 };

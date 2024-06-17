@@ -24,14 +24,6 @@ const MainRoutes = {
   element: <Dashboard />,
   children: [
     {
-      path: '/admin',
-      element: <DashboardDefault />
-    },
-    {
-      path: 'color',
-      element: <Color />
-    },
-    {
       path: 'dashboard',
       children: [
         {
@@ -39,6 +31,10 @@ const MainRoutes = {
           element: <DashboardDefault />
         }
       ]
+    },
+    {
+      path: 'color',
+      element: <Color />
     },
     {
       path: 'sample-page',
