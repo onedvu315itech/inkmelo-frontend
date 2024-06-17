@@ -99,12 +99,12 @@ class Category extends Component {
         try {
             let res = await productService.deleteCategory(category.id);
             if (res) {
-                console.log(res)
+
                 this.setState({
                     isOpenedModalUpdateCategory: false,
                     listCategory: category,
                 })
-                console.log(category)
+
                 await this.getAllCategory();
             }
         } catch (err) {
@@ -160,9 +160,7 @@ class Category extends Component {
                                                 <td>{data.id}</td>
                                                 <td>{data.name}</td>
                                                 <td>{data.description}</td>
-                                                <td>
-                                                    {data.status}
-                                                </td>
+                                                <td> {data.status} </td>
                                                 <td>
                                                     <button type="button" className="btn btn-primary"
                                                         onClick={() => { this.handleUpdateCategory(data) }}>

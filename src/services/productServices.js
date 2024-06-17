@@ -21,8 +21,16 @@ const deleteCategory = (deletedId) => {
 const getAllGenre = () => {
     return axios.get('/api/v1/admin/genres');
 }
+
 const createGenre = (createGenre) => {
     return axios.post('/api/v1/admin/genres', createGenre);
+}
+
+const updateGenre = (updatedData) => {
+    return axios.put('/api/v1/admin/genres', updatedData);
+}
+const deleteGenre = (deletedId) => {
+    return axios.delete(`/api/v1/admin/genres/${deletedId}`);
 }
 
 export default {
@@ -32,4 +40,6 @@ export default {
     deleteCategory,
     getAllGenre,
     createGenre,
+    updateGenre,
+    deleteGenre,
 };  

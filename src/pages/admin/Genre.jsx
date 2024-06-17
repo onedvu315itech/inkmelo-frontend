@@ -1,14 +1,14 @@
-// material-ui
-import { listClasses } from '@mui/material';
-import Typography from '@mui/material/Typography';
 
 // project import
 import MainCard from 'components/MainCard';
 import { Component } from 'react';
 import productService from 'services/productServices';
 import ModalCreateGenre from 'modals/ModalCreateGenre';
+import ModalUpdateGenre from 'modals/ModalUpdateGenre';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { emitter } from 'utils/emitter';
+
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
@@ -18,6 +18,9 @@ class Genre extends Component {
         this.state = {
             listGenre: [],
             isOpenedModalCreateGenre: false,
+            isOpenedModalUpdateGenre: false,
+            genreUpdate: {},
+            genreCreate: {},
         }
     }
 
@@ -25,6 +28,12 @@ class Genre extends Component {
     toggleCreateGenreModal = () => {
         this.setState({
             isOpenedModalCreateGenre: !this.state.isOpenedModalCreateGenre
+        });
+    }
+
+    toggleUpdateGenreModal = () => {
+        this.setState({
+            isOpenedModalUpdateGenre: !this.state.isOpenedModalUpdateGenre
         });
     }
 
@@ -64,6 +73,46 @@ class Genre extends Component {
         }
     }
 
+    //For update genre
+    handleUpdateGenre = (genre) => {
+        this.setState({
+            isOpenedModalUpdateGenre: true,
+            genreUpdate: genre
+        });
+    }
+
+    doUpdateGenre = async (genre) => {
+        try {
+            let res = await productService.updateGenre(genre);
+            if (res) {
+                this.setState({
+                    isOpenedModalUpdateGenre: false,
+                    listGenre: genre,
+                })
+                await this.getAllGenre();
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    // For delete Genre
+    handleDeleteGenre = async (genre) => {
+        try {
+            let res = await productService.deleteGenre(genre.id);
+            if (res) {
+
+                this.setState({
+                    isOpenedModalUpdateGenre: false,
+                    listGenre: genre,
+                })
+
+                await this.getAllGenre();
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
 
 
 
@@ -88,12 +137,12 @@ class Genre extends Component {
                             />
                         }
                         {
-                            this.state.isOpenedModalUpdateCategory &&
-                            <ModalUpdateCategory
-                                open={this.state.isOpenedModalUpdateCategory}
-                                toggle={this.toggleUpdateCategoryModal}
-                                currentCategory={this.state.categoryUpdate}
-                                updateCategory={this.doUpdateCategory}
+                            this.state.isOpenedModalUpdateGenre &&
+                            <ModalUpdateGenre
+                                open={this.state.isOpenedModalUpdateGenre}
+                                toggle={this.toggleUpdateGenreModal}
+                                currentGenre={this.state.genreUpdate}
+                                updateGenre={this.doUpdateGenre}
                             />
                         }
                     </div>
@@ -116,13 +165,12 @@ class Genre extends Component {
                                                 <td>{data.id}</td>
                                                 <td>{data.name}</td>
                                                 <td>{data.description}</td>
-                                                <td>
-                                                    {data.status}
-                                                </td>
+                                                <td>{data.status}</td>
 
 
                                                 <td>
-                                                    <button type="button" className="btn btn-primary">
+                                                    <button type="button" className="btn btn-primary"
+                                                        onClick={() => this.handleUpdateGenre(data)}>
                                                         Cập nhật
                                                     </button>
                                                     <button type="button" className="btn btn-delete"
@@ -131,7 +179,7 @@ class Genre extends Component {
                                                             color: "white",
                                                             marginLeft: 1 + "rem"
                                                         }}
-                                                    >
+                                                        onClick={() => { this.handleDeleteGenre(data) }}>
                                                         Xóa
                                                     </button>
                                                 </td >
