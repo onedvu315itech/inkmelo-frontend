@@ -4,6 +4,7 @@ import { lazy } from 'react';
 import Loadable from 'components/Loadable';
 import Dashboard from 'layout/Dashboard';
 
+
 const Color = Loadable(lazy(() => import('pages/component-overview/color')));
 const Typography = Loadable(lazy(() => import('pages/component-overview/typography')));
 const Shadow = Loadable(lazy(() => import('pages/component-overview/shadows')));
@@ -13,7 +14,7 @@ const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/index')));
 const Category = Loadable(lazy(() => import('pages/admin/Category')));
 const Genre = Loadable(lazy(() => import('pages/admin/Genre')));
 const Publisher = Loadable(lazy(() => import('pages/admin/Publisher')));
-
+const User = Loadable(lazy(() => import('pages/admin/User')));
 // render - sample page
 const SamplePage = Loadable(lazy(() => import('pages/extra-pages/sample-page')));
 
@@ -59,6 +60,10 @@ const MainRoutes = {
     {
       path: 'publisher',
       element: <Publisher />
+    },
+    {
+      path: 'user',
+      element: <User />
     },
   ]
 };

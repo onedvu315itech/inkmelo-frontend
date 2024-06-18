@@ -1,7 +1,9 @@
 import axios from 'api/axios'
 
-class UserService {
-
+const getAllUser = () => {
+    return axios.get('/admin/api/v1/users');
 }
 
-export default new UserService();
+export default {
+    getAllUser,
+};

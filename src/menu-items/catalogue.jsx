@@ -1,9 +1,10 @@
-import { ProductOutlined, ProjectOutlined, UserOutlined } from "@ant-design/icons";
+import { ProductOutlined, ProjectOutlined, UserOutlined, IdcardOutlined } from "@ant-design/icons";
 
 const icons = {
     ProjectOutlined,
     ProductOutlined,
     UserOutlined,
+    IdcardOutlined,
 }
 
 const catalogue = {
@@ -11,6 +12,13 @@ const catalogue = {
     title: 'Catalogue',
     type: 'group',
     children: [
+        {
+            id: 'user',
+            title: 'Người dùng',
+            type: 'item',
+            url: '/admin/user',
+            icon: icons.IdcardOutlined
+        },
         {
             id: 'category',
             title: 'Loại sản phẩm',
