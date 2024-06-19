@@ -2,7 +2,7 @@ import { Component } from "react";
 import { Box, Modal } from "@mui/material";
 import 'style/css/Category.css'
 import _ from 'lodash'
-
+import FileUpload from "components/FileUpload";
 
 class ModalUpdatePublisher extends Component {
     constructor(props) {
@@ -46,6 +46,8 @@ class ModalUpdatePublisher extends Component {
         border: '2px solid #000',
         boxShadow: 10,
         p: 4,
+        maxHeight: '80vh',
+        overflowY: 'auto'
     };
 
     checkValidInput = () => {
@@ -93,7 +95,7 @@ class ModalUpdatePublisher extends Component {
                         autoComplete="off"
                     >
                         <div className="modal-header">
-                            <h5 className="modal-title" style={{ display: "inline-block" }}>Chi tiết thể loại sản phẩm</h5>
+                            <h5 className="modal-title" style={{ display: "inline-block" }}>Chi tiết thông tin nhà xuất bản</h5>
                             <span className="justify-content-end inline-block">
                                 <button type="button" className="btn-close"
                                     onClick={this.handleClose}></button>
@@ -108,6 +110,8 @@ class ModalUpdatePublisher extends Component {
                                         value={this.state.id == null ? '' : this.state.id}
                                     />
                                 </div>
+                                <label htmlFor="publisher-name" className="col-form-label">Logo:</label>
+                                <FileUpload storageLocation="publisher-images" />
                                 <div className="col-12">
                                     <label htmlFor="category-name" className="col-form-label">Tên:</label>
                                     <input type="text" className="form-control" id="category-name"
@@ -147,7 +151,7 @@ class ModalUpdatePublisher extends Component {
                                 </datalist>
                                 <label htmlFor="category-name" className="col-form-label">Người cập nhật:</label>
                                 <input type="text" className="form-control" readOnly
-                                    onChange={(event) => { this.handleOnChangeInput(ev1ent, "lastChangedBy") }}
+                                    onChange={(event) => { this.handleOnChangeInput(event, "lastChangedBy") }}
                                     value={this.state.lastChangedBy == null ? '' : this.state.lastChangedBy} />
                             </div>
                         </div>

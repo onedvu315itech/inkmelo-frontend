@@ -1,7 +1,7 @@
 import Navbar from "components/main/Navbar";
 import Footer from "components/main/Footer";
-import Filter from "components/shop/Filter";
-import Product from "components/shop/Product";
+import Filter from "components/store/Filter";
+import Product from "components/store/Product";
 
 const Store = () => {
     return (

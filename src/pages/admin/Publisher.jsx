@@ -35,7 +35,6 @@ class Publisher extends Component {
         });
     }
 
-
     async componentDidMount() {
         await this.getAllPublisher();
     }
@@ -70,7 +69,6 @@ class Publisher extends Component {
             console.log(error)
         }
     }
-
 
     //For update publisher
     handleUpdatePublisher = (publisher) => {
@@ -112,8 +110,8 @@ class Publisher extends Component {
             console.log(err)
         }
     }
-    render() {
 
+    render() {
         return (
             <>
                 <MainCard>
@@ -162,8 +160,6 @@ class Publisher extends Component {
                                                 <td>{data.name}</td>
                                                 <td>{data.description}</td>
                                                 <td>{data.status}</td>
-
-
                                                 <td>
                                                     <button type="button" className="btn btn-primary"
                                                         onClick={() => this.handleUpdatePublisher(data)}>
