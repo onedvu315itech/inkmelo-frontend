@@ -1,10 +1,11 @@
-import { ProductOutlined, ProjectOutlined, UserOutlined, IdcardOutlined } from "@ant-design/icons";
+import { ProductOutlined, ProjectOutlined, UserOutlined, IdcardOutlined, BookOutlined } from "@ant-design/icons";
 
 const icons = {
     ProjectOutlined,
     ProductOutlined,
     UserOutlined,
     IdcardOutlined,
+    BookOutlined,
 }
 
 const catalogue = {
@@ -12,6 +13,13 @@ const catalogue = {
     title: 'Catalogue',
     type: 'group',
     children: [
+        {
+            id: 'bookItem',
+            title: 'Loại sách',
+            type: 'item',
+            url: '/admin/bookItem',
+            icon: icons.BookOutlined
+        },
         {
             id: 'user',
             title: 'Người dùng',

@@ -15,6 +15,7 @@ const Category = Loadable(lazy(() => import('pages/admin/Category')));
 const Genre = Loadable(lazy(() => import('pages/admin/Genre')));
 const Publisher = Loadable(lazy(() => import('pages/admin/Publisher')));
 const User = Loadable(lazy(() => import('pages/admin/User')));
+const BookItem = Loadable(lazy(() => import('pages/admin/Booktem')));
 // render - sample page
 const SamplePage = Loadable(lazy(() => import('pages/extra-pages/sample-page')));
 
@@ -64,6 +65,10 @@ const MainRoutes = {
     {
       path: 'user',
       element: <User />
+    },
+    {
+      path: 'bookItem',
+      element: <BookItem />
     },
   ]
 };
