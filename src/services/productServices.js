@@ -65,6 +65,23 @@ const deleteBookItem = (deletedId) => {
     return axios.delete(`/admin/api/v1/book-items/${deletedId}`)
 }
 
+//Book
+const getAllBook = () => {
+    return axios.get('/admin/api/v1/books');
+}
+
+const updateBook = (updatedData) => {
+    return axios.put('/admin/api/v1/books', updatedData)
+}
+
+const createBook = (createBook) => {
+    return axios.post('/admin/api/v1/books', createBook);
+}
+
+const deleteBook = (deletedId) => {
+    return axios.delete(`/admin/api/v1/books/${deletedId}`)
+}
+
 export default {
     createCategory,
     getAllCategory,
@@ -82,4 +99,8 @@ export default {
     updateBookItem,
     createBookItem,
     deleteBookItem,
+    getAllBook,
+    createBook,
+    updateBook,
+    deleteBook,
 };  

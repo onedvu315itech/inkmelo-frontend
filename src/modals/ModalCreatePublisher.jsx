@@ -62,6 +62,8 @@ class ModalCreatePublisher extends Component {
         border: '2px solid #000',
         boxShadow: 10,
         p: 4,
+        maxHeight: '80vh',
+        overflowY: 'auto'
     };
 
     checkValidInput = () => {

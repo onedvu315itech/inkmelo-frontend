@@ -1,42 +1,53 @@
 import { Component } from "react";
 import { Box, Modal } from "@mui/material";
 import 'style/css/Category.css'
-import _ from "lodash";
-import { emitter } from "utils/emitter";
+import _ from 'lodash'
 
-class ModalCreateGenre extends Component {
+class ModalUpdateBook extends Component {
     constructor(props) {
         super(props);
         this.state = {
             id: '',
-            name: '',
+            title: '',
+            ISBN: '',
+            publicationDecisionNumber: '',
+            publicationRegistConfirmNum: '',
+            depositCopy: '',
+            author: '',
             description: '',
+            bookCoverImg: '',
+            averageStar: '',
+            totalRating: '',
+            publisher: {
+                id: '',
+                name: '',
+                description: '',
+                logoImg: '',
+            },
+            rating: {
+                star: '',
+                comment: '',
+                customer: {
+                    fullname: '',
+                    profileImg: '',
+                },
+                createdAt: '',
+            },
+            gender: {
+                id: '',
+                name: '',
+                description: '',
+            },
             createdAt: '',
             lastUpdatedTime: '',
             lastChangedBy: '',
             status: '',
             isOpened: false,
         }
-
-        this.listenToEmitter();
-    }
-
-    listenToEmitter() {
-        emitter.on('EVENT_CLEAR_MODAL_DATA', () => {
-            this.setState({
-                id: '',
-                name: '',
-                description: '',
-                createdAt: '',
-                lastUpdatedTime: '',
-                lastChangedBy: '',
-                status: '',
-            })
-        })
     }
 
     componentDidMount() {
-        let genre = this.props.genre
+        let genre = this.props.currentGenre
         if (genre && !_.isEmpty(genre)) {
             this.setState({
                 id: genre.id,
@@ -66,7 +77,7 @@ class ModalCreateGenre extends Component {
 
     checkValidInput = () => {
         let isValid = true;
-        let arrInput = ['name', 'description'];
+        let arrInput = ['name', 'description', 'status'];
         for (let i = 0; i < arrInput.length; i++) {
             if (!this.state[arrInput[i]]) {
                 isValid = false;
@@ -77,12 +88,6 @@ class ModalCreateGenre extends Component {
         return isValid;
     }
 
-    handleAddGenre = () => {
-        let isValid = this.checkValidInput();
-        if (isValid)
-            this.props.createGenre(this.state);
-    }
-
     handleClose = () => this.props.toggle();
     handleOnChangeInput = (event, id) => {
         let copyState = { ...this.state };
@@ -90,6 +95,13 @@ class ModalCreateGenre extends Component {
         this.setState({
             ...copyState
         });
+
+    }
+
+    handleSaveGenre = () => {
+        let isValid = this.checkValidInput();
+        if (isValid)
+            this.props.updateGenre(this.state);
     }
 
     render() {
@@ -108,7 +120,7 @@ class ModalCreateGenre extends Component {
                         autoComplete="off"
                     >
                         <div className="modal-header">
-                            <h5 className="modal-title" style={{ display: "inline-block" }}>Nhập thông tin mới</h5>
+                            <h5 className="modal-title" style={{ display: "inline-block" }}>Chi tiết thể loại sản phẩm</h5>
                             <span className="justify-content-end inline-block">
                                 <button type="button" className="btn-close"
                                     onClick={this.handleClose}></button>
@@ -120,7 +132,7 @@ class ModalCreateGenre extends Component {
                                     <label htmlFor="category-name" className="col-form-label">ID:</label>
                                     <input type="text" className="form-control" readOnly
                                         onChange={(event) => { this.handleOnChangeInput(event, "id") }}
-                                        value={this.state.id}
+                                        value={this.state.id == null ? '' : this.state.id}
                                     />
                                 </div>
                                 <div className="col-12">
@@ -128,7 +140,7 @@ class ModalCreateGenre extends Component {
                                     <input type="text" className="form-control" id="category-name"
                                         style={{ width: 473 + "px" }}
                                         onChange={(event) => { this.handleOnChangeInput(event, "name") }}
-                                        value={this.state.name}
+                                        value={this.state.name == null ? '' : this.state.name}
                                     />
                                 </div>
                             </div>
@@ -137,32 +149,33 @@ class ModalCreateGenre extends Component {
                                 <textarea className="form-control" id="message-text"
                                     style={{ width: 473 + "px" }}
                                     onChange={(event) => { this.handleOnChangeInput(event, "description") }}
-                                    value={this.state.description}
+                                    value={this.state.description == null ? '' : this.state.description}
                                 ></textarea>
                             </div>
                             <div className="form-group date">
                                 <label htmlFor="category-name" className="col-form-label">Ngày tạo:</label>
                                 <input type="text" className="form-control" id="category-createdDate" readOnly
                                     onChange={(event) => { this.handleOnChangeInput(event, "createdAt") }}
-                                    value={this.state.createdAt} />
+                                    value={this.state.createdAt == null ? '' : this.state.createdAt} />
                                 <label htmlFor="category-name" className="col-form-label">Cập nhật mới:</label>
                                 <input type="text" className="form-control" readOnly
                                     onChange={(event) => { this.handleOnChangeInput(event, "lastUpdatedTime") }}
-                                    value={this.state.lastUpdatedTime} />
+                                    value={this.state.lastUpdatedTime == null ? '' : this.state.lastUpdatedTime} />
                             </div>
                             <div className="form-group status-person">
                                 <label htmlFor="category-name" className="col-form-label">Trạng thái</label>
                                 <input type="text" className="form-control" id="category-status"
                                     onChange={(event) => { this.handleOnChangeInput(event, "status") }}
-                                    value={this.state.status} list="status" />
+                                    value={this.state.status == null ? '' : this.state.status}
+                                    list="status" />
                                 <datalist id="status">
                                     <option value="ACTIVE" />
                                     <option value="INACTIVE" />
                                 </datalist>
                                 <label htmlFor="category-name" className="col-form-label">Người cập nhật:</label>
                                 <input type="text" className="form-control" readOnly
-                                    onChange={(event) => { this.handleOnChangeInput(event, "lastChangedBy") }}
-                                    value={this.state.lastChangedBy} />
+                                    onChange={(event) => { this.handleOnChangeInput(ev1ent, "lastChangedBy") }}
+                                    value={this.state.lastChangedBy == null ? '' : this.state.lastChangedBy} />
                             </div>
                         </div>
                         <div className="modal-footer">
@@ -171,8 +184,8 @@ class ModalCreateGenre extends Component {
                                     backgroundColor: "rgb(220, 120, 0)",
                                     color: "white"
                                 }}
-                                onClick={this.handleAddGenre}
-                            >Thêm mới</button>
+                                onClick={() => { this.handleSaveGenre() }}
+                            >Lưu thay đổi</button>
                             <button type="button" className="btn btn-secondary btn-cancel"
                                 onClick={this.handleClose}>Đóng</button>
                         </div>
@@ -180,10 +193,7 @@ class ModalCreateGenre extends Component {
                 </Modal>
             </>
         )
-    }
+    };
 }
 
-export default ModalCreateGenre;
-
-
-
+export default ModalUpdateBook;

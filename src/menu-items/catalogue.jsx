@@ -14,6 +14,13 @@ const catalogue = {
     type: 'group',
     children: [
         {
+            id: 'book',
+            title: 'Sách',
+            type: 'item',
+            url: '/admin/book',
+            icon: icons.BookOutlined
+        },
+        {
             id: 'bookItem',
             title: 'Loại sách',
             type: 'item',

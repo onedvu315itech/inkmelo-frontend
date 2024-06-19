@@ -4,19 +4,48 @@ import 'style/css/Category.css'
 import _ from "lodash";
 import { emitter } from "utils/emitter";
 
-class ModalCreateGenre extends Component {
+class ModalCreateBook extends Component {
     constructor(props) {
         super(props);
         this.state = {
             id: '',
-            name: '',
+            title: '',
+            ISBN: '',
+            publicationDecisionNumber: '',
+            publicationRegistConfirmNum: '',
+            depositCopy: '',
+            author: '',
             description: '',
+            bookCoverImg: '',
+            averageStar: '',
+            totalRating: '',
+            publisher: {
+                id: '',
+                name: '',
+                description: '',
+                logoImg: '',
+            },
+            rating: {
+                star: '',
+                comment: '',
+                customer: {
+                    fullname: '',
+                    profileImg: '',
+                },
+                createdAt: '',
+            },
+            gender: {
+                id: '',
+                name: '',
+                description: '',
+            },
             createdAt: '',
             lastUpdatedTime: '',
             lastChangedBy: '',
             status: '',
             isOpened: false,
         }
+
 
         this.listenToEmitter();
     }
@@ -25,8 +54,36 @@ class ModalCreateGenre extends Component {
         emitter.on('EVENT_CLEAR_MODAL_DATA', () => {
             this.setState({
                 id: '',
-                name: '',
+                title: '',
+                ISBN: '',
+                publicationDecisionNumber: '',
+                publicationRegistConfirmNum: '',
+                depositCopy: '',
+                author: '',
                 description: '',
+                bookCoverImg: '',
+                averageStar: '',
+                totalRating: '',
+                publisher: {
+                    id: '',
+                    name: '',
+                    description: '',
+                    logoImg: '',
+                },
+                rating: {
+                    star: '',
+                    comment: '',
+                    customer: {
+                        fullname: '',
+                        profileImg: '',
+                    },
+                    createdAt: '',
+                },
+                gender: {
+                    id: '',
+                    name: '',
+                    description: '',
+                },
                 createdAt: '',
                 lastUpdatedTime: '',
                 lastChangedBy: '',
@@ -183,7 +240,7 @@ class ModalCreateGenre extends Component {
     }
 }
 
-export default ModalCreateGenre;
+export default ModalCreateBook;
 
 
 
