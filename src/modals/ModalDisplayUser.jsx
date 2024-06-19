@@ -139,13 +139,12 @@ class ModalUser extends Component {
                             </div>
                             <div className="form-group status-person">
                                 <label htmlFor="category-name" className="col-form-label">Trạng thái</label>
-                                <input type="text" className="form-control" id="category-status"
-                                    defaultValue={this.state.status == null ? '' : this.state.status}
-                                    list="status" />
-                                <datalist id="status">
-                                    <option value="ACTIVE" />
-                                    <option value="INACTIVE" />
-                                </datalist>
+                                <select id="category-status" className="form-control"
+                                    onChange={(event) => { this.handleOnChangeInput(event, "status") }}
+                                    value={this.state.status == null ? '' : this.state.status}>
+                                    <option value="ACTIVE">ACTIVE</option>
+                                    <option value="INACTIVE">INACTIVE</option>
+                                </select>
                                 <label htmlFor="category-name" className="col-form-label">Người cập nhật:</label>
                                 <input type="text" className="form-control" readOnly
                                     defaultValue={this.state.lastChangedBy == null ? '' : this.state.lastChangedBy} />

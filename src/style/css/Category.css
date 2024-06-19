@@ -1,21 +1,39 @@
 .pop-up-body .date {
   display: inline-flex;
-  margin-top: 15px; }
-  .pop-up-body .date #category-createdDate {
-    margin-right: 10px;
-    margin-inline-start: -26px; }
-  .pop-up-body .date label {
-    width: 8.4rem; }
-  .pop-up-body .date input {
-    width: 110px; }
+  margin-top: 15px;
+}
+
+.pop-up-body .date #category-createdDate {
+  margin-right: 10px;
+  margin-inline-start: -26px;
+}
+
+.pop-up-body .date label {
+  width: 8.4rem;
+}
+
+.pop-up-body .date input {
+  width: 110px;
+}
 
 .pop-up-body .status-person {
   display: inline-flex;
-  margin-top: 15px; }
-  .pop-up-body .status-person #category-status {
-    margin-right: 10px;
-    margin-inline-start: -26px; }
-  .pop-up-body .status-person label {
-    width: 8.4rem; }
-  .pop-up-body .status-person input {
-    width: 110px; }
+  margin-top: 15px;
+}
+
+.pop-up-body .status-person #category-status {
+  margin-right: 10px;
+  margin-inline-start: -26px;
+}
+
+.pop-up-body .status-person label {
+  width: 8.4rem;
+}
+
+.pop-up-body .status-person input {
+  width: 110px;
+}
+
+.pop-up-body .status-person select {
+  width: 110px;
+}
