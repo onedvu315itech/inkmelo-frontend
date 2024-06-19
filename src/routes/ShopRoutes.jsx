@@ -1,11 +1,11 @@
 import Loadable from "components/Loadable";
 import { lazy } from "react";
 
-const Shop = Loadable(lazy(() => import('pages/main/Shop')));
+const Store = Loadable(lazy(() => import('pages/main/Store')));
 
-const ShopRoutes = {
-    path: '/shop',
-    element: <Shop />
+const StoreRoutes = {
+    path: '/store',
+    element: <Store />
 }
 
-export default ShopRoutes;
+export default StoreRoutes;
