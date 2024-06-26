@@ -48,7 +48,7 @@ const deletePublisher = (deletedId) => {
     return axios.delete(`/admin/api/v1/publishers/${deletedId}`);
 }
 
-//book Item
+//Book Item
 const getAllBookItem = () => {
     return axios.get('/admin/api/v1/book-items');
 }

@@ -43,7 +43,8 @@ class ModalUpdateCategory extends Component {
         border: '2px solid #000',
         boxShadow: 10,
         p: 4,
-
+        maxHeight: '80vh',
+        overflowY: 'auto'
     };
 
     checkValidInput = () => {
@@ -124,25 +125,25 @@ class ModalUpdateCategory extends Component {
                                 ></textarea>
                             </div>
                             <div className="form-group date">
-                                <label htmlFor="category-name" className="col-form-label">Ngày tạo:</label>
+                                <label htmlFor="category-createdDate" className="col-form-label">Ngày tạo:</label>
                                 <input type="text" className="form-control" id="category-createdDate" readOnly
                                     onChange={(event) => { this.handleOnChangeInput(event, "createdAt") }}
                                     value={this.state.createdAt == null ? '' : this.state.createdAt} />
-                                <label htmlFor="category-name" className="col-form-label">Cập nhật mới:</label>
-                                <input type="text" className="form-control" readOnly
+                                <label htmlFor="category-lastUpdatedTime" className="col-form-label">Cập nhật mới:</label>
+                                <input type="text" className="form-control" id="category-lastUpdatedTime" readOnly
                                     onChange={(event) => { this.handleOnChangeInput(event, "lastUpdatedTime") }}
                                     value={this.state.lastUpdatedTime == null ? '' : this.state.lastUpdatedTime} />
                             </div>
                             <div className="form-group status-person">
-                                <label htmlFor="category-name" className="col-form-label">Trạng thái</label>
+                                <label htmlFor="category-status" className="col-form-label">Trạng thái</label>
                                 <select id="category-status" className="form-control"
                                     onChange={(event) => { this.handleOnChangeInput(event, "status") }}
                                     value={this.state.status == null ? '' : this.state.status}>
                                     <option value="ACTIVE">ACTIVE</option>
                                     <option value="INACTIVE">INACTIVE</option>
                                 </select>
-                                <label htmlFor="category-name" className="col-form-label">Người cập nhật:</label>
-                                <input type="text" className="form-control" readOnly
+                                <label htmlFor="category-lastChangedBy" className="col-form-label">Người cập nhật:</label>
+                                <input type="text" className="form-control" id="category-lastChangedBy" readOnly
                                     onChange={(event) => { this.handleOnChangeInput(event, "lastChangedBy") }}
                                     value={this.state.lastChangedBy == null ? '' : this.state.lastChangedBy} />
                             </div>

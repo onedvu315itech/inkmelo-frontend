@@ -35,35 +35,32 @@ class BookItem extends Component {
         });
     }
 
-
     async componentDidMount() {
         await this.getAllBookItem();
     }
 
     getAllBookItem = async () => {
         let res = await productServices.getAllBookItem();
-        if (res) this.setState({ listBookItem: res.data })
-        console.log(res.data)
+        if (res) this.setState({ listBookItem: res.data });
     }
 
     // For add new Book Item
-    handleAddNewBookItem = (BookItem) => {
+    handleAddNewBookItem = (bookItem) => {
         this.setState({
             isOpenedModalCreateBookItem: true,
-            BookItemCreate: BookItem
+            bookItemCreate: bookItem
         });
     }
 
-    doCreateBookItem = async (BookItem) => {
+    doCreateBookItem = async (bookItem) => {
         try {
-
             let res = await productServices.createBookItem(BookItem);
             if (res) {
                 this.setState({
                     isOpenedModalCreateBookItem: false,
-                    listBookItem: BookItem,
-                })
-                await this.getAllBookItem;
+                    listBookItem: bookItem,
+                });
+                this.getAllBookItem;
                 emitter.emit('EVENT_CLEAR_MODAL_DATA');
             }
 
@@ -112,40 +109,40 @@ class BookItem extends Component {
             console.log(err)
         }
     }
+
     render() {
         return (
             <>
-                <div className='mx-1'>
-                    <button className='btn btn-primary px'
-                        style={{ backgroundColor: "green", marginBottom: 2 + "rem" }}
-                        onClick={this.handleAddNewBookItem}>
-                        <FontAwesomeIcon icon={faPlus} /> Thêm mới
-                    </button>
-                    {
-                        this.state.isOpenedModalCreateBookItem &&
-                        <ModalCreateBookItem
-                            open={this.state.isOpenedModalCreateBookItem}
-                            toggle={this.toggleCreateBookItem}
-                            bookItemInfor={this.state.bookItemCreate}
-                            createBookItem={this.doCreateBookItem}
-                        />
-                    }
-                    {
-                        this.state.isOpenedModalUpdateBookItem &&
-                        <ModalUpdateBookItem
-                            open={this.state.isOpenedModalUpdateBookItem}
-                            toggle={this.toggleUpdateBookItem}
-                            currentBookItem={this.state.bookItemUpdate}
-                            updateBookItem={this.doUpdateUpdateBookItem}
-                        />
-                    }
-                </div>
                 <MainCard>
+                    <div className='mx-1'>
+                        <button className='btn btn-primary px'
+                            style={{ backgroundColor: "green", marginBottom: 2 + "rem" }}
+                            onClick={this.handleAddNewBookItem}>
+                            <FontAwesomeIcon icon={faPlus} /> Thêm mới
+                        </button>
+                        {
+                            this.state.isOpenedModalCreateBookItem &&
+                            <ModalCreateBookItem
+                                open={this.state.isOpenedModalCreateBookItem}
+                                toggle={this.toggleCreateBookItem}
+                                bookItemInfor={this.state.bookItemCreate}
+                                createBookItem={this.doCreateBookItem}
+                            />
+                        }
+                        {
+                            this.state.isOpenedModalUpdateBookItem &&
+                            <ModalUpdateBookItem
+                                open={this.state.isOpenedModalUpdateBookItem}
+                                toggle={this.toggleUpdateBookItem}
+                                currentBookItem={this.state.bookItemUpdate}
+                                updateBookItem={this.doUpdateUpdateBookItem}
+                            />
+                        }
+                    </div>
                     <table className="table">
                         <thead>
                             <tr>
                                 <th scope="col">ID</th>
-                                <th scope="col">BookID</th>
                                 <th scope="col">Tên sách</th>
                                 <th scope="col">Loại</th>
                                 <th scope="col">Trạng thái</th>
@@ -159,12 +156,9 @@ class BookItem extends Component {
                                         return (
                                             <tr key={i}>
                                                 <td>{data.id}</td>
-                                                <td>{data.bookId}</td>
                                                 <td>{data.bookTitle}</td>
                                                 <td>{data.type}</td>
                                                 <td>{data.status}</td>
-
-
                                                 <td>
                                                     <button type="button" className="btn btn-primary"
                                                         onClick={() => this.handleUpdateBookItem(data)}>

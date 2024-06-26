@@ -3,7 +3,6 @@ import { Box, Modal } from "@mui/material";
 import 'style/css/Category.css'
 import _ from 'lodash'
 
-
 class ModalUser extends Component {
     constructor(props) {
         super(props);
@@ -20,7 +19,6 @@ class ModalUser extends Component {
             isOpened: false,
         }
     }
-
 
     style = {
         position: 'absolute',
@@ -79,14 +77,38 @@ class ModalUser extends Component {
                         </div>
                         <div className="modal-body pop-up-body">
                             <div className="form-group col-12">
-                                <div className="col-6">
+                                <div className="col-1">
                                     <label htmlFor="category-name" className="col-form-label">ID:</label>
                                     <input type="text" className="form-control" readOnly
-                                        defaultValue={this.state.id == null ? '' : this.state.id}
+                                        defaultValue={this.state.id || ''}
                                     />
                                 </div>
-                                <div className="col-6">
-                                    <label htmlFor="user-role" className="col-form-label">Role:</label>
+                                <div className="col-12">
+                                    <label htmlFor="category-name" className="col-form-label">Họ và tên</label>
+                                    <input type="text" className="form-control" id="category-name"
+                                        style={{ width: 473 + "px" }}
+                                        readOnly
+                                        defaultValue={this.state.fullname || ''}
+                                    />
+                                </div>
+                                <div className="col-12">
+                                    <label htmlFor="category-name" className="col-form-label">Tài Khoản</label>
+                                    <input type="text" className="form-control" id="category-name"
+                                        style={{ width: 473 + "px" }}
+                                        readOnly
+                                        defaultValue={this.state.username || ''}
+                                    />
+                                </div>
+                                <div className="col-12">
+                                    <label htmlFor="category-name" className="col-form-label">Email</label>
+                                    <input type="text" className="form-control" id="category-name"
+                                        style={{ width: 473 + "px" }}
+                                        readOnly
+                                        defaultValue={this.state.email || ''}
+                                    />
+                                </div>
+                                <div className="col-4">
+                                    <label htmlFor="user-role" className="col-form-label">Vị trí:</label>
                                     <input
                                         type="text"
                                         className="form-control"
@@ -95,59 +117,22 @@ class ModalUser extends Component {
                                         defaultValue={this.state.role || ''}
                                     />
                                 </div>
-
-                                <div className="col-12">
-                                    <label htmlFor="category-name" className="col-form-label">Họ và tên</label>
-                                    <input type="text" className="form-control" id="category-name"
-                                        style={{ width: 473 + "px" }}
-                                        readOnly
-                                        defaultValue={this.state.fullname == null ? '' : this.state.fullname}
-                                    />
-                                </div>
-                                <div className="col-12">
-                                    <label htmlFor="category-name" className="col-form-label">Tài Khoản</label>
-                                    <input type="text" className="form-control" id="category-name"
-                                        style={{ width: 473 + "px" }}
-                                        readOnly
-                                        defaultValue={this.state.username == null ? '' : this.state.username}
-                                    />
-                                </div>
-                                <div className="col-12">
-                                    <label htmlFor="category-name" className="col-form-label">Email</label>
-                                    <input type="text" className="form-control" id="category-name"
-                                        style={{ width: 473 + "px" }}
-                                        readOnly
-                                        defaultValue={this.state.email == null ? '' : this.state.email}
-                                    />
-                                </div>
-                                <div className="col-12">
-                                    <label htmlFor="category-name" className="col-form-label">Họ và tên:</label>
-                                    <input type="text" className="form-control" id="category-name"
-                                        style={{ width: 473 + "px" }}
-                                        readOnly
-                                        defaultValue={this.state.name == null ? '' : this.state.name}
-                                    />
-                                </div>
                             </div>
                             <div className="form-group date">
                                 <label htmlFor="category-name" className="col-form-label">Ngày tạo:</label>
                                 <input type="text" className="form-control" id="category-createdDate" readOnly
-                                    defaultValue={this.state.createdAt == null ? '' : this.state.createdAt} />
+                                    defaultValue={this.state.createdAt || ''} />
                                 <label htmlFor="category-name" className="col-form-label">Cập nhật mới:</label>
                                 <input type="text" className="form-control" readOnly
-                                    defaultValue={this.state.lastUpdatedTime == null ? '' : this.state.lastUpdatedTime} />
+                                    defaultValue={this.state.lastUpdatedTime || ''} />
                             </div>
                             <div className="form-group status-person">
                                 <label htmlFor="category-name" className="col-form-label">Trạng thái</label>
-                                <select id="category-status" className="form-control"
-                                    onChange={(event) => { this.handleOnChangeInput(event, "status") }}
-                                    value={this.state.status == null ? '' : this.state.status}>
-                                    <option value="ACTIVE">ACTIVE</option>
-                                    <option value="INACTIVE">INACTIVE</option>
-                                </select>
+                                <input type="text" className="form-control" id="category-status" readOnly
+                                    defaultValue={this.state.status || ''} />
                                 <label htmlFor="category-name" className="col-form-label">Người cập nhật:</label>
                                 <input type="text" className="form-control" readOnly
-                                    defaultValue={this.state.lastChangedBy == null ? '' : this.state.lastChangedBy} />
+                                    defaultValue={this.state.lastChangedBy || ''} />
                             </div>
                         </div>
                         <div className="modal-footer">

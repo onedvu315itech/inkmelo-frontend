@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { Box, Modal } from "@mui/material";
-import 'style/css/Category.css'
-import _ from 'lodash'
+import 'style/css/Category.css';
+import _ from 'lodash';
 import FileUpload from "components/FileUpload";
 
 class ModalUpdatePublisher extends Component {
@@ -17,6 +17,7 @@ class ModalUpdatePublisher extends Component {
             lastChangedBy: '',
             status: '',
             isOpened: false,
+            isRenderedImage: false
         }
     }
 
@@ -52,7 +53,7 @@ class ModalUpdatePublisher extends Component {
 
     checkValidInput = () => {
         let isValid = true;
-        let arrInput = ['name', 'description', 'status'];
+        let arrInput = ['name', 'status'];
         for (let i = 0; i < arrInput.length; i++) {
             if (!this.state[arrInput[i]]) {
                 isValid = false;
@@ -66,17 +67,24 @@ class ModalUpdatePublisher extends Component {
     handleClose = () => this.props.toggle();
     handleOnChangeInput = (event, id) => {
         let copyState = { ...this.state };
+        if (id === "logoImg") {
+            copyState[id] = this.getImage();
+        }
         copyState[id] = event.target.value;
         this.setState({
             ...copyState
         });
+    }
 
+    getImage = (image) => {
+        this.setState({ logoImg: image })
     }
 
     handleSavePublisher = () => {
         let isValid = this.checkValidInput();
-        if (isValid)
+        if (isValid) {
             this.props.updatePublisher(this.state);
+        }
     }
 
     render() {
@@ -107,17 +115,27 @@ class ModalUpdatePublisher extends Component {
                                     <label htmlFor="category-name" className="col-form-label">ID:</label>
                                     <input type="text" className="form-control" readOnly
                                         onChange={(event) => { this.handleOnChangeInput(event, "id") }}
-                                        value={this.state.id == null ? '' : this.state.id}
+                                        value={this.state.id || ''}
                                     />
                                 </div>
-                                <label htmlFor="publisher-name" className="col-form-label">Logo:</label>
-                                <FileUpload storageLocation="publisher-images" />
+                                <div>
+                                    <label htmlFor="publisher-name" className="col-form-label">Logo:</label>
+                                    {
+                                        this.state.logoImg &&
+                                        <img src={this.state.logoImg} alt="Uploaded File" height={100} style={{ display: "block" }} />
+                                    }
+                                    <FileUpload
+                                        storageLocation="publisher-images"
+                                        getImage={this.getImage}
+                                        onChange={(event) => { this.handleOnChangeInput(event, "logoImg") }}
+                                    />
+                                </div>
                                 <div className="col-12">
                                     <label htmlFor="category-name" className="col-form-label">Tên:</label>
                                     <input type="text" className="form-control" id="category-name"
                                         style={{ width: 473 + "px" }}
                                         onChange={(event) => { this.handleOnChangeInput(event, "name") }}
-                                        value={this.state.name == null ? '' : this.state.name}
+                                        value={this.state.name || ''}
                                     />
                                 </div>
                             </div>
@@ -126,31 +144,31 @@ class ModalUpdatePublisher extends Component {
                                 <textarea className="form-control" id="message-text"
                                     style={{ width: 473 + "px" }}
                                     onChange={(event) => { this.handleOnChangeInput(event, "description") }}
-                                    value={this.state.description == null ? '' : this.state.description}
+                                    value={this.state.description || ''}
                                 ></textarea>
                             </div>
                             <div className="form-group date">
                                 <label htmlFor="category-name" className="col-form-label">Ngày tạo:</label>
                                 <input type="text" className="form-control" id="category-createdDate" readOnly
                                     onChange={(event) => { this.handleOnChangeInput(event, "createdAt") }}
-                                    value={this.state.createdAt == null ? '' : this.state.createdAt} />
+                                    value={this.state.createdAt || ''} />
                                 <label htmlFor="category-name" className="col-form-label">Cập nhật mới:</label>
                                 <input type="text" className="form-control" readOnly
                                     onChange={(event) => { this.handleOnChangeInput(event, "lastUpdatedTime") }}
-                                    value={this.state.lastUpdatedTime == null ? '' : this.state.lastUpdatedTime} />
+                                    value={this.state.lastUpdatedTime || ''} />
                             </div>
                             <div className="form-group status-person">
                                 <label htmlFor="category-name" className="col-form-label">Trạng thái</label>
                                 <select id="category-status" className="form-control"
                                     onChange={(event) => { this.handleOnChangeInput(event, "status") }}
-                                    value={this.state.status == null ? '' : this.state.status}>
+                                    value={this.state.status || ''}>
                                     <option value="ACTIVE">ACTIVE</option>
                                     <option value="INACTIVE">INACTIVE</option>
                                 </select>
                                 <label htmlFor="category-name" className="col-form-label">Người cập nhật:</label>
                                 <input type="text" className="form-control" readOnly
                                     onChange={(event) => { this.handleOnChangeInput(event, "lastChangedBy") }}
-                                    value={this.state.lastChangedBy == null ? '' : this.state.lastChangedBy} />
+                                    value={this.state.lastChangedBy || ''} />
                             </div>
                         </div>
                         <div className="modal-footer">

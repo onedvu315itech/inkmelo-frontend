@@ -8,9 +8,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { emitter } from 'utils/emitter';
 
-
-// ==============================|| SAMPLE PAGE ||============================== //
-
 class Publisher extends Component {
     constructor(props) {
         super(props);
@@ -45,21 +42,20 @@ class Publisher extends Component {
 
     }
     // For add new publisher
-    handleAddNewPublisher = (Publisher) => {
+    handleAddNewPublisher = (publisher) => {
         this.setState({
             isOpenedModalCreatePublisher: true,
-            PublisherCreate: Publisher
+            publisherCreate: publisher
         });
     }
 
-    doCreatePublisher = async (Publisher) => {
+    doCreatePublisher = async (publisher) => {
         try {
-
-            let res = await productServices.createPublisher(Publisher);
+            let res = await productServices.createPublisher(publisher);
             if (res) {
                 this.setState({
                     isOpenedModalCreatePublisher: false,
-                    listPublisher: Publisher,
+                    listPublisher: publisher,
                 })
                 await this.getAllPublisher();
                 emitter.emit('EVENT_CLEAR_MODAL_DATA');
@@ -98,11 +94,10 @@ class Publisher extends Component {
         try {
             let res = await productServices.deletePublisher(publisher.id);
             if (res) {
-
                 this.setState({
                     isOpenedModalUpdatePublisher: false,
                     listPublisher: publisher,
-                })
+                });
 
                 await this.getAllPublisher();
             }
@@ -126,7 +121,7 @@ class Publisher extends Component {
                             <ModalCreatePublisher
                                 open={this.state.isOpenedModalCreatePublisher}
                                 toggle={this.toggleCreatePublisherModal}
-                                publisherInfor={this.state.publisherCreate}
+                                publisherInfo={this.state.publisherCreate}
                                 createPublisher={this.doCreatePublisher}
                             />
                         }

@@ -3,6 +3,7 @@ import { Box, Modal } from "@mui/material";
 import 'style/css/Category.css'
 import _ from "lodash";
 import { emitter } from "utils/emitter";
+import FileUpload from "components/FileUpload";
 
 class ModalCreatePublisher extends Component {
     constructor(props) {
@@ -11,6 +12,7 @@ class ModalCreatePublisher extends Component {
             id: '',
             name: '',
             description: '',
+            logoImg: '',
             createdAt: '',
             lastUpdatedTime: '',
             lastChangedBy: '',
@@ -21,7 +23,7 @@ class ModalCreatePublisher extends Component {
         this.listenToEmitter();
     }
 
-    listenToEmitter() {
+    listenToEmitter = () => {
         emitter.on('EVENT_CLEAR_MODAL_DATA', () => {
             this.setState({
                 id: '',
@@ -37,7 +39,7 @@ class ModalCreatePublisher extends Component {
     }
 
     componentDidMount() {
-        let publisher = this.props.publisher
+        let publisher = this.props.publisherInfo
         if (publisher && !_.isEmpty(publisher)) {
             this.setState({
                 id: publisher.id,
@@ -88,10 +90,17 @@ class ModalCreatePublisher extends Component {
     handleClose = () => this.props.toggle();
     handleOnChangeInput = (event, id) => {
         let copyState = { ...this.state };
+        if (id === "logoImg") {
+            copyState[id] = this.getImage();
+        }
         copyState[id] = event.target.value;
         this.setState({
             ...copyState
         });
+    }
+
+    getImage = (image) => {
+        this.setState({ logoImg: image })
     }
 
     render() {
@@ -122,7 +131,15 @@ class ModalCreatePublisher extends Component {
                                     <label htmlFor="category-name" className="col-form-label">ID:</label>
                                     <input type="text" className="form-control" readOnly
                                         onChange={(event) => { this.handleOnChangeInput(event, "id") }}
-                                        value={this.state.id}
+                                        value={this.state.id || ''}
+                                    />
+                                </div>
+                                <div>
+                                    <label htmlFor="publisher-name" className="col-form-label">Logo:</label>
+                                    <FileUpload
+                                        storageLocation="publisher-images"
+                                        getImage={this.getImage}
+                                        onChange={(event) => { this.handleOnChangeInput(event, "logoImg") }}
                                     />
                                 </div>
                                 <div className="col-12">
@@ -130,7 +147,7 @@ class ModalCreatePublisher extends Component {
                                     <input type="text" className="form-control" id="category-name"
                                         style={{ width: 473 + "px" }}
                                         onChange={(event) => { this.handleOnChangeInput(event, "name") }}
-                                        value={this.state.name}
+                                        value={this.state.name || ''}
                                     />
                                 </div>
                             </div>
@@ -139,31 +156,31 @@ class ModalCreatePublisher extends Component {
                                 <textarea className="form-control" id="message-text"
                                     style={{ width: 473 + "px" }}
                                     onChange={(event) => { this.handleOnChangeInput(event, "description") }}
-                                    value={this.state.description}
+                                    value={this.state.description || ''}
                                 ></textarea>
                             </div>
                             <div className="form-group date">
                                 <label htmlFor="category-name" className="col-form-label">Ngày tạo:</label>
                                 <input type="text" className="form-control" id="category-createdDate" readOnly
                                     onChange={(event) => { this.handleOnChangeInput(event, "createdAt") }}
-                                    value={this.state.createdAt} />
+                                    value={this.state.createdAt || ''} />
                                 <label htmlFor="category-name" className="col-form-label">Cập nhật mới:</label>
                                 <input type="text" className="form-control" readOnly
                                     onChange={(event) => { this.handleOnChangeInput(event, "lastUpdatedTime") }}
-                                    value={this.state.lastUpdatedTime} />
+                                    value={this.state.lastUpdatedTime || ''} />
                             </div>
                             <div className="form-group status-person">
                                 <label htmlFor="category-name" className="col-form-label">Trạng thái</label>
                                 <select id="category-status" className="form-control"
                                     onChange={(event) => { this.handleOnChangeInput(event, "status") }}
-                                    value={this.state.status == null ? '' : this.state.status}>
+                                    value={this.state.status || ''}>
                                     <option value="ACTIVE">ACTIVE</option>
                                     <option value="INACTIVE">INACTIVE</option>
                                 </select>
                                 <label htmlFor="category-name" className="col-form-label">Người cập nhật:</label>
                                 <input type="text" className="form-control" readOnly
                                     onChange={(event) => { this.handleOnChangeInput(event, "lastChangedBy") }}
-                                    value={this.state.lastChangedBy} />
+                                    value={this.state.lastChangedBy || ''} />
                             </div>
                         </div>
                         <div className="modal-footer">

@@ -1,3 +1,4 @@
+import { Avatar, Stack } from '@mui/material';
 import { Box } from '@mui/system'
 import { storage } from 'api/firebase';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
@@ -8,14 +9,14 @@ class FileUpload extends Component {
         super(props);
         this.state = {
             progress: 0,
-            imgURL: ''
+            imgURL: '',
+            displayImgURL: ''
         }
     }
 
     handleUpload = () => {
         let fileInput = document.querySelector('input[type="file"]');
         let file = fileInput?.files[0];
-        console.log(file)
         if (!file) return;
 
         let storageRef = ref(storage, `${this.props.storageLocation}/${file.name}`);
@@ -24,7 +25,7 @@ class FileUpload extends Component {
         uploadTask.on("state_changed",
             (snapshot) => {
                 let progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                setProgresspercent(progress);
+                this.setState({ progress: progress })
             },
             (err) => {
                 switch (err.code) {
@@ -36,7 +37,8 @@ class FileUpload extends Component {
             () => {
                 getDownloadURL(uploadTask.snapshot.ref)
                     .then((downloadURL) => {
-                        this.setState({ imgURL: downloadURL })
+                        this.setState({ imgURL: downloadURL });
+                        this.props.getImage(downloadURL);
                     })
             }
         )
@@ -49,10 +51,9 @@ class FileUpload extends Component {
                     {this.state.imgURL && <img src={this.state.imgURL} alt='uploaded file' height={100} />}
                     <div>
                         <input type='file' />
-                        <button type="button" onClick={this.handleUpload}>Tải ảnh lên</button>
+                        <button type="button" className='btn btn-success' onClick={this.handleUpload}>Tải ảnh lên</button>
                     </div>
                 </Box>
-
             </>
         )
     }
