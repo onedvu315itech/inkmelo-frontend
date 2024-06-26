@@ -168,7 +168,7 @@ class Publisher extends Component {
                                                         }}
                                                         onClick={() => { this.handleDeletePublisher(data) }}
                                                     >
-                                                        Xóa
+                                                        Ngưng hoạt động
                                                     </button>
                                                 </td >
                                             </tr >

@@ -183,7 +183,7 @@ class Book extends Component {
                                                             marginLeft: 1 + "rem"
                                                         }}
                                                         onClick={() => { this.handleDeleteBook(data) }}>
-                                                        Xóa
+                                                        Ngưng hoạt động
                                                     </button>
                                                 </td >
                                             </tr >

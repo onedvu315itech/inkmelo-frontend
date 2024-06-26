@@ -52,8 +52,12 @@ class ModalUpdateBookItem extends Component {
                 lastChangedBy: bookItem.lastChangedBy,
                 status: bookItem.status
             })
+            this.setState([
+                this.stateBook.id = bookItem.bookId,
+                this.stateBook.title = bookItem.bookTitle
+            ])
         }
-        console.log(this.state)
+
 
         let res = await productServices.getAllBook();
         if (res)
@@ -99,15 +103,14 @@ class ModalUpdateBookItem extends Component {
         this.setState({
             ...copyState
         });
-        console.log(this.state)
     }
+
 
     handleOnClickBookTitle = (book) => {
         this.setState([
             this.stateBook.id = book.id,
             this.stateBook.title = book.title,
         ])
-        console.log(this.stateBook)
     }
 
     handleSaveBookItem = () => {
@@ -115,6 +118,7 @@ class ModalUpdateBookItem extends Component {
         if (isValid)
             this.props.updateBookItem(this.state);
     }
+
 
     render() {
         return (
@@ -157,7 +161,6 @@ class ModalUpdateBookItem extends Component {
                                         />
                                         <Select
                                             value={this.stateBook.id}
-                                            defaultValue={this.state.bookTitle || ''}
                                             onChange={(event) => this.handleOnChangeInput(event, "bookId")}
                                         >
                                             {

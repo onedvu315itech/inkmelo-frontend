@@ -82,6 +82,22 @@ const deleteBook = (deletedId) => {
     return axios.delete(`/admin/api/v1/books/${deletedId}`)
 }
 
+//Book Package
+const getAllBookPackage = () => {
+    return axios.get('/admin/api/v1/book-packages');
+}
+
+const updateBookPackage = (updatedData) => {
+    return axios.put('/admin/api/v1/book-packages', updatedData)
+}
+
+const createBookPackage = (createBook) => {
+    return axios.post('/admin/api/v1/book-packages', createBook);
+}
+
+const deleteBookPackage = (deletedId) => {
+    return axios.delete(`/admin/api/v1/book-packages/${deletedId}`)
+}
 export default {
     createCategory,
     getAllCategory,
@@ -103,4 +119,8 @@ export default {
     createBook,
     updateBook,
     deleteBook,
+    getAllBookPackage,
+    createBookPackage,
+    updateBookPackage,
+    deleteBookPackage,
 };  

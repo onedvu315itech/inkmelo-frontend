@@ -173,7 +173,7 @@ class Category extends Component {
                                                             marginLeft: 1 + "rem"
                                                         }}
                                                         onClick={() => { this.handleDeleteCategory(data) }}>
-                                                        Xóa
+                                                        Ngưng hoạt động
                                                     </button>
                                                 </td >
                                             </tr >

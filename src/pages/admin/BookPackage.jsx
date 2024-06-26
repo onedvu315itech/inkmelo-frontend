@@ -3,8 +3,8 @@
 import MainCard from 'components/MainCard';
 import { Component } from 'react';
 import productService from 'services/productServices';
-import ModalCreateGenre from 'modals/ModalCreateGenre';
-import ModalUpdateGenre from 'modals/ModalUpdateGenre';
+import ModalCreateBookPackage from 'modals/ModalCreateBookPackage';
+import ModalUpdateBookPackage from 'modals/ModalUpdateBookPackage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { emitter } from 'utils/emitter';
@@ -12,59 +12,59 @@ import { emitter } from 'utils/emitter';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
-class Genre extends Component {
+class BookPackage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            listGenre: [],
-            isOpenedModalCreateGenre: false,
-            isOpenedModalUpdateGenre: false,
-            genreUpdate: {},
-            genreCreate: {},
+            listBookPackage: [],
+            isOpenedModalCreateBookPackage: false,
+            isOpenedModalUpdateBookPackage: false,
+            bookPackageUpdate: {},
+            bookPackageCreate: {},
         }
     }
 
 
-    toggleCreateGenreModal = () => {
+    toggleCreateBookPackageModal = () => {
         this.setState({
-            isOpenedModalCreateGenre: !this.state.isOpenedModalCreateGenre
+            isOpenedModalCreateBookPackage: !this.state.isOpenedModalCreateBookPackage
         });
     }
 
-    toggleUpdateGenreModal = () => {
+    toggleUpdateBookPackageModal = () => {
         this.setState({
-            isOpenedModalUpdateGenre: !this.state.isOpenedModalUpdateGenre
+            isOpenedModalUpdateBookPackage: !this.state.isOpenedModalUpdateBookPackage
         });
     }
 
     async componentDidMount() {
-        await this.getAllGenre();
+        await this.getAllBookPackage();
     }
 
-    getAllGenre = async () => {
-        let res = await productService.getAllGenre();
-        if (res) this.setState({ listGenre: res.data })
+    getAllBookPackage = async () => {
+        let res = await productService.getAllBookPackage();
+        if (res) this.setState({ listBookPackage: res.data })
 
     }
 
-    // For add new genre
-    handleAddNewGenre = (Genre) => {
+    // For add new book package
+    handleAddNewBookPackage = (BookPackage) => {
         this.setState({
-            isOpenedModalCreateGenre: true,
-            GenreCreate: Genre
+            isOpenedModalCreateBookPackage: true,
+            BookPackageCreate: BookPackage
         });
     }
 
-    doCreateGenre = async (Genre) => {
+    doCreateBookPackage = async (BookPackage) => {
         try {
 
-            let res = await productService.createGenre(Genre);
+            let res = await productService.createBookPackage(BookPackage);
             if (res) {
                 this.setState({
-                    isOpenedModalCreateGenre: false,
-                    listGenre: Genre,
+                    isOpenedModalCreateBookPackage: false,
+                    listBookPackage: BookPackage,
                 })
-                await this.getAllGenre();
+                await this.getAllBookPackage();
                 emitter.emit('EVENT_CLEAR_MODAL_DATA');
             }
 
@@ -74,40 +74,40 @@ class Genre extends Component {
     }
 
     //For update genre
-    handleUpdateGenre = (genre) => {
+    handleUpdateBookPackage = (bookPackage) => {
         this.setState({
-            isOpenedModalUpdateGenre: true,
-            genreUpdate: genre
+            isOpenedModalUpdateBookPackage: true,
+            bookPackageUpdate: bookPackage
         });
     }
 
-    doUpdateGenre = async (genre) => {
+    doUpdateBookPackage = async (bookPackage) => {
         try {
-            let res = await productService.updateGenre(genre);
+            let res = await productService.updateBookPackage(bookPackage);
             if (res) {
                 this.setState({
-                    isOpenedModalUpdateGenre: false,
-                    listGenre: genre,
+                    isOpenedModalUpdateBookPackage: false,
+                    listBookPackage: bookPackage,
                 })
-                await this.getAllGenre();
+                await this.getAllBookPackage();
             }
         } catch (err) {
             console.log(err)
         }
     }
 
-    // For delete Genre
-    handleDeleteGenre = async (genre) => {
+    // For delete BookPackage
+    handleDeleteBookPackage = async (bookPackage) => {
         try {
-            let res = await productService.deleteGenre(genre.id);
+            let res = await productService.deleteBookPackage(bookPackage.id);
             if (res) {
 
                 this.setState({
-                    isOpenedModalUpdateGenre: false,
-                    listGenre: genre,
+                    isOpenedModalUpdateBookPackage: false,
+                    listBookPackage: bookPackage,
                 })
 
-                await this.getAllGenre();
+                await this.getAllBookPackage();
             }
         } catch (err) {
             console.log(err)
@@ -124,25 +124,25 @@ class Genre extends Component {
                     <div className='mx-1'>
                         <button className='btn btn-primary px'
                             style={{ backgroundColor: "green", marginBottom: 2 + "rem" }}
-                            onClick={this.handleAddNewGenre}>
+                            onClick={this.handleAddNewBookPackage}>
                             <FontAwesomeIcon icon={faPlus} /> Thêm mới
                         </button>
                         {
-                            this.state.isOpenedModalCreateGenre &&
-                            <ModalCreateGenre
-                                open={this.state.isOpenedModalCreateGenre}
-                                toggle={this.toggleCreateGenreModal}
-                                genreInfor={this.state.genreCreate}
-                                createGenre={this.doCreateGenre}
+                            this.state.isOpenedModalCreateBookPackage &&
+                            <ModalCreateBookPackage
+                                open={this.state.isOpenedModalCreateBookPackage}
+                                toggle={this.toggleCreateBookPackageModal}
+                                genreInfor={this.state.bookPackageCreate}
+                                createBookPackage={this.doCreateBookPackage}
                             />
                         }
                         {
-                            this.state.isOpenedModalUpdateGenre &&
-                            <ModalUpdateGenre
-                                open={this.state.isOpenedModalUpdateGenre}
-                                toggle={this.toggleUpdateGenreModal}
-                                currentGenre={this.state.genreUpdate}
-                                updateGenre={this.doUpdateGenre}
+                            this.state.isOpenedModalUpdateBookPackage &&
+                            <ModalUpdateBookPackage
+                                open={this.state.isOpenedModalUpdateBookPackage}
+                                toggle={this.toggleUpdateBookPackageModal}
+                                currentBookPackage={this.state.bookPackageUpdate}
+                                updateBookPackage={this.doUpdateBookPackage}
                             />
                         }
                     </div>
@@ -150,7 +150,7 @@ class Genre extends Component {
                         <thead>
                             <tr>
                                 <th scope="col">ID</th>
-                                <th scope="col">Tên sách</th>
+                                <th scope="col">Gói</th>
                                 <th scope="col">Mô tả</th>
                                 <th scope="col">Trạng thái</th>
                                 <th scope="col">Thao tác</th>
@@ -158,19 +158,19 @@ class Genre extends Component {
                         </thead>
                         <tbody>
                             {
-                                this.state.listGenre &&
-                                    Array.isArray(this.state.listGenre) ? this.state.listGenre.map((data, i) => {
+                                this.state.listBookPackage &&
+                                    Array.isArray(this.state.listBookPackage) ? this.state.listBookPackage.map((data, i) => {
                                         return (
                                             <tr key={i}>
                                                 <td>{data.id}</td>
-                                                <td>{data.name}</td>
+                                                <td>{data.title}</td>
                                                 <td>{data.description}</td>
                                                 <td>{data.status}</td>
 
 
                                                 <td>
                                                     <button type="button" className="btn btn-primary"
-                                                        onClick={() => this.handleUpdateGenre(data)}>
+                                                        onClick={() => this.handleUpdateBookPackage(data)}>
                                                         Cập nhật
                                                     </button>
                                                     <button type="button" className="btn btn-delete"
@@ -179,7 +179,7 @@ class Genre extends Component {
                                                             color: "white",
                                                             marginLeft: 1 + "rem"
                                                         }}
-                                                        onClick={() => { this.handleDeleteGenre(data) }}>
+                                                        onClick={() => { this.handleDeleteBookPackage(data) }}>
                                                         Ngưng hoạt động
                                                     </button>
                                                 </td >
@@ -195,4 +195,4 @@ class Genre extends Component {
     }
 }
 
-export default Genre;
+export default BookPackage;

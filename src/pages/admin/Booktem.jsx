@@ -172,7 +172,7 @@ class BookItem extends Component {
                                                         }}
                                                         onClick={() => { this.handleDeleteBookItem(data) }}
                                                     >
-                                                        Xóa
+                                                        Ngưng hoạt động
                                                     </button>
                                                 </td >
                                             </tr >

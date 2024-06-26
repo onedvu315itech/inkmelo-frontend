@@ -28,6 +28,13 @@ const catalogue = {
             icon: icons.BookOutlined
         },
         {
+            id: 'bookPackage',
+            title: 'Gói sách',
+            type: 'item',
+            url: '/admin/bookPackage',
+            icon: icons.BookOutlined
+        },
+        {
             id: 'user',
             title: 'Người dùng',
             type: 'item',
