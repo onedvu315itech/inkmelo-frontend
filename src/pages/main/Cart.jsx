@@ -147,7 +147,7 @@ const Cart = () => {
 
                                                 {/* Back to shop link */}
                                                 <Box sx={{ pt: 5 }}>
-                                                    <Typography variant="body1" component="a" href="#!" color="textPrimary" sx={{ display: "flex", alignItems: "center" }}>
+                                                    <Typography variant="body1" component="a" href="/store" color="textPrimary" sx={{ display: "flex", alignItems: "center" }}>
                                                         <ArrowBack sx={{ mr: 1 }} /> Back to shop
                                                     </Typography>
                                                 </Box>
