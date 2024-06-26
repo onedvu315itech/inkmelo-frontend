@@ -10,7 +10,7 @@ const icons = {
 
 const catalogue = {
     id: 'catalogue',
-    title: 'Catalogue',
+    title: 'Danh mục',
     type: 'group',
     children: [
         {
