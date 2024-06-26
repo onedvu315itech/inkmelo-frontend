@@ -37,7 +37,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const AuthLogin = () => {
-  const navigate = useNavigate(); // Step 2: Initialize useNavigate
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     username: '',

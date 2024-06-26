@@ -4,13 +4,13 @@ import { lazy } from 'react';
 import Loadable from 'components/Loadable';
 
 // render - login
-const AuthLogin = Loadable(lazy(() => import('pages/authentication/login')));
+const AuthRegister = Loadable(lazy(() => import('pages/authentication/register')));
 
 // ==============================|| AUTH ROUTING ||============================== //
 
-const LoginRoutes = {
-  path: '/login',
-  element: <AuthLogin />
+const RegisterRoutes = {
+    path: '/register',
+    element: <AuthRegister />
 };
 
-export default LoginRoutes;
+export default RegisterRoutes;
