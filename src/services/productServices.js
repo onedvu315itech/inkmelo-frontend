@@ -98,6 +98,8 @@ const createBookPackage = (createBook) => {
 const deleteBookPackage = (deletedId) => {
     return axios.delete(`/admin/api/v1/book-packages/${deletedId}`)
 }
+
+//cart
 export default {
     createCategory,
     getAllCategory,
@@ -122,5 +124,5 @@ export default {
     getAllBookPackage,
     createBookPackage,
     updateBookPackage,
-    deleteBookPackage,
+    deleteBookPackage
 };  

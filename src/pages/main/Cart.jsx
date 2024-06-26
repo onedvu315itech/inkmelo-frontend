@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Box,
     Button,
@@ -10,73 +10,50 @@ import {
     IconButton,
     Input,
     Typography,
-    MenuItem,
-    Select,
     TextField,
 } from "@mui/material";
 import { Add, Remove, Close, ArrowBack } from "@mui/icons-material";
 import Footer from "components/main/Footer";
 import Navbar from "components/main/Navbar";
+import cartServices from "services/cartServices";
 
 const Cart = () => {
-    const [cartItems, setCartItems] = useState([
-        {
-            id: 1,
-            name: "Cotton T-shirt",
-            category: "Shirt",
-            price: 44.0,
-            quantity: 1,
-            image: "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-shopping-carts/img5.webp",
-        },
-        {
-            id: 2,
-            name: "Cotton T-shirt",
-            category: "Shirt",
-            price: 44.0,
-            quantity: 1,
-            image: "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-shopping-carts/img6.webp",
-        },
-        {
-            id: 3,
-            name: "Cotton T-shirt",
-            category: "Shirt",
-            price: 44.0,
-            quantity: 1,
-            image: "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-shopping-carts/img7.webp",
-        },
-    ]);
-
-    const [shipping, setShipping] = useState(5.0);
+    const [cart, setCart] = useState([]);
     const [code, setCode] = useState("");
 
+    useEffect(() => {
+        getAllCart();
+    }, []);
+
+    const getAllCart = async () => {
+        let res = await cartServices.getAllCart();
+        if (res) {
+            setCart(res.data);
+        }
+    };
+
     const handleQuantityChange = (id, delta) => {
-        setCartItems((prevItems) =>
-            prevItems.map((item) =>
-                item.id === id ? { ...item, quantity: item.quantity + delta } : item
+        setCart((prevCart) =>
+            prevCart.map((item) =>
+                item.bookTitle === id ? { ...item, quantity: item.quantity + delta } : item
             )
         );
     };
 
     const handleRemoveItem = (id) => {
-        setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+        setCart((prevCart) => prevCart.filter((item) => item.bookTitle !== id));
     };
 
     const handleClearCart = () => {
-        setCartItems([]);
+        setCart([]);
     };
 
     const handleCodeChange = (event) => {
         setCode(event.target.value);
     };
 
-    const handleShippingChange = (event) => {
-        const selectedShipping = event.target.value;
-        const shippingCost = selectedShipping === "1" ? 5.0 : 10.0; // example logic for shipping cost
-        setShipping(shippingCost);
-    };
-
-    const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-    const totalPrice = cartItems.reduce((acc, item) => acc + item.quantity * item.price, 0) + shipping;
+    const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+    const totalPrice = cart.reduce((acc, item) => acc + item.quantity * item.bookPackagePrice, 0);
 
     return (
         <>
@@ -93,30 +70,30 @@ const Cart = () => {
                                             <Box sx={{ p: 5 }}>
                                                 <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 5 }}>
                                                     <Typography variant="h4" fontWeight="bold">
-                                                        Shopping Cart
+                                                        Giỏ hàng
                                                     </Typography>
-                                                    <Typography color="textSecondary">{totalItems} items</Typography>
+                                                    <Typography color="textSecondary">{totalItems} Sản phẩm</Typography>
                                                 </Box>
 
                                                 <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 4 }} />
 
-                                                {cartItems.map((item) => (
-                                                    <Grid container spacing={2} alignItems="center" sx={{ mb: 4 }} key={item.id}>
+                                                {cart.map((item, key) => (
+                                                    <Grid container spacing={2} alignItems="center" sx={{ mb: 4 }} key={key}>
                                                         <Grid item md={2}>
                                                             <CardMedia
                                                                 component="img"
-                                                                image={item.image}
-                                                                alt={item.name}
+                                                                image={item.bookCoverImg}
+                                                                alt={item.bookTitle}
                                                                 sx={{ borderRadius: 1 }}
                                                             />
                                                         </Grid>
                                                         <Grid item md={3}>
-                                                            <Typography color="textSecondary">{item.category}</Typography>
-                                                            <Typography>{item.name}</Typography>
+                                                            <Typography>{item.bookTitle}</Typography>
+                                                            <Typography color="textSecondary">{item.bookAuthor}</Typography>
                                                         </Grid>
                                                         <Grid item md={3} sx={{ display: "flex", alignItems: "center" }}>
                                                             <IconButton
-                                                                onClick={() => handleQuantityChange(item.id, -1)}
+                                                                onClick={() => handleQuantityChange(item.bookTitle, -1)}
                                                                 disabled={item.quantity === 1}
                                                             >
                                                                 <Remove />
@@ -128,15 +105,15 @@ const Cart = () => {
                                                                 sx={{ width: 50, mx: 1 }}
                                                                 readOnly
                                                             />
-                                                            <IconButton onClick={() => handleQuantityChange(item.id, 1)}>
+                                                            <IconButton onClick={() => handleQuantityChange(item.bookTitle, 1)}>
                                                                 <Add />
                                                             </IconButton>
                                                         </Grid>
                                                         <Grid item md={3} sx={{ textAlign: "right" }}>
-                                                            <Typography>€ {item.price.toFixed(2)}</Typography>
+                                                            <Typography>{item.bookPackagePrice} VND</Typography>
                                                         </Grid>
                                                         <Grid item md={1} sx={{ textAlign: "right" }}>
-                                                            <IconButton onClick={() => handleRemoveItem(item.id)}>
+                                                            <IconButton onClick={() => handleRemoveItem(item.bookTitle)}>
                                                                 <Close />
                                                             </IconButton>
                                                         </Grid>
@@ -147,8 +124,8 @@ const Cart = () => {
 
                                                 {/* Back to shop link */}
                                                 <Box sx={{ pt: 5 }}>
-                                                    <Typography variant="body1" component="a" href="/store" color="textPrimary" sx={{ display: "flex", alignItems: "center" }}>
-                                                        <ArrowBack sx={{ mr: 1 }} /> Back to shop
+                                                    <Typography variant="body1" component="a" href="/store" color="textPrimary" sx={{ display: "flex", alignItems: "center", marginRight: "590px" }}>
+                                                        <ArrowBack sx={{ mr: 1 }} /> Trở lại cửa hàng
                                                     </Typography>
                                                 </Box>
                                             </Box>
@@ -158,47 +135,30 @@ const Cart = () => {
                                         <Grid item lg={4} sx={{ backgroundColor: "#f5f5f5" }}>
                                             <Box sx={{ p: 5 }}>
                                                 <Typography variant="h4" fontWeight="bold" mb={5}>
-                                                    Summary
+                                                    Tổng kết
                                                 </Typography>
 
                                                 <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 4 }} />
 
                                                 <Box sx={{ display: "flex", justifyContent: "space-between", mb: 4 }}>
-                                                    <Typography variant="h6">Items {totalItems}</Typography>
-                                                    <Typography variant="h6">€ {totalPrice.toFixed(2)}</Typography>
+                                                    <Typography variant="h6">Số sản phẩm {totalItems}</Typography>
+                                                    <Typography variant="h6">{totalPrice} VND</Typography>
                                                 </Box>
-
-                                                <Typography variant="h6" mb={3}>
-                                                    Shipping
-                                                </Typography>
-
-                                                <Box sx={{ mb: 4, pb: 2 }}>
-                                                    <Select fullWidth defaultValue="1" onChange={handleShippingChange}>
-                                                        <MenuItem value="1">Standard-Delivery- €5.00</MenuItem>
-                                                        <MenuItem value="2">Express-Delivery- €10.00</MenuItem>
-                                                    </Select>
-                                                </Box>
-
-                                                <Typography variant="h6" mb={3}>
-                                                    Give code
-                                                </Typography>
-
                                                 <Box sx={{ mb: 5 }}>
-                                                    <TextField fullWidth label="Enter your code" variant="outlined" value={code} onChange={handleCodeChange} />
+                                                    <TextField fullWidth label="Mã giảm giá" variant="outlined" value={code} onChange={handleCodeChange} />
                                                 </Box>
-
                                                 <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 4 }} />
 
                                                 <Box sx={{ display: "flex", justifyContent: "space-between", mb: 5 }}>
-                                                    <Typography variant="h6">Total price</Typography>
-                                                    <Typography variant="h6">€ {totalPrice.toFixed(2)}</Typography>
+                                                    <Typography variant="h6">Tổng giá tiền</Typography>
+                                                    <Typography variant="h6">{totalPrice} VND</Typography>
                                                 </Box>
 
                                                 <Button variant="contained" color="primary" fullWidth>
-                                                    Register
+                                                    Mua hàng
                                                 </Button>
                                                 <Button variant="contained" color="secondary" fullWidth onClick={handleClearCart} sx={{ mt: 2 }}>
-                                                    Clear All
+                                                    Xóa tất cả sản phẩm
                                                 </Button>
                                             </Box>
                                         </Grid>
@@ -208,7 +168,7 @@ const Cart = () => {
                         </Grid>
                     </Grid>
                 </Container>
-            </Box>
+            </Box >
             <Footer />
         </>
     );
