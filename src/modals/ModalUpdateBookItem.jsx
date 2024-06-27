@@ -36,7 +36,6 @@ class ModalUpdateBookItem extends Component {
 
     async componentDidMount() {
         let bookItem = this.props.currentBookItem
-        console.log(bookItem)
         if (bookItem && !_.isEmpty(bookItem)) {
             this.setState({
                 id: bookItem.id,
@@ -55,7 +54,7 @@ class ModalUpdateBookItem extends Component {
             this.setState([
                 this.stateBook.id = bookItem.bookId,
                 this.stateBook.title = bookItem.bookTitle
-            ])
+            ]);
         }
 
 
@@ -105,7 +104,6 @@ class ModalUpdateBookItem extends Component {
         });
     }
 
-
     handleOnClickBookTitle = (book) => {
         this.setState([
             this.stateBook.id = book.id,
@@ -118,7 +116,6 @@ class ModalUpdateBookItem extends Component {
         if (isValid)
             this.props.updateBookItem(this.state);
     }
-
 
     render() {
         return (
@@ -154,14 +151,10 @@ class ModalUpdateBookItem extends Component {
                                 <div className="form-group col-12">
                                     <div className="col-12">
                                         <label htmlFor="category-name" className="col-form-label">Tên sách:</label>
-                                        <input type="text" className="form-control" id="category-name"
-                                            style={{ width: 473 + "px" }}
-                                            onChange={(event) => { this.handleOnChangeInput(event, "name") }}
-                                            value={this.state.bookTitle || ''}
-                                        />
                                         <Select
                                             value={this.stateBook.id}
                                             onChange={(event) => this.handleOnChangeInput(event, "bookId")}
+                                            style={{ display: "block" }}
                                         >
                                             {
                                                 this.stateBookList.listBook.map((item, key) => {
@@ -182,18 +175,36 @@ class ModalUpdateBookItem extends Component {
                                         <label htmlFor="category-name" className="col-form-label">Nguồn:</label>
                                         <input type="text" className="form-control" id="category-name"
                                             style={{ width: 473 + "px" }}
-                                            onChange={(event) => { this.handleOnChangeInput(event, "name") }}
+                                            onChange={(event) => { this.handleOnChangeInput(event, "source") }}
                                             value={this.state.source || ''}
                                         />
                                     </div>
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="message-text" className="col-form-label">Loại</label>
-                                    <textarea className="form-control" id="message-text"
+                                    <select id="category-status" className="form-control" style={{ width: 473 + "px" }}
+                                        onChange={(event) => { this.handleOnChangeInput(event, "type") }}
+                                        value={this.state.type || ''}>
+                                        <option value="AUDIO">AUDIO</option>
+                                        <option value="PDF">PDF</option>
+                                        <option value="PAPER">PAPER</option>
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="message-text" className="col-form-label">Thời lượng</label>
+                                    <input type="number" className="form-control" id="category-name"
                                         style={{ width: 473 + "px" }}
-                                        onChange={(event) => { this.handleOnChangeInput(event, "description") }}
-                                        value={this.state.type || ''}
-                                    ></textarea>
+                                        onChange={(event) => { this.handleOnChangeInput(event, "duration") }}
+                                        value={this.state.duration || ''}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="message-text" className="col-form-label">Sản phẩm trong kho</label>
+                                    <input type="number" className="form-control" id="category-name"
+                                        style={{ width: 473 + "px" }}
+                                        onChange={(event) => { this.handleOnChangeInput(event, "stock") }}
+                                        value={this.state.stock || ''}
+                                    />
                                 </div>
                                 <div className="form-group date">
                                     <label htmlFor="category-name" className="col-form-label">Ngày tạo:</label>

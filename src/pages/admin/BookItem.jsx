@@ -8,7 +8,6 @@ import { emitter } from 'utils/emitter';
 import ModalUpdateBookItem from 'modals/ModalUpdateBookItem';
 import ModalCreateBookItem from 'modals/ModalCreateBookItem';
 
-
 // ==============================|| SAMPLE PAGE ||============================== //
 
 class BookItem extends Component {
@@ -54,13 +53,13 @@ class BookItem extends Component {
 
     doCreateBookItem = async (bookItem) => {
         try {
-            let res = await productServices.createBookItem(BookItem);
+            let res = await productServices.createBookItem(bookItem);
             if (res) {
                 this.setState({
                     isOpenedModalCreateBookItem: false,
                     listBookItem: bookItem,
                 });
-                this.getAllBookItem;
+                await this.getAllBookItem();
                 emitter.emit('EVENT_CLEAR_MODAL_DATA');
             }
 
@@ -97,7 +96,6 @@ class BookItem extends Component {
         try {
             let res = await productServices.deleteBookItem(bookItem.id);
             if (res) {
-
                 this.setState({
                     isOpenedModalUpdateBookItem: false,
                     listBookItem: bookItem,

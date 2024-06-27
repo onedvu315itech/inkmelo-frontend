@@ -15,7 +15,7 @@ const Category = Loadable(lazy(() => import('pages/admin/Category')));
 const Genre = Loadable(lazy(() => import('pages/admin/Genre')));
 const Publisher = Loadable(lazy(() => import('pages/admin/Publisher')));
 const User = Loadable(lazy(() => import('pages/admin/User')));
-const BookItem = Loadable(lazy(() => import('pages/admin/Booktem')));
+const BookItem = Loadable(lazy(() => import('pages/admin/BookItem')));
 const Book = Loadable(lazy(() => import('pages/admin/Book')));
 const BookPackage = Loadable(lazy(() => import('pages/admin/BookPackage')));
 // render - sample page
