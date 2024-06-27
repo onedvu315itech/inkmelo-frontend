@@ -151,7 +151,7 @@ class Book extends Component {
                             <tr>
                                 <th scope="col">ID</th>
                                 <th scope="col">Mã sách</th>
-                                <th scope="col">Tên sách</th>
+                                <th scope="col" className='col-4'>Tên sách</th>
                                 <th scope="col">Tác giả</th>
                                 <th scope="col">Trạng thái</th>
                                 <th scope="col">Thao tác</th>

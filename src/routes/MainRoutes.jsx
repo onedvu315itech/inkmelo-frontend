@@ -29,12 +29,7 @@ const MainRoutes = {
   children: [
     {
       path: 'dashboard',
-      children: [
-        {
-          path: 'default',
-          element: <DashboardDefault />
-        }
-      ]
+      element: <DashboardDefault />
     },
     {
       path: 'book',

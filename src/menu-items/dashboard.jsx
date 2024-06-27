@@ -10,14 +10,14 @@ const icons = {
 
 const dashboard = {
   id: 'group-dashboard',
-  title: 'Navigation',
+  title: 'Điều hướng',
   type: 'group',
   children: [
     {
       id: 'dashboard',
       title: 'Dashboard',
       type: 'item',
-      url: '/admin/dashboard/default',
+      url: '/admin/dashboard',
       icon: icons.DashboardOutlined,
       breadcrumbs: false
     }

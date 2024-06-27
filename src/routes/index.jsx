@@ -12,6 +12,7 @@ import TermOfUseRoutes from './information/TermOfUseRoutes';
 import AboutUsRoutes from './AboutUsRoutes';
 import CartRoutes from './CartRoutes';
 import UserRoutes from './UserRoutes';
+import RegisterRoutes from './RegisterRoutes';
 
 // ==============================|| ROUTING RENDER ||============================== //
 
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
     // Main Routes
     MainRoutes,
     LoginRoutes,
+    RegisterRoutes,
     HomeRoutes,
     StoreRoutes,
     AboutUsRoutes,
