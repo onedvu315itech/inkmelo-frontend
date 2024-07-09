@@ -14,22 +14,21 @@ class ModalUpdateCategory extends Component {
             lastUpdatedTime: '',
             lastChangedBy: '',
             status: '',
-            isOpened: false,
         }
     }
 
     componentDidMount() {
         let category = this.props.currentCategory
         if (category && !_.isEmpty(category)) {
-            this.setState({
-                id: category.id,
-                name: category.name,
-                description: category.description,
-                createdAt: category.createdAt,
-                lastUpdatedTime: category.lastUpdatedTime,
-                lastChangedBy: category.lastChangedBy,
-                status: category.status
-            })
+            this.setState([
+                this.state.id = category.id,
+                this.state.name = category.name,
+                this.state.description = category.description,
+                this.state.createdAt = category.createdAt,
+                this.state.lastUpdatedTime = category.lastUpdatedTime,
+                this.state.lastChangedBy = category.lastChangedBy,
+                this.state.status = category.status
+            ]);
         }
     }
 
@@ -73,7 +72,6 @@ class ModalUpdateCategory extends Component {
         let isValid = this.checkValidInput();
         if (isValid)
             this.props.updateCategory(this.state);
-        console.log(this.state)
     }
 
     render() {
@@ -100,7 +98,7 @@ class ModalUpdateCategory extends Component {
                         </div>
                         <div className="modal-body pop-up-body">
                             <div className="form-group col-12">
-                                <div className="col-1">
+                                <div className="col-2">
                                     <label htmlFor="category-name" className="col-form-label">ID:</label>
                                     <input type="text" className="form-control" readOnly
                                         onChange={(event) => { this.handleOnChangeInput(event, "id") }}

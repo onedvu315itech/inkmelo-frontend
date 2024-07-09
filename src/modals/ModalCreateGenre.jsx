@@ -14,8 +14,7 @@ class ModalCreateGenre extends Component {
             createdAt: '',
             lastUpdatedTime: '',
             lastChangedBy: '',
-            status: '',
-            isOpened: false,
+            status: ''
         }
 
         this.listenToEmitter();
@@ -33,21 +32,6 @@ class ModalCreateGenre extends Component {
                 status: '',
             })
         })
-    }
-
-    componentDidMount() {
-        let genre = this.props.genre
-        if (genre && !_.isEmpty(genre)) {
-            this.setState({
-                id: genre.id,
-                name: genre.name,
-                description: genre.description,
-                createdAt: genre.createdAt,
-                lastUpdatedTime: genre.lastUpdatedTime,
-                lastChangedBy: genre.lastChangedBy,
-                status: genre.status
-            })
-        }
     }
 
     style = {
@@ -116,7 +100,7 @@ class ModalCreateGenre extends Component {
                         </div>
                         <div className="modal-body pop-up-body">
                             <div className="form-group col-12">
-                                <div className="col-1">
+                                <div className="col-2">
                                     <label htmlFor="category-name" className="col-form-label">ID:</label>
                                     <input type="text" className="form-control" readOnly
                                         onChange={(event) => { this.handleOnChangeInput(event, "id") }}

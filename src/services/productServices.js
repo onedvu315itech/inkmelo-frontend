@@ -99,30 +99,40 @@ const deleteBookPackage = (deletedId) => {
     return axios.delete(`/admin/api/v1/book-packages/${deletedId}`)
 }
 
+const getAllModeId = () => {
+    return axios.get('/admin/api/v1/book-packages/mode');
+}
+
 //cart
 export default {
     createCategory,
     getAllCategory,
     updateCategory,
     deleteCategory,
+
     getAllGenre,
     createGenre,
     updateGenre,
     deleteGenre,
+
     getAllPublisher,
     createPublisher,
     updatePublisher,
     deletePublisher,
+
     getAllBookItem,
     updateBookItem,
     createBookItem,
     deleteBookItem,
+
     getAllBook,
     createBook,
     updateBook,
     deleteBook,
+
     getAllBookPackage,
     createBookPackage,
     updateBookPackage,
-    deleteBookPackage
+    deleteBookPackage,
+    getAllModeId
 };  

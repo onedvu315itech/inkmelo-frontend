@@ -1,4 +1,3 @@
-import { Avatar, Stack } from '@mui/material';
 import { Box } from '@mui/system'
 import { storage } from 'api/firebase';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
@@ -38,7 +37,7 @@ class FileUpload extends Component {
                 getDownloadURL(uploadTask.snapshot.ref)
                     .then((downloadURL) => {
                         this.setState({ imgURL: downloadURL });
-                        this.props.getImage(downloadURL);
+                        this.props.getFile(downloadURL);
                     })
             }
         )
@@ -51,7 +50,7 @@ class FileUpload extends Component {
                     {this.state.imgURL && <img src={this.state.imgURL} alt='uploaded file' height={100} />}
                     <div>
                         <input type='file' />
-                        <button type="button" className='btn btn-success' onClick={this.handleUpload}>Tải ảnh lên</button>
+                        <button type="button" className='btn btn-success' onClick={this.handleUpload}>Tải tệp lên</button>
                     </div>
                 </Box>
             </>

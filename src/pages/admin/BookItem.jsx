@@ -18,7 +18,6 @@ class BookItem extends Component {
             isOpenedModalUpdateBookItem: false,
             isOpenedModalCreateBookItem: false,
             bookItemUpdate: {},
-            bookItemCreate: {}
         }
     }
 
@@ -44,10 +43,9 @@ class BookItem extends Component {
     }
 
     // For add new Book Item
-    handleAddNewBookItem = (bookItem) => {
+    handleAddNewBookItem = () => {
         this.setState({
-            isOpenedModalCreateBookItem: true,
-            bookItemCreate: bookItem
+            isOpenedModalCreateBookItem: true
         });
     }
 
@@ -123,7 +121,6 @@ class BookItem extends Component {
                             <ModalCreateBookItem
                                 open={this.state.isOpenedModalCreateBookItem}
                                 toggle={this.toggleCreateBookItem}
-                                bookItemInfor={this.state.bookItemCreate}
                                 createBookItem={this.doCreateBookItem}
                             />
                         }

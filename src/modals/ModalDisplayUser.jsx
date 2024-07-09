@@ -15,8 +15,7 @@ class ModalUser extends Component {
             createdAt: '',
             lastUpdatedTime: '',
             lastChangedBy: '',
-            status: '',
-            isOpened: false,
+            status: ''
         }
     }
 

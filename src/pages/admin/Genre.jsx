@@ -1,4 +1,3 @@
-
 // project import
 import MainCard from 'components/MainCard';
 import { Component } from 'react';
@@ -9,9 +8,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { emitter } from 'utils/emitter';
 
-
-// ==============================|| SAMPLE PAGE ||============================== //
-
 class Genre extends Component {
     constructor(props) {
         super(props);
@@ -19,11 +15,9 @@ class Genre extends Component {
             listGenre: [],
             isOpenedModalCreateGenre: false,
             isOpenedModalUpdateGenre: false,
-            genreUpdate: {},
-            genreCreate: {},
+            genreUpdate: {}
         }
     }
-
 
     toggleCreateGenreModal = () => {
         this.setState({
@@ -43,26 +37,24 @@ class Genre extends Component {
 
     getAllGenre = async () => {
         let res = await productService.getAllGenre();
-        if (res) this.setState({ listGenre: res.data })
-
+        if (res)
+            this.setState({ listGenre: res.data });
     }
 
     // For add new genre
-    handleAddNewGenre = (Genre) => {
+    handleAddNewGenre = () => {
         this.setState({
-            isOpenedModalCreateGenre: true,
-            GenreCreate: Genre
+            isOpenedModalCreateGenre: true
         });
     }
 
-    doCreateGenre = async (Genre) => {
+    doCreateGenre = async (genre) => {
         try {
-
-            let res = await productService.createGenre(Genre);
+            let res = await productService.createGenre(genre);
             if (res) {
                 this.setState({
                     isOpenedModalCreateGenre: false,
-                    listGenre: Genre,
+                    listGenre: genre,
                 })
                 await this.getAllGenre();
                 emitter.emit('EVENT_CLEAR_MODAL_DATA');
@@ -101,7 +93,6 @@ class Genre extends Component {
         try {
             let res = await productService.deleteGenre(genre.id);
             if (res) {
-
                 this.setState({
                     isOpenedModalUpdateGenre: false,
                     listGenre: genre,
@@ -114,10 +105,7 @@ class Genre extends Component {
         }
     }
 
-
-
     render() {
-
         return (
             <>
                 <MainCard>
@@ -132,7 +120,6 @@ class Genre extends Component {
                             <ModalCreateGenre
                                 open={this.state.isOpenedModalCreateGenre}
                                 toggle={this.toggleCreateGenreModal}
-                                genreInfor={this.state.genreCreate}
                                 createGenre={this.doCreateGenre}
                             />
                         }

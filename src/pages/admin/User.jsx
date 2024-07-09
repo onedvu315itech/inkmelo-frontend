@@ -4,8 +4,6 @@ import { Component } from 'react';
 import userServices from 'services/userServices';
 import ModalUser from 'modals/ModalDisplayUser';
 
-// ==============================|| SAMPLE PAGE ||============================== //
-
 class User extends Component {
     constructor(props) {
         super(props)

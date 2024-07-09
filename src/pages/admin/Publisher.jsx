@@ -16,7 +16,6 @@ class Publisher extends Component {
             isOpenedModalCreatePublisher: false,
             isOpenedModalUpdatePublisher: false,
             publisherUpdate: {},
-            publisherCreate: {},
         }
     }
 
@@ -69,8 +68,7 @@ class Publisher extends Component {
     //For update publisher
     handleUpdatePublisher = (publisher) => {
         this.setState({
-            isOpenedModalUpdatePublisher: true,
-            publisherUpdate: publisher
+            isOpenedModalUpdatePublisher: true
         });
     }
 
@@ -121,7 +119,6 @@ class Publisher extends Component {
                             <ModalCreatePublisher
                                 open={this.state.isOpenedModalCreatePublisher}
                                 toggle={this.toggleCreatePublisherModal}
-                                publisherInfo={this.state.publisherCreate}
                                 createPublisher={this.doCreatePublisher}
                             />
                         }

@@ -1,5 +1,3 @@
-
-// project import
 import MainCard from 'components/MainCard';
 import { Component } from 'react';
 import productService from 'services/productServices';
@@ -9,9 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { emitter } from 'utils/emitter';
 
-
-// ==============================|| SAMPLE PAGE ||============================== //
-
 class Book extends Component {
     constructor(props) {
         super(props);
@@ -19,11 +14,9 @@ class Book extends Component {
             listBook: [],
             isOpenedModalCreateBook: false,
             isOpenedModalUpdateBook: false,
-            bookUpdate: {},
-            bookCreate: {},
+            bookUpdate: {}
         }
     }
-
 
     toggleCreateBookModal = () => {
         this.setState({
@@ -43,26 +36,24 @@ class Book extends Component {
 
     getAllBook = async () => {
         let res = await productService.getAllBook();
-        if (res) this.setState({ listBook: res.data })
-        console.log(res.data)
+        if (res)
+            this.setState({ listBook: res.data });
     }
 
     // For add new book
-    handleAddNewBook = (Book) => {
+    handleAddNewBook = () => {
         this.setState({
-            isOpenedModalCreateBook: true,
-            BookCreate: Book
+            isOpenedModalCreateBook: true
         });
     }
 
-    doCreateBook = async (Book) => {
+    doCreateBook = async (book) => {
         try {
-
-            let res = await productService.createBook(Book);
+            let res = await productService.createBook(book);
             if (res) {
                 this.setState({
                     isOpenedModalCreateBook: false,
-                    listBook: Book,
+                    listBook: book,
                 })
                 await this.getAllBook();
                 emitter.emit('EVENT_CLEAR_MODAL_DATA');
@@ -73,7 +64,7 @@ class Book extends Component {
         }
     }
 
-    //For update book
+    // For update book
     handleUpdateBook = (book) => {
         this.setState({
             isOpenedModalUpdateBook: true,
@@ -101,7 +92,6 @@ class Book extends Component {
         try {
             let res = await productService.deleteBook(book.id);
             if (res) {
-
                 this.setState({
                     isOpenedModalUpdateBook: false,
                     listBook: book,
@@ -114,10 +104,7 @@ class Book extends Component {
         }
     }
 
-
-
     render() {
-
         return (
             <>
                 <MainCard>
@@ -132,7 +119,6 @@ class Book extends Component {
                             <ModalCreateBook
                                 open={this.state.isOpenedModalCreateBook}
                                 toggle={this.toggleCreateBookModal}
-                                genreInfor={this.state.bookCreate}
                                 createBook={this.doCreateBook}
                             />
                         }
@@ -150,7 +136,6 @@ class Book extends Component {
                         <thead>
                             <tr>
                                 <th scope="col">ID</th>
-                                <th scope="col">Mã sách</th>
                                 <th scope="col" className='col-4'>Tên sách</th>
                                 <th scope="col">Tác giả</th>
                                 <th scope="col">Trạng thái</th>
@@ -165,12 +150,9 @@ class Book extends Component {
                                         return (
                                             <tr key={i}>
                                                 <td>{data.id}</td>
-                                                <td>{data.ISBN}</td>
                                                 <td>{data.title}</td>
                                                 <td>{data.author}</td>
                                                 <td>{data.status}</td>
-
-
                                                 <td>
                                                     <button type="button" className="btn btn-primary"
                                                         onClick={() => this.handleUpdateBook(data)}>
@@ -182,7 +164,7 @@ class Book extends Component {
                                                             color: "white",
                                                             marginLeft: 1 + "rem"
                                                         }}
-                                                        onClick={() => { this.handleDeleteBook(data) }}>
+                                                        onClick={() => this.handleDeleteBook(data)}>
                                                         Ngưng hoạt động
                                                     </button>
                                                 </td >

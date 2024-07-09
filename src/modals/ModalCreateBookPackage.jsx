@@ -1,52 +1,81 @@
 import { Component } from "react";
-import { Box, Modal } from "@mui/material";
+import { Box, Checkbox, Chip, MenuItem, Modal, Select } from "@mui/material";
 import 'style/css/Category.css'
 import _ from "lodash";
 import { emitter } from "utils/emitter";
-import { title } from "process";
-
+import productServices from "services/productServices";
 
 class ModalCreateBookPackage extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            id: '',
             title: '',
             description: '',
             price: '',
             modeId: '',
+            stock: '',
+            book: {},
+            bookId: '',
+            bookCoverImg: '',
+            publisher: {},
+            ratings: [],
+            genres: [],
+            status: '',
+            items: [],
             itemIds: [],
+            category: '',
             categoryId: '',
-        }
+            createdAt: '',
+            lastUpdatedTime: '',
+            lastChangedBy: '',
+        };
 
-
-        this.listenToEmitter();
+        this.stateBookList = { listBooks: [] };
+        this.stateModeId = { listModeIds: [] };
+        this.stateItemList = { listItems: [] };
+        this.stateCategoryList = { listCategories: [] };
     }
 
     listenToEmitter() {
         emitter.on('EVENT_CLEAR_MODAL_DATA', () => {
             this.setState({
+                id: '',
                 title: '',
                 description: '',
                 price: '',
                 modeId: '',
+                stock: '',
+                book: {},
+                bookId: '',
+                bookCoverImg: '',
+                publisher: {},
+                ratings: [],
+                genres: [],
+                status: '',
+                items: [],
                 itemIds: [],
+                category: '',
                 categoryId: '',
-            })
-        })
+                createdAt: '',
+                lastUpdatedTime: '',
+                lastChangedBy: '',
+            });
+        });
     }
 
-    componentDidMount() {
-        let bookPackage = this.props.bookPackage
-        if (bookPackage && !_.isEmpty(bookPackage)) {
-            this.setState({
-                title: bookPackage.title,
-                description: bookPackage.description,
-                price: bookPackage.price,
-                modeId: bookPackage.modeId,
-                itemIds: bookPackage.itemIds,
-                categoryId: bookPackage.categoryId,
-            })
-        }
+    async componentDidMount() {
+        let resOfBook = await productServices.getAllBook();
+        if (resOfBook) this.setState([this.stateBookList.listBooks = resOfBook.data]);
+
+        let resOfBookItem = await productServices.getAllBookItem();
+        if (resOfBookItem) this.setState([this.stateItemList.listItems = resOfBookItem.data]);
+
+        let resOfModeId = await productServices.getAllModeId();
+        if (resOfModeId) this.setState([this.stateModeId.listModeIds = resOfModeId.data]);
+
+        let resOfCategory = await productServices.getAllCategory();
+        if (resOfCategory) this.setState([this.stateCategoryList.listCategories = resOfCategory.data]);
     }
 
     style = {
@@ -63,9 +92,21 @@ class ModalCreateBookPackage extends Component {
         overflowY: 'auto'
     };
 
+    styleBook = {
+        position: 'relatives',
+        border: 2 + 'px, solid #09b3be',
+        width: 473,
+        marginTop: 10 + 'px',
+        padding: 20 + 'px ' + 10 + 'px',
+        borderRadius: 10 + 'px'
+    }
+
     checkValidInput = () => {
         let isValid = true;
-        let arrInput = ['title', 'description'];
+        let arrInput = [
+            'title', 'description', 'price', 'modeId',
+            'itemIds', 'categoryId', 'bookId',
+        ];
         for (let i = 0; i < arrInput.length; i++) {
             if (!this.state[arrInput[i]]) {
                 isValid = false;
@@ -76,10 +117,10 @@ class ModalCreateBookPackage extends Component {
         return isValid;
     }
 
-    handleAddGenre = () => {
+    handleAddBookPackage = () => {
         let isValid = this.checkValidInput();
         if (isValid)
-            this.props.createGenre(this.state);
+            this.props.createBookPackage(this.state);
     }
 
     handleClose = () => this.props.toggle();
@@ -91,7 +132,55 @@ class ModalCreateBookPackage extends Component {
         });
     }
 
+    handleBookChange = (event) => {
+        let bookId = event.target.value;
+        let selectedBook = this.stateBookList.listBooks.find(book => book.id === bookId);
+        this.setState({
+            book: selectedBook,
+            bookId: bookId,
+            bookCoverImg: selectedBook.bookCoverImg,
+            publisher: selectedBook.publisher,
+            genres: selectedBook.genres,
+        });
+
+        let selectedBookItem = this.stateItemList.listItems.find(bookItem => bookItem.bookId === bookId);
+        this.setState({ stock: selectedBookItem.stock })
+    };
+
+    handleModeIdChange = (event) => {
+        let modeId = event.target.value;
+        this.setState({
+            modeId: modeId
+        });
+    };
+
+    handleItemsChange = (event) => {
+        let itemIds = event.target.value;
+        let selectedItems = this.stateItemList.listItems.filter(item => itemIds.includes(item.id));
+        this.setState({
+            items: selectedItems,
+            itemIds: itemIds
+        });
+    };
+
+    handleCategoryChange = (event) => {
+        let categoryId = event.target.value;
+        this.setState({
+            categoryId: categoryId
+        });
+    };
+
     render() {
+        let { open } = this.props;
+        let {
+            id, title, modeId, price, stock, book, ratings, genres, items,
+            status, bookId, bookCoverImg, description, categoryId,
+            publisher, createdAt, lastUpdatedTime, lastChangedBy
+        } = this.state;
+        let { listBooks } = this.stateBookList;
+        let { listModeIds } = this.stateModeId;
+        let { listItems } = this.stateItemList;
+        let { listCategories } = this.stateCategoryList;
         return (
             <>
                 <Modal
@@ -115,52 +204,200 @@ class ModalCreateBookPackage extends Component {
                         </div>
                         <div className="modal-body pop-up-body">
                             <div className="form-group col-12">
-                                <div className="col-1">
+                                <div className="col-2">
                                     <label htmlFor="category-name" className="col-form-label">ID:</label>
                                     <input type="text" className="form-control" readOnly
                                         onChange={(event) => { this.handleOnChangeInput(event, "id") }}
-                                        value={this.state.id}
+                                        value={id || ''}
                                     />
                                 </div>
                                 <div className="col-12">
-                                    <label htmlFor="category-name" className="col-form-label">Tên:</label>
+                                    <label htmlFor="category-name" className="col-form-label">Tên gói:</label>
                                     <input type="text" className="form-control" id="category-name"
                                         style={{ width: 473 + "px" }}
-                                        onChange={(event) => { this.handleOnChangeInput(event, "name") }}
-                                        value={this.state.name}
+                                        onChange={(event) => { this.handleOnChangeInput(event, "title") }}
+                                        value={title || ''}
                                     />
                                 </div>
+                                <div className="col-12">
+                                    <label htmlFor="message-text" className="col-form-label">Mô tả:</label>
+                                    <textarea className="form-control" id="message-text"
+                                        style={{ width: 473 + "px" }}
+                                        onChange={(event) => { this.handleOnChangeInput(event, "description") }}
+                                        value={description || ''}
+                                    ></textarea>
+                                </div>
+                                <div className="col-12">
+                                    <label htmlFor="category-name" className="col-form-label">Dạng sản phẩm:</label>
+                                    <Select
+                                        value={modeId || ''}
+                                        onChange={(event) => this.handleModeIdChange(event)}
+                                        style={{ display: "block", width: 473 + "px" }}
+                                    >
+                                        {
+                                            listModeIds.map((mode, key) => {
+                                                return (
+                                                    <MenuItem key={key} value={mode.id}>
+                                                        {mode.description}
+                                                    </MenuItem>
+                                                )
+                                            })
+                                        }
+                                    </Select>
+                                    <Select
+                                        multiple
+                                        value={items.map((item) => item.id)}
+                                        onChange={(event) => this.handleItemsChange(event)}
+                                        style={{ display: "block", marginTop: 20 + 'px', width: 473 + 'px' }}
+                                        renderValue={(selected) => (
+                                            <div>
+                                                {selected.map((value, key) => {
+                                                    let selectedItem = listItems.find(item => item.id === value);
+                                                    return selectedItem ? (
+                                                        <Chip key={key} label={selectedItem.type}
+                                                            style={{ marginRight: 5 + "px" }}
+                                                        />
+                                                    ) : null;
+                                                })}
+                                            </div>
+                                        )}
+                                    >
+                                        {
+                                            listItems.map((item, key) => {
+                                                if (item.bookId === bookId)
+                                                    return (
+                                                        <MenuItem
+                                                            key={key}
+                                                            value={item.id}
+                                                        >
+                                                            <Checkbox checked={items.some((selectedItem) => selectedItem.id === item.id)} />
+                                                            {item.type} - {item.bookTitle}
+                                                        </MenuItem>
+                                                    )
+                                            })
+                                        }
+                                    </Select>
+                                </div>
+                                <div className="col-12">
+                                    <label htmlFor="category-name" className="col-form-label">Loại sản phẩm:</label>
+                                    <Select
+                                        value={categoryId || ''}
+                                        onChange={(event) => this.handleCategoryChange(event)}
+                                        style={{ display: "block", width: 473 + "px" }}
+                                    >
+                                        {
+                                            listCategories.map((category, key) => {
+                                                return (
+                                                    <MenuItem key={key} value={category.id}>
+                                                        {category.name}
+                                                    </MenuItem>
+                                                )
+                                            })
+                                        }
+                                    </Select>
+                                </div>
                             </div>
-                            <div className="form-group">
-                                <label htmlFor="message-text" className="col-form-label">Mô tả:</label>
-                                <textarea className="form-control" id="message-text"
-                                    style={{ width: 473 + "px" }}
-                                    onChange={(event) => { this.handleOnChangeInput(event, "description") }}
-                                    value={this.state.description}
-                                ></textarea>
+                            <div className="form-group col-12">
+                                <div className="col-12">
+                                    <label htmlFor="category-name" className="col-form-label">Giá sách:</label>
+                                    <div className="col-12">
+                                        <div className="col-4" style={{ display: "inline-block" }}>
+                                            <input type="number" className="form-control" id="category-name"
+                                                onChange={(event) => { this.handleOnChangeInput(event, "price") }}
+                                                value={price || ''}
+                                            />
+                                        </div>
+                                        <div className="col-2" style={{ display: "inline-block", marginLeft: 5 + "px" }}>
+                                            <input type="text" className="form-control"
+                                                value={'VND'} readOnly
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-12">
+                                    <label htmlFor="category-name" className="col-form-label">Hàng trong kho (bản cứng):</label>
+                                    <div className="col-2">
+                                        <input type="text" className="form-control" id="category-name"
+                                            readOnly value={stock || 0}
+                                        />
+                                    </div>
+                                </div>
+                                <Box
+                                    style={this.styleBook}
+                                >
+                                    <div className="col-12">
+                                        <label htmlFor="category-name" className="col-form-label">Sách:</label>
+                                        <Select
+                                            value={book.id || ''}
+                                            onChange={(event) => this.handleBookChange(event)}
+                                            style={{ display: "block" }}
+                                        >
+                                            {
+                                                listBooks.map((book, key) => {
+                                                    return (
+                                                        <MenuItem key={key} value={book.id}>
+                                                            {book.title}
+                                                        </MenuItem>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </div>
+                                    {
+                                        bookCoverImg &&
+                                        <div>
+                                            <label htmlFor="publisher-name" className="col-form-label">Ảnh bìa:</label>
+                                            <img src={bookCoverImg} alt="Uploaded File" height={100} style={{ display: "block" }} />
+                                        </div>
+                                    }
+                                    <div className="col-12">
+                                        <label htmlFor="category-name" className="col-form-label">Tác giả:</label>
+                                        <input type="text" className="form-control" id="category-createdDate" readOnly
+                                            value={book.author || ''} />
+                                    </div>
+                                    <div className="col-12">
+                                        <label htmlFor="category-name" className="col-form-label">Nhà xuất bản:</label>
+                                        <input type="text" className="form-control" id="category-createdDate" readOnly
+                                            value={publisher.name || ''} />
+                                    </div>
+                                    <div className="col-12">
+                                        <label htmlFor="category-name" className="col-form-label"
+                                            style={{ display: "block" }}
+                                        >Thể loại:</label>
+                                        {
+                                            genres.map((genre, key) => {
+                                                return (
+                                                    <Chip key={key} label={genre.name}
+                                                        style={{ marginRight: 5 + "px" }}
+                                                    />
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                </Box>
                             </div>
                             <div className="form-group date">
                                 <label htmlFor="category-name" className="col-form-label">Ngày tạo:</label>
                                 <input type="text" className="form-control" id="category-createdDate" readOnly
                                     onChange={(event) => { this.handleOnChangeInput(event, "createdAt") }}
-                                    value={this.state.createdAt} />
+                                    value={createdAt || ''} />
                                 <label htmlFor="category-name" className="col-form-label">Cập nhật mới:</label>
                                 <input type="text" className="form-control" readOnly
                                     onChange={(event) => { this.handleOnChangeInput(event, "lastUpdatedTime") }}
-                                    value={this.state.lastUpdatedTime} />
+                                    value={lastUpdatedTime || ''} />
                             </div>
                             <div className="form-group status-person">
                                 <label htmlFor="category-name" className="col-form-label">Trạng thái</label>
                                 <select id="category-status" className="form-control"
                                     onChange={(event) => { this.handleOnChangeInput(event, "status") }}
-                                    value={this.state.status == null ? '' : this.state.status}>
+                                    value={status == null || ''}>
                                     <option value="ACTIVE">ACTIVE</option>
                                     <option value="INACTIVE">INACTIVE</option>
                                 </select>
                                 <label htmlFor="category-name" className="col-form-label">Người cập nhật:</label>
                                 <input type="text" className="form-control" readOnly
                                     onChange={(event) => { this.handleOnChangeInput(event, "lastChangedBy") }}
-                                    value={this.state.lastChangedBy} />
+                                    value={lastChangedBy || ''} />
                             </div>
                         </div>
                         <div className="modal-footer">
@@ -169,7 +406,7 @@ class ModalCreateBookPackage extends Component {
                                     backgroundColor: "rgb(220, 120, 0)",
                                     color: "white"
                                 }}
-                                onClick={this.handleAddGenre}
+                                onClick={this.handleAddBookPackage}
                             >Thêm mới</button>
                             <button type="button" className="btn btn-secondary btn-cancel"
                                 onClick={this.handleClose}>Đóng</button>

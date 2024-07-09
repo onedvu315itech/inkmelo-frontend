@@ -1,5 +1,3 @@
-
-// project import
 import MainCard from 'components/MainCard';
 import { Component } from 'react';
 import productService from 'services/productServices';
@@ -8,9 +6,6 @@ import ModalUpdateBookPackage from 'modals/ModalUpdateBookPackage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { emitter } from 'utils/emitter';
-
-
-// ==============================|| SAMPLE PAGE ||============================== //
 
 class BookPackage extends Component {
     constructor(props) {
@@ -23,7 +18,6 @@ class BookPackage extends Component {
             bookPackageCreate: {},
         }
     }
-
 
     toggleCreateBookPackageModal = () => {
         this.setState({
@@ -44,7 +38,6 @@ class BookPackage extends Component {
     getAllBookPackage = async () => {
         let res = await productService.getAllBookPackage();
         if (res) this.setState({ listBookPackage: res.data })
-
     }
 
     // For add new book package
@@ -57,7 +50,6 @@ class BookPackage extends Component {
 
     doCreateBookPackage = async (BookPackage) => {
         try {
-
             let res = await productService.createBookPackage(BookPackage);
             if (res) {
                 this.setState({
@@ -114,10 +106,7 @@ class BookPackage extends Component {
         }
     }
 
-
-
     render() {
-
         return (
             <>
                 <MainCard>
@@ -132,7 +121,6 @@ class BookPackage extends Component {
                             <ModalCreateBookPackage
                                 open={this.state.isOpenedModalCreateBookPackage}
                                 toggle={this.toggleCreateBookPackageModal}
-                                genreInfor={this.state.bookPackageCreate}
                                 createBookPackage={this.doCreateBookPackage}
                             />
                         }
@@ -151,7 +139,7 @@ class BookPackage extends Component {
                             <tr>
                                 <th scope="col">ID</th>
                                 <th scope="col">Gói</th>
-                                <th scope="col">Mô tả</th>
+                                <th scope="col">Sách</th>
                                 <th scope="col">Trạng thái</th>
                                 <th scope="col">Thao tác</th>
                             </tr>
@@ -164,10 +152,8 @@ class BookPackage extends Component {
                                             <tr key={i}>
                                                 <td>{data.id}</td>
                                                 <td>{data.title}</td>
-                                                <td>{data.description}</td>
+                                                <td>{data.book.title}</td>
                                                 <td>{data.status}</td>
-
-
                                                 <td>
                                                     <button type="button" className="btn btn-primary"
                                                         onClick={() => this.handleUpdateBookPackage(data)}>

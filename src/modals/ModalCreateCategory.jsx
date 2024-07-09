@@ -14,8 +14,7 @@ class ModalCreateCategory extends Component {
             createdAt: '',
             lastUpdatedTime: '',
             lastChangedBy: '',
-            status: '',
-            isOpened: false,
+            status: ''
         }
 
         this.listenToEmitter();
@@ -33,21 +32,6 @@ class ModalCreateCategory extends Component {
                 status: '',
             })
         })
-    }
-
-    componentDidMount() {
-        let category = this.props.categoryInfo
-        if (category && !_.isEmpty(category)) {
-            this.setState({
-                id: category.id,
-                name: category.name,
-                description: category.description,
-                createdAt: category.createdAt,
-                lastUpdatedTime: category.lastUpdatedTime,
-                lastChangedBy: category.lastChangedBy,
-                status: category.status
-            })
-        }
     }
 
     style = {
@@ -116,11 +100,11 @@ class ModalCreateCategory extends Component {
                         </div>
                         <div className="modal-body pop-up-body">
                             <div className="form-group col-12">
-                                <div className="col-1">
+                                <div className="col-2">
                                     <label htmlFor="category-name" className="col-form-label">ID:</label>
                                     <input type="text" className="form-control" readOnly
                                         onChange={(event) => { this.handleOnChangeInput(event, "id") }}
-                                        value={this.state.id}
+                                        value={this.state.id || ''}
                                     />
                                 </div>
                                 <div className="col-12">
@@ -128,7 +112,7 @@ class ModalCreateCategory extends Component {
                                     <input type="text" className="form-control" id="category-name"
                                         style={{ width: 473 + "px" }}
                                         onChange={(event) => { this.handleOnChangeInput(event, "name") }}
-                                        value={this.state.name}
+                                        value={this.state.name || ''}
                                     />
                                 </div>
                             </div>
@@ -137,31 +121,31 @@ class ModalCreateCategory extends Component {
                                 <textarea className="form-control" id="message-text"
                                     style={{ width: 473 + "px" }}
                                     onChange={(event) => { this.handleOnChangeInput(event, "description") }}
-                                    value={this.state.description}
+                                    value={this.state.description || ''}
                                 ></textarea>
                             </div>
                             <div className="form-group date">
                                 <label htmlFor="category-name" className="col-form-label">Ngày tạo:</label>
                                 <input type="text" className="form-control" id="category-createdDate" readOnly
                                     onChange={(event) => { this.handleOnChangeInput(event, "createdAt") }}
-                                    value={this.state.createdAt} />
+                                    value={this.state.createdAt || ''} />
                                 <label htmlFor="category-name" className="col-form-label">Cập nhật mới:</label>
                                 <input type="text" className="form-control" readOnly
                                     onChange={(event) => { this.handleOnChangeInput(event, "lastUpdatedTime") }}
-                                    value={this.state.lastUpdatedTime} />
+                                    value={this.state.lastUpdatedTime || ''} />
                             </div>
                             <div className="form-group status-person">
                                 <label htmlFor="category-name" className="col-form-label">Trạng thái</label>
                                 <select id="category-status" className="form-control"
                                     onChange={(event) => { this.handleOnChangeInput(event, "status") }}
-                                    value={this.state.status == null ? '' : this.state.status}>
+                                    value={this.state.status || ''}>
                                     <option value="ACTIVE">ACTIVE</option>
                                     <option value="INACTIVE">INACTIVE</option>
                                 </select>
                                 <label htmlFor="category-name" className="col-form-label">Người cập nhật:</label>
                                 <input type="text" className="form-control" readOnly
                                     onChange={(event) => { this.handleOnChangeInput(event, "lastChangedBy") }}
-                                    value={this.state.lastChangedBy} />
+                                    value={this.state.lastChangedBy || ''} />
                             </div>
                         </div>
                         <div className="modal-footer">

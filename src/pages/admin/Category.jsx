@@ -19,7 +19,6 @@ class Category extends Component {
             isOpenedModalCreateCategory: false,
             isOpenedModalUpdateCategory: false,
             categoryUpdate: {},
-            categoryCreate: {},
         }
     }
 
@@ -45,10 +44,9 @@ class Category extends Component {
     }
 
     // For add new category
-    handleAddNewCatergory = (category) => {
+    handleAddNewCatergory = () => {
         this.setState({
-            isOpenedModalCreateCategory: true,
-            categoryCreate: category
+            isOpenedModalCreateCategory: true
         });
     }
 
@@ -127,7 +125,6 @@ class Category extends Component {
                             <ModalCreateCategory
                                 open={this.state.isOpenedModalCreateCategory}
                                 toggle={this.toggleCreateCategoryModal}
-                                categoryInfor={this.state.categoryCreate}
                                 createCategory={this.doCreateCategory}
                             />
                         }

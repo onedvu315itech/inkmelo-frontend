@@ -16,8 +16,7 @@ class ModalCreatePublisher extends Component {
             createdAt: '',
             lastUpdatedTime: '',
             lastChangedBy: '',
-            status: '',
-            isOpened: false,
+            status: ''
         }
 
         this.listenToEmitter();
@@ -33,25 +32,9 @@ class ModalCreatePublisher extends Component {
                 createdAt: '',
                 lastUpdatedTime: '',
                 lastChangedBy: '',
-                status: '',
+                status: ''
             })
         })
-    }
-
-    componentDidMount() {
-        let publisher = this.props.publisherInfo
-        if (publisher && !_.isEmpty(publisher)) {
-            this.setState({
-                id: publisher.id,
-                name: publisher.name,
-                description: publisher.description,
-                logoImg: publisher.logoImg,
-                createdAt: publisher.createdAt,
-                lastUpdatedTime: publisher.lastUpdatedTime,
-                lastChangedBy: publisher.lastChangedBy,
-                status: publisher.status
-            })
-        }
     }
 
     style = {
@@ -127,7 +110,7 @@ class ModalCreatePublisher extends Component {
                         </div>
                         <div className="modal-body pop-up-body">
                             <div className="form-group col-12">
-                                <div className="col-1">
+                                <div className="col-2">
                                     <label htmlFor="category-name" className="col-form-label">ID:</label>
                                     <input type="text" className="form-control" readOnly
                                         onChange={(event) => { this.handleOnChangeInput(event, "id") }}
@@ -138,7 +121,7 @@ class ModalCreatePublisher extends Component {
                                     <label htmlFor="publisher-name" className="col-form-label">Logo:</label>
                                     <FileUpload
                                         storageLocation="publisher-images"
-                                        getImage={this.getImage}
+                                        getFile={this.getImage}
                                         onChange={(event) => { this.handleOnChangeInput(event, "logoImg") }}
                                     />
                                 </div>
