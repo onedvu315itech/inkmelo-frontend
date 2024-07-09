@@ -14,6 +14,7 @@ import CartRoutes from './CartRoutes';
 import UserRoutes from './UserRoutes';
 import RegisterRoutes from './RegisterRoutes';
 
+
 // ==============================|| ROUTING RENDER ||============================== //
 
 const router = createBrowserRouter([

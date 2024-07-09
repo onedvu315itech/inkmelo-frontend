@@ -40,12 +40,20 @@ const Cart = () => {
         );
     };
 
-    const handleRemoveItem = (id) => {
-        setCart((prevCart) => prevCart.filter((item) => item.bookTitle !== id));
+    const handleRemoveItem = async (id) => {
+        setCart((prevCart) => prevCart.filter((item) => item.bookPackageId !== id));
+        let bookPackageId = id
+        let data = {
+            bookPackageId: bookPackageId,
+            quantity: 0
+        }
+        await cartServices.addToCart(data);
+
     };
 
-    const handleClearCart = () => {
+    const handleClearCart = async () => {
         setCart([]);
+        await cartServices.addToCart([]);
     };
 
     const handleCodeChange = (event) => {
@@ -113,7 +121,7 @@ const Cart = () => {
                                                             <Typography>{item.bookPackagePrice} VND</Typography>
                                                         </Grid>
                                                         <Grid item md={1} sx={{ textAlign: "right" }}>
-                                                            <IconButton onClick={() => handleRemoveItem(item.bookTitle)}>
+                                                            <IconButton onClick={() => handleRemoveItem(item.bookPackageId)}>
                                                                 <Close />
                                                             </IconButton>
                                                         </Grid>
@@ -144,9 +152,7 @@ const Cart = () => {
                                                     <Typography variant="h6">Số sản phẩm {totalItems}</Typography>
                                                     <Typography variant="h6">{totalPrice} VND</Typography>
                                                 </Box>
-                                                <Box sx={{ mb: 5 }}>
-                                                    <TextField fullWidth label="Mã giảm giá" variant="outlined" value={code} onChange={handleCodeChange} />
-                                                </Box>
+
                                                 <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 4 }} />
 
                                                 <Box sx={{ display: "flex", justifyContent: "space-between", mb: 5 }}>
