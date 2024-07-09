@@ -1,11 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from '../../assets/images/icons/logo.png'
 import '../../style/css/Navbar.css'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faCartShopping, faCircle, faFileInvoice, faHeart, faMagnifyingGlass, faSignOut, faUser } from '@fortawesome/free-solid-svg-icons';
+import cartServices from 'services/cartServices';
 
 const Navbar = () => {
+    let [quantity, setQuantity] = useState(0);
+
+    useEffect(() => {
+        let fetchCart = async () => {
+            let resOfCart = await cartServices.getAllCart();
+            if (resOfCart) setQuantity(resOfCart.data.length);
+        };
+        fetchCart();
+    }, [quantity]);
+
     return (
         <div className="main-navbar shadow-sm sticky-top">
             <div className="top-navbar">
@@ -42,11 +53,11 @@ const Navbar = () => {
                                                     </ul>
                                                 </div>
                                                 <div className="explore-shop">
-                                                    <a className="dropdown-item explore-shop-title" href="/shop">Cửa hàng</a>
+                                                    <a className="dropdown-item explore-shop-title" href="/store">Cửa hàng</a>
                                                     <ul>
-                                                        <li><a className="dropdown-item explore-shop-item" href="/shop">Sách trong
+                                                        <li><a className="dropdown-item explore-shop-item" href="/store">Sách trong
                                                             nước</a></li>
-                                                        <li><a className="dropdown-item explore-shop-item" href="/shop">Sách nước
+                                                        <li><a className="dropdown-item explore-shop-item" href="/store">Sách nước
                                                             ngoài</a></li>
                                                     </ul>
                                                 </div>
@@ -87,7 +98,7 @@ const Navbar = () => {
                                     </a>
                                     <div className="count-container">
                                         <FontAwesomeIcon icon={faCircle} id="circle-count" />
-                                        <span id="cart-count">5</span>
+                                        <span id="cart-count">{quantity}</span>
                                     </div>
                                 </li>
                                 <li className="nav-item dropdown">
