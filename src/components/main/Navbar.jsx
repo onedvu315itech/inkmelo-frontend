@@ -7,6 +7,8 @@ import { faBell, faCartShopping, faCircle, faFileInvoice, faHeart, faMagnifyingG
 import cartServices from 'services/cartServices';
 
 const Navbar = () => {
+    const role = localStorage.getItem('roles');
+    const username = localStorage.getItem('username');
     let [quantity, setQuantity] = useState(0);
 
     useEffect(() => {
@@ -15,7 +17,13 @@ const Navbar = () => {
             if (resOfCart) setQuantity(resOfCart.data.length);
         };
         fetchCart();
-    }, [quantity]);
+    }, []);
+
+    let style = {
+        color: '#000000',
+        backgroundColor: '#F5F5F5',
+        border: 1 + 'px solid rgb(220, 120, 0)'
+    }
 
     return (
         <div className="main-navbar shadow-sm sticky-top">
@@ -92,35 +100,72 @@ const Navbar = () => {
                                         </a></li>
                                     </ul>
                                 </li>
-                                <li className="nav-item">
-                                    <a className="nav-link" href="/cart">
-                                        <FontAwesomeIcon icon={faCartShopping} id="nav-icon" /> <p>Giỏ hàng</p>
-                                    </a>
-                                    <div className="count-container">
-                                        <FontAwesomeIcon icon={faCircle} id="circle-count" />
-                                        <span id="cart-count">{quantity}</span>
-                                    </div>
-                                </li>
-                                <li className="nav-item dropdown">
-                                    <div className="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <FontAwesomeIcon icon={faUser} id="nav-icon" /> <p>Tài khoản</p>
-                                    </div>
-                                    <ul className="dropdown-menu user-nav" aria-labelledby="navbarDropdownMenuLink">
-                                        <li><a className="dropdown-item" href="/user/account">
-                                            <FontAwesomeIcon icon={faUser} id="account-icon" /><p>Thông tin tài khoản</p>
-                                        </a></li>
-                                        <li><a className="dropdown-item" href="/user/sales/order/history">
-                                            <FontAwesomeIcon icon={faFileInvoice} id="account-icon" /><p>Đơn hàng của tôi</p>
-                                        </a></li>
-                                        <li><a className="dropdown-item" href="/user/wish-list">
-                                            <FontAwesomeIcon icon={faHeart} id="account-icon" /><p>Sản phẩm yêu thích</p>
-                                        </a></li>
-                                        <hr className="dropdown-divider" style={{ color: "gray" }} />
-                                        <li><a className="dropdown-item" href="/login">
-                                            <FontAwesomeIcon icon={faSignOut} id="account-icon" /><p>Thoát đăng nhập</p>
-                                        </a></li>
-                                    </ul>
-                                </li>
+                                {
+                                    role && role.includes('CUSTOMER') ?
+                                        <li className="nav-item">
+                                            <a className="nav-link" href="/cart">
+                                                <FontAwesomeIcon icon={faCartShopping} id="nav-icon" /> <p>Giỏ hàng</p>
+                                            </a>
+                                            {
+                                                role.includes('CUSTOMER') &&
+                                                <div className="count-container">
+                                                    <FontAwesomeIcon icon={faCircle} id="circle-count" />
+                                                    <span id="cart-count">{quantity}</span>
+                                                </div>
+                                            }
+                                        </li>
+                                        :
+                                        <li className="nav-item">
+                                            <div className="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <FontAwesomeIcon icon={faCartShopping} id="nav-icon" /> <p>Giỏ hàng</p>
+                                            </div>
+                                            <ul className="dropdown-menu user-nav" aria-labelledby="navbarDropdownMenuLink">
+                                                <p style={{
+                                                    fontSize: 14 + 'px',
+                                                    textAlign: "center",
+                                                    padding: 0 + 5 + 'px'
+                                                }}>Vui lòng đăng nhập để xem giỏ hàng</p>
+                                                <div style={{ textAlign: "center" }}>
+                                                    <a className="btn" href="/login" role="button" style={style}>Đăng nhập</a>
+                                                </div>
+                                            </ul>
+                                        </li>
+                                }
+                                {
+                                    role ?
+                                        <li className="nav-item dropdown">
+                                            <div className="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <FontAwesomeIcon icon={faUser} id="nav-icon" /> <p style={{ textTransform: "capitalize" }}>{username}</p>
+                                            </div>
+                                            <ul className="dropdown-menu user-nav" aria-labelledby="navbarDropdownMenuLink">
+                                                <li><a className="dropdown-item" href="/user/account">
+                                                    <FontAwesomeIcon icon={faUser} id="account-icon" /><p>Thông tin tài khoản</p>
+                                                </a></li>
+                                                <li><a className="dropdown-item" href="/user/sales/order/history">
+                                                    <FontAwesomeIcon icon={faFileInvoice} id="account-icon" /><p>Đơn hàng của tôi</p>
+                                                </a></li>
+                                                <li><a className="dropdown-item" href="/user/wish-list">
+                                                    <FontAwesomeIcon icon={faHeart} id="account-icon" /><p>Sản phẩm yêu thích</p>
+                                                </a></li>
+                                                <hr className="dropdown-divider" style={{ color: "gray" }} />
+                                                <li><a className="dropdown-item" href="/login">
+                                                    <FontAwesomeIcon icon={faSignOut} id="account-icon" /><p>Thoát đăng nhập</p>
+                                                </a></li>
+                                            </ul>
+                                        </li>
+                                        :
+                                        <li className="nav-item dropdown">
+                                            <div className="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <FontAwesomeIcon icon={faUser} id="nav-icon" /> <p>Tài khoản</p>
+                                            </div>
+                                            <ul className="dropdown-menu user-nav" aria-labelledby="navbarDropdownMenuLink">
+                                                <p style={{ fontSize: 14 + 'px', textAlign: "center" }}>Vui lòng đăng nhập</p>
+                                                <div style={{ textAlign: "center" }}>
+                                                    <a className="btn" href="/login" role="button" style={style}>Đăng nhập</a>
+                                                </div>
+                                            </ul>
+                                        </li>
+                                }
                             </ul>
                         </div>
                     </div>

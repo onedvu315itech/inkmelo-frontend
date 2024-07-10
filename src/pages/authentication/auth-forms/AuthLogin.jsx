@@ -24,6 +24,8 @@ import FirebaseSocial from './FirebaseSocial';
 // Validation schema
 import * as Yup from 'yup';
 import authServices from 'services/authServices';
+import { useDispatch } from 'react-redux';
+import { loginAction } from 'contexts/redux/actions';
 
 const validationSchema = Yup.object().shape({
   username: Yup.string()
@@ -37,7 +39,9 @@ const validationSchema = Yup.object().shape({
 });
 
 const AuthLogin = () => {
+  localStorage.clear();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     username: '',
@@ -100,6 +104,7 @@ const AuthLogin = () => {
       let isValid = await checkCredentials(username, password);
 
       if (isValid.status === 200) {
+        console.log(isValid)
 
         if (isValid.data.jwtToken) {
           localStorage.setItem("jwtToken", JSON.stringify(isValid.data.jwtToken));
@@ -108,6 +113,10 @@ const AuthLogin = () => {
         if (isValid.data.roles) {
           localStorage.setItem("roles", JSON.stringify(isValid.data.roles))
         }
+
+        localStorage.setItem("username", isValid.data.username);
+
+        dispatch(loginAction(isValid.data.username, isValid.data.roles))
 
         // Authorization
         let roles = isValid.data.roles
@@ -138,7 +147,6 @@ const AuthLogin = () => {
   const checkCredentials = async (username, password) => {
     try {
       let res = await authServices.login(username, password);
-      console.log(res)
       if (res) return res;
       else return;
     } catch (err) {
