@@ -9,6 +9,11 @@ const getAllBookPackageWithFilter = async (categoryId, query) => {
     });
 }
 
+const getBookDetails = (slug) => {
+    return axios.get(`store/api/v1/book-packages/${slug}`);
+}
+
 export default {
-    getAllBookPackageWithFilter
+    getAllBookPackageWithFilter,
+    getBookDetails
 }
