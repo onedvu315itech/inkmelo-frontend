@@ -16,10 +16,12 @@ import { Add, Remove, Close, ArrowBack } from "@mui/icons-material";
 import Footer from "components/main/Footer";
 import Navbar from "components/main/Navbar";
 import cartServices from "services/cartServices";
+import { useNavigate } from "react-router";
 
 const Cart = () => {
     const [cart, setCart] = useState([]);
     const [code, setCode] = useState("");
+    const navigate = useNavigate()
 
     useEffect(() => {
         getAllCart();
@@ -51,14 +53,9 @@ const Cart = () => {
 
     };
 
-    const handleClearCart = async () => {
-        setCart([]);
-        await cartServices.addToCart([]);
-    };
-
-    const handleCodeChange = (event) => {
-        setCode(event.target.value);
-    };
+    const handleCheckOut = () => {
+        navigate('/cart/checkout');
+    }
 
     const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
     const totalPrice = cart.reduce((acc, item) => acc + item.quantity * item.bookPackagePrice, 0);
@@ -160,13 +157,12 @@ const Cart = () => {
                                                     <Typography variant="h6">{totalPrice} VND</Typography>
                                                 </Box>
 
-                                                <Button variant="contained" color="primary" fullWidth>
+                                                <Button variant="contained" color="primary" fullWidth
+                                                    onClick={handleCheckOut}>
                                                     Mua hàng
                                                 </Button>
-                                                <Button variant="contained" color="secondary" fullWidth onClick={handleClearCart} sx={{ mt: 2 }}>
-                                                    Xóa tất cả sản phẩm
-                                                </Button>
-                                            </Box>
+
+                                            </Box>/
                                         </Grid>
                                     </Grid>
                                 </CardContent>

@@ -5,7 +5,8 @@ const Cart = Loadable(lazy(() => import('pages/main/Cart')));
 
 const CartRoutes = {
     path: '/cart',
-    element: <Cart />
+    element: <Cart />,
+
 }
 
 export default CartRoutes;

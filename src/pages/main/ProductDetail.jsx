@@ -7,15 +7,21 @@ import Typography from '@mui/material/Typography';
 
 export default function ProductDetail() {
     const { slug } = useParams();
-    const [product, setProduct] = useState(null);
+    const [product, setProduct] = useState(null); // Initialize with null
 
     useEffect(() => {
         const fetchProduct = async () => {
-            const res = await axios.get(`https://inkmelo-springboot-be-s2etd44lba-as.a.run.app/store/api/v1/book-packages/slug/${slug}`);
-            setProduct(res.data);
+            try {
+                const res = await axios.get(`https://inkmelo-springboot-be-s2etd44lba-as.a.run.app/store/api/v1/book-packages/${slug}`);
+                setProduct(res.data.data); // Set the correct path to access the product data
+                console.log(product)
+            } catch (error) {
+                console.error('Error fetching product:', error);
+            }
         };
         fetchProduct();
-    }, [id]);
+        console.log(product)
+    }, [slug]);
 
     if (!product) return <div>Loading...</div>;
 
@@ -24,6 +30,7 @@ export default function ProductDetail() {
             <Typography variant="h4" component="div">
                 {product.book.title}
             </Typography>
+
             <img src={product.book.bookCoverImg} alt={product.book.title} style={{ width: '100%', height: 'auto' }} />
             <Typography variant="h5" component="div">
                 {product.price} VNĐ

@@ -13,7 +13,8 @@ import AboutUsRoutes from './AboutUsRoutes';
 import CartRoutes from './CartRoutes';
 import UserRoutes from './UserRoutes';
 import RegisterRoutes from './RegisterRoutes';
-
+import CheckoutRoutes from './CheckOutRoutes';
+import ProductDetailRoutes from './BookDetailsRoutes';
 
 // ==============================|| ROUTING RENDER ||============================== //
 
@@ -28,6 +29,8 @@ const router = createBrowserRouter([
     AboutUsRoutes,
     CartRoutes,
     UserRoutes,
+    CheckoutRoutes,
+    ProductDetailRoutes,
 
     // Info routes
     IntroRoutes,
