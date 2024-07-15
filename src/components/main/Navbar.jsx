@@ -3,7 +3,7 @@ import logo from '../../assets/images/icons/logo.png'
 import '../../style/css/Navbar.css'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell, faCartShopping, faCircle, faFileInvoice, faHeart, faMagnifyingGlass, faSignOut, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faCartShopping, faFileInvoice, faHeart, faMagnifyingGlass, faSignOut, faUser } from '@fortawesome/free-solid-svg-icons';
 
 const Navbar = () => {
     const role = sessionStorage.getItem('roles');
