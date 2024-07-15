@@ -9,7 +9,7 @@ class AuthService {
     }
 
     logout() {
-        localStorage.clear();
+        sessionStorage.clear();
     }
 
     register(username, fullname, email, password, confirmPassword, role) {

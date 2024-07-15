@@ -17,19 +17,33 @@ import Navbar from "components/main/Navbar";
 import cartServices from "services/cartServices";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
+import storeServices from "services/storeServices";
 
 const Cart = () => {
     const [cart, setCart] = useState([]);
+    const [bookPackage, setBookPackage] = useState([]);
     const [error, setError] = useState(null);
+    const [isLoading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const username = localStorage.getItem('username');
+    const username = sessionStorage.getItem('username');
 
     useEffect(() => {
         getAllCart();
+        getAllBookPackage();
     }, []);
 
+    const getAllBookPackage = async () => {
+        try {
+            let resOfBookPackage = await storeServices.getAllBookPackageWithFilter();
+            if (resOfBookPackage) setBookPackage(resOfBookPackage.data);
+        } catch (error) {
+            setError(error.response.data.message);
+            setBookPackage([]);
+        }
+    }
+
     const getAllCart = async () => {
-        if (localStorage.getItem('roles').includes('CUSTOMER')) {
+        if (sessionStorage.getItem('roles').includes('CUSTOMER')) {
             try {
                 let res = await cartServices.getAllCart(username);
                 if (res) setCart(res.data);
@@ -41,13 +55,13 @@ const Cart = () => {
     };
 
     const handleQuantityChange = async (id, delta) => {
-        if (localStorage.getItem('roles').includes('CUSTOMER')) {
+        if (sessionStorage.getItem('roles').includes('CUSTOMER')) {
             setCart((prevCart) => {
                 return prevCart.map((item) =>
-                    item.id === id ? { ...item, quantity: item.quantity + delta } : item
+                    item.bookPackageId === id ? { ...item, quantity: item.quantity + delta } : item
                 )
             });
-            let updatedQuantity = cart.find(item => item.id === id).quantity + delta;
+            let updatedQuantity = cart.find(item => item.bookPackageId === id).quantity + delta;
             let data = {
                 bookPackageId: id,
                 quantity: updatedQuantity
@@ -67,8 +81,18 @@ const Cart = () => {
     };
 
     const handleCheckOut = () => {
-        navigate('/cart/checkout');
-    }
+        if (cart.length > 0) {
+            setLoading(true);
+            toast.loading('Đang chuyển hướng đến xác nhận mua hàng');
+            setTimeout(() => {
+                setLoading(false);
+                toast.dismiss();
+                navigate('/cart/checkout');
+            }, 3000);
+        } else {
+            toast.error('Bạn chưa có sản phẩm nào trong giỏ hàng');
+        }
+    };
 
     const totalItems = () => {
         if (cart) return cart.reduce((acc, item) => acc + item.quantity, 0);
@@ -83,13 +107,12 @@ const Cart = () => {
         <>
             <Navbar />
             <Box sx={{ backgroundColor: "#eee", minHeight: "100vh" }}>
-                <Container sx={{ py: 5 }}>
+                <Container>
                     <Grid container justifyContent="center" alignItems="center" sx={{ minHeight: "100vh" }}>
                         <Grid item xs={12}>
                             <Card sx={{ borderRadius: 2 }}>
                                 <CardContent sx={{ p: 0 }}>
                                     <Grid container spacing={0}>
-                                        {/* Left column: Shopping Cart Items */}
                                         <Grid item lg={8}>
                                             <Box sx={{ p: 5 }}>
                                                 <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 5 }}>
@@ -100,7 +123,6 @@ const Cart = () => {
                                                 </Box>
 
                                                 <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 4 }} />
-
                                                 {
                                                     cart && cart.length > 0 ?
                                                         <>
@@ -117,14 +139,30 @@ const Cart = () => {
                                                                     <Grid item md={3}>
                                                                         <Typography>{item.bookTitle}</Typography>
                                                                         <Typography color="textSecondary">{item.bookAuthor}</Typography>
+                                                                        <Typography color="textSecondary">{item.bookPackageDescription}</Typography>
                                                                     </Grid>
                                                                     <Grid item md={3} sx={{ display: "flex", alignItems: "center" }}>
-                                                                        <IconButton
-                                                                            onClick={() => handleQuantityChange(item.id, -1)}
-                                                                            disabled={item.quantity === 1}
-                                                                        >
-                                                                            <Remove />
-                                                                        </IconButton>
+                                                                        {
+                                                                            bookPackage && bookPackage.map((pkg, key) => {
+                                                                                if (item.bookPackageId === pkg.id) {
+                                                                                    if (pkg.items.length === 1) {
+                                                                                        let bookFind = pkg.items.find(item => item.type === 'PAPER');
+                                                                                        if (bookFind) {
+                                                                                            return (
+                                                                                                <IconButton key={key}
+                                                                                                    onClick={() => handleQuantityChange(item.bookPackageId, -1)}
+                                                                                                    disabled={item.quantity === 1}
+                                                                                                >
+                                                                                                    <Remove />
+                                                                                                </IconButton>
+                                                                                            )
+                                                                                        }
+                                                                                    } else {
+                                                                                        return null;
+                                                                                    }
+                                                                                }
+                                                                            })
+                                                                        }
                                                                         <Input
                                                                             type="number"
                                                                             value={item.quantity}
@@ -132,9 +170,27 @@ const Cart = () => {
                                                                             sx={{ width: 50, mx: 1 }}
                                                                             readOnly
                                                                         />
-                                                                        <IconButton onClick={() => handleQuantityChange(item.id, 1)}>
-                                                                            <Add />
-                                                                        </IconButton>
+                                                                        {
+                                                                            bookPackage && bookPackage.map((pkg, key) => {
+                                                                                if (item.bookPackageId === pkg.id) {
+                                                                                    if (pkg.items.length === 1) {
+                                                                                        let bookFind = pkg.items.find(item => item.type === 'PAPER');
+                                                                                        if (bookFind) {
+                                                                                            return (
+                                                                                                <IconButton key={key}
+                                                                                                    disabled={item.quantity === bookFind.stock}
+                                                                                                    onClick={() => handleQuantityChange(item.bookPackageId, 1)}
+                                                                                                >
+                                                                                                    <Add />
+                                                                                                </IconButton>
+                                                                                            )
+                                                                                        }
+                                                                                    } else {
+                                                                                        return null;
+                                                                                    }
+                                                                                }
+                                                                            })
+                                                                        }
                                                                     </Grid>
                                                                     <Grid item md={3} sx={{ textAlign: "right" }}>
                                                                         <Typography>{item.bookPackagePrice.toLocaleString('vi-VN')} VND</Typography>
@@ -155,8 +211,6 @@ const Cart = () => {
                                                 }
 
                                                 <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 4 }} />
-
-                                                {/* Back to shop link */}
                                                 <Box sx={{ pt: 5 }}>
                                                     <Typography variant="body1" component="a" href="/store" color="textPrimary" sx={{ display: "flex", alignItems: "center", marginRight: "590px" }}>
                                                         <ArrowBack sx={{ mr: 1 }} /> Trở lại cửa hàng
@@ -165,32 +219,25 @@ const Cart = () => {
                                             </Box>
                                         </Grid>
 
-                                        {/* Right column: Summary */}
                                         <Grid item lg={4} sx={{ backgroundColor: "#f5f5f5" }}>
                                             <Box sx={{ p: 5 }}>
                                                 <Typography variant="h4" fontWeight="bold" mb={5}>
-                                                    Tổng kết
+                                                    Tổng đơn
                                                 </Typography>
-
                                                 <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 4 }} />
-
                                                 <Box sx={{ display: "flex", justifyContent: "space-between", mb: 4 }}>
                                                     <Typography variant="h6">Số sản phẩm {totalItems()}</Typography>
                                                     <Typography variant="h6">{totalPrice().toLocaleString('vi-VN')} VND</Typography>
                                                 </Box>
-
                                                 <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 4 }} />
-
                                                 <Box sx={{ display: "flex", justifyContent: "space-between", mb: 5 }}>
                                                     <Typography variant="h6">Tổng giá tiền</Typography>
                                                     <Typography variant="h6">{totalPrice().toLocaleString('vi-VN')} VND</Typography>
                                                 </Box>
-
                                                 <Button variant="contained" color="primary" fullWidth
                                                     onClick={handleCheckOut}>
                                                     Mua hàng
                                                 </Button>
-
                                             </Box>
                                         </Grid>
                                     </Grid>

@@ -39,7 +39,6 @@ const validationSchema = Yup.object().shape({
 });
 
 const AuthLogin = () => {
-  localStorage.clear();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -105,14 +104,14 @@ const AuthLogin = () => {
 
       if (isValid.status === 200) {
         if (isValid.data.jwtToken) {
-          localStorage.setItem("jwtToken", JSON.stringify(isValid.data.jwtToken));
+          sessionStorage.setItem("jwtToken", JSON.stringify(isValid.data.jwtToken));
         }
 
         if (isValid.data.roles) {
-          localStorage.setItem("roles", JSON.stringify(isValid.data.roles))
+          sessionStorage.setItem("roles", JSON.stringify(isValid.data.roles))
         }
 
-        localStorage.setItem("username", isValid.data.username);
+        sessionStorage.setItem("username", isValid.data.username);
         dispatch(loginAction(isValid.data.username, isValid.data.roles));
 
         // Authorization

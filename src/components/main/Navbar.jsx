@@ -6,9 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faCartShopping, faCircle, faFileInvoice, faHeart, faMagnifyingGlass, faSignOut, faUser } from '@fortawesome/free-solid-svg-icons';
 
 const Navbar = () => {
-    const role = localStorage.getItem('roles');
-    const username = localStorage.getItem('username');
-    const quantity = localStorage.getItem('cartQuantity');
+    const role = sessionStorage.getItem('roles');
+    const username = sessionStorage.getItem('username');
 
     let style = {
         color: '#000000',
@@ -97,13 +96,6 @@ const Navbar = () => {
                                             <a className="nav-link" href="/cart">
                                                 <FontAwesomeIcon icon={faCartShopping} id="nav-icon" /> <p>Giỏ hàng</p>
                                             </a>
-                                            {
-                                                role.includes('CUSTOMER') &&
-                                                <div className="count-container">
-                                                    <FontAwesomeIcon icon={faCircle} id="circle-count" />
-                                                    <span id="cart-count">{quantity}</span>
-                                                </div>
-                                            }
                                         </li>
                                         :
                                         <li className="nav-item">

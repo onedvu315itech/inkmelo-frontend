@@ -17,12 +17,12 @@ import { toast } from 'react-toastify';
 export default function ProductDetail() {
     const { slug } = useParams();
     const dispatch = useDispatch();
-    const username = localStorage.getItem('username');
+    const username = sessionStorage.getItem('username');
 
     const [product, setProduct] = useState(null);
     const [cart, setCart] = useState([]);
     const [ratings, setRatings] = useState([]);
-    const [quantities, setQuantities] = useState(localStorage.getItem('cartQuantity'));
+    const [quantities, setQuantities] = useState(sessionStorage.getItem('cartQuantity'));
 
     useEffect(() => {
         let fetchData = async () => {
@@ -33,7 +33,7 @@ export default function ProductDetail() {
             setRatings(resOfRatings.data);
         };
         fetchData();
-        if (localStorage.getItem('roles').includes('CUSTOMER')) {
+        if (sessionStorage.getItem('roles').includes('CUSTOMER')) {
             let fetchCart = async () => {
                 try {
                     let resOfCart = await cartServices.getAllCart(username);
@@ -106,12 +106,12 @@ export default function ProductDetail() {
                 setCart({ ...cart, product });
                 let bookPackageId = product.id;
                 let data = {
-                    username: localStorage.getItem('username'),
+                    username: sessionStorage.getItem('username'),
                     bookPackageId: bookPackageId,
                     quantity: 1
                 }
                 dispatch(addToCartAction(data.username, data.quantity, data));
-                if (localStorage.getItem('roles').includes('CUSTOMER')) {
+                if (sessionStorage.getItem('roles').includes('CUSTOMER')) {
                     await cartServices.addToCart(data.username, data);
                 } else {
                     toast.error('Tài khoản của bạn không phải là tài khoản của khách hàng');
