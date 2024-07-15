@@ -1,23 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import logo from '../../assets/images/icons/logo.png'
 import '../../style/css/Navbar.css'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faCartShopping, faCircle, faFileInvoice, faHeart, faMagnifyingGlass, faSignOut, faUser } from '@fortawesome/free-solid-svg-icons';
-import cartServices from 'services/cartServices';
 
 const Navbar = () => {
     const role = localStorage.getItem('roles');
     const username = localStorage.getItem('username');
-    let [quantity, setQuantity] = useState(0);
-
-    useEffect(() => {
-        let fetchCart = async () => {
-            let resOfCart = await cartServices.getAllCart();
-            if (resOfCart) setQuantity(resOfCart.data.length);
-        };
-        fetchCart();
-    }, []);
+    const quantity = localStorage.getItem('cartQuantity');
 
     let style = {
         color: '#000000',

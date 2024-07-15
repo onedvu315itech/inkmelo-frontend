@@ -11,3 +11,8 @@ export const loginAction = (user, roles) => ({
 export const logoutAction = () => ({
     type: LOGOUT
 });
+
+export const registerAction = (key) => ({
+    type: REGISTER,
+    payload: { key }
+})

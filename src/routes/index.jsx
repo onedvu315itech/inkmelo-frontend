@@ -4,7 +4,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import MainRoutes from './MainRoutes';
 import LoginRoutes from './LoginRoutes';
 import HomeRoutes from './HomeRoutes';
-import StoreRoutes from './ShopRoutes';
+import StoreRoutes from './StoreRoutes';
 import IntroRoutes from './information/IntroRoutes';
 import PaymentPolicyRoutes from './information/PaymentPolicyRoutes';
 import PrivacyPolicyRoutes from './information/PrivacyPolicyRoutes';
@@ -14,7 +14,6 @@ import CartRoutes from './CartRoutes';
 import UserRoutes from './UserRoutes';
 import RegisterRoutes from './RegisterRoutes';
 import CheckoutRoutes from './CheckOutRoutes';
-import ProductDetailRoutes from './BookDetailsRoutes';
 
 // ==============================|| ROUTING RENDER ||============================== //
 
@@ -30,7 +29,6 @@ const router = createBrowserRouter([
     CartRoutes,
     UserRoutes,
     CheckoutRoutes,
-    ProductDetailRoutes,
 
     // Info routes
     IntroRoutes,

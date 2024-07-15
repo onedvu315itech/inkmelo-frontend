@@ -1,9 +1,8 @@
 import Loadable from "components/Loadable";
-import { Children, lazy } from "react";
-
+import { lazy } from "react";
 
 const Store = Loadable(lazy(() => import('pages/main/Store')));
-
+const ProductDetails = Loadable(lazy(() => import('pages/main/ProductDetail')));
 
 const StoreRoutes = {
     path: '/store',
@@ -11,6 +10,10 @@ const StoreRoutes = {
         {
             path: '',
             element: <Store />
+        },
+        {
+            path: 'product/:slug',
+            element: <ProductDetails />
         }
     ]
 };

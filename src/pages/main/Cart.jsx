@@ -10,55 +10,74 @@ import {
     IconButton,
     Input,
     Typography,
-    TextField,
 } from "@mui/material";
 import { Add, Remove, Close, ArrowBack } from "@mui/icons-material";
 import Footer from "components/main/Footer";
 import Navbar from "components/main/Navbar";
 import cartServices from "services/cartServices";
 import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 
 const Cart = () => {
     const [cart, setCart] = useState([]);
-    const [code, setCode] = useState("");
-    const navigate = useNavigate()
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+    const username = localStorage.getItem('username');
 
     useEffect(() => {
         getAllCart();
     }, []);
 
     const getAllCart = async () => {
-        let res = await cartServices.getAllCart();
-        if (res) {
-            setCart(res.data);
+        if (localStorage.getItem('roles').includes('CUSTOMER')) {
+            try {
+                let res = await cartServices.getAllCart(username);
+                if (res) setCart(res.data);
+            } catch (error) {
+                setError(error.response.data.message);
+                setCart([]);
+            }
         }
     };
 
-    const handleQuantityChange = (id, delta) => {
-        setCart((prevCart) =>
-            prevCart.map((item) =>
-                item.bookTitle === id ? { ...item, quantity: item.quantity + delta } : item
-            )
-        );
+    const handleQuantityChange = async (id, delta) => {
+        if (localStorage.getItem('roles').includes('CUSTOMER')) {
+            setCart((prevCart) => {
+                return prevCart.map((item) =>
+                    item.id === id ? { ...item, quantity: item.quantity + delta } : item
+                )
+            });
+            let updatedQuantity = cart.find(item => item.id === id).quantity + delta;
+            let data = {
+                bookPackageId: id,
+                quantity: updatedQuantity
+            }
+            await cartServices.addToCart(username, data);
+        }
     };
 
     const handleRemoveItem = async (id) => {
         setCart((prevCart) => prevCart.filter((item) => item.bookPackageId !== id));
-        let bookPackageId = id
         let data = {
-            bookPackageId: bookPackageId,
+            bookPackageId: id,
             quantity: 0
         }
-        await cartServices.addToCart(data);
-
+        await cartServices.addToCart(username, data);
+        toast.success('Đã xóa sản phẩm khỏi giỏ hàng');
     };
 
     const handleCheckOut = () => {
         navigate('/cart/checkout');
     }
 
-    const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
-    const totalPrice = cart.reduce((acc, item) => acc + item.quantity * item.bookPackagePrice, 0);
+    const totalItems = () => {
+        if (cart) return cart.reduce((acc, item) => acc + item.quantity, 0);
+        else return 0;
+    }
+    const totalPrice = () => {
+        if (cart) return cart.reduce((acc, item) => acc + item.quantity * item.bookPackagePrice, 0);
+        else return 0;
+    }
 
     return (
         <>
@@ -77,53 +96,63 @@ const Cart = () => {
                                                     <Typography variant="h4" fontWeight="bold">
                                                         Giỏ hàng
                                                     </Typography>
-                                                    <Typography color="textSecondary">{totalItems} Sản phẩm</Typography>
+                                                    {cart.length > 0 ? <Typography color="textSecondary">{totalItems()} Sản phẩm</Typography> : <div></div>}
                                                 </Box>
 
                                                 <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 4 }} />
 
-                                                {cart.map((item, key) => (
-                                                    <Grid container spacing={2} alignItems="center" sx={{ mb: 4 }} key={key}>
-                                                        <Grid item md={2}>
-                                                            <CardMedia
-                                                                component="img"
-                                                                image={item.bookCoverImg}
-                                                                alt={item.bookTitle}
-                                                                sx={{ borderRadius: 1 }}
-                                                            />
-                                                        </Grid>
-                                                        <Grid item md={3}>
-                                                            <Typography>{item.bookTitle}</Typography>
-                                                            <Typography color="textSecondary">{item.bookAuthor}</Typography>
-                                                        </Grid>
-                                                        <Grid item md={3} sx={{ display: "flex", alignItems: "center" }}>
-                                                            <IconButton
-                                                                onClick={() => handleQuantityChange(item.bookTitle, -1)}
-                                                                disabled={item.quantity === 1}
-                                                            >
-                                                                <Remove />
-                                                            </IconButton>
-                                                            <Input
-                                                                type="number"
-                                                                value={item.quantity}
-                                                                inputProps={{ min: 1 }}
-                                                                sx={{ width: 50, mx: 1 }}
-                                                                readOnly
-                                                            />
-                                                            <IconButton onClick={() => handleQuantityChange(item.bookTitle, 1)}>
-                                                                <Add />
-                                                            </IconButton>
-                                                        </Grid>
-                                                        <Grid item md={3} sx={{ textAlign: "right" }}>
-                                                            <Typography>{item.bookPackagePrice} VND</Typography>
-                                                        </Grid>
-                                                        <Grid item md={1} sx={{ textAlign: "right" }}>
-                                                            <IconButton onClick={() => handleRemoveItem(item.bookPackageId)}>
-                                                                <Close />
-                                                            </IconButton>
-                                                        </Grid>
-                                                    </Grid>
-                                                ))}
+                                                {
+                                                    cart && cart.length > 0 ?
+                                                        <>
+                                                            {cart && cart.map((item, key) => (
+                                                                <Grid container spacing={2} alignItems="center" sx={{ mb: 4 }} key={key}>
+                                                                    <Grid item md={2}>
+                                                                        <CardMedia
+                                                                            component="img"
+                                                                            image={item.bookCoverImg}
+                                                                            alt={item.bookTitle}
+                                                                            sx={{ borderRadius: 1 }}
+                                                                        />
+                                                                    </Grid>
+                                                                    <Grid item md={3}>
+                                                                        <Typography>{item.bookTitle}</Typography>
+                                                                        <Typography color="textSecondary">{item.bookAuthor}</Typography>
+                                                                    </Grid>
+                                                                    <Grid item md={3} sx={{ display: "flex", alignItems: "center" }}>
+                                                                        <IconButton
+                                                                            onClick={() => handleQuantityChange(item.id, -1)}
+                                                                            disabled={item.quantity === 1}
+                                                                        >
+                                                                            <Remove />
+                                                                        </IconButton>
+                                                                        <Input
+                                                                            type="number"
+                                                                            value={item.quantity}
+                                                                            inputProps={{ min: 1 }}
+                                                                            sx={{ width: 50, mx: 1 }}
+                                                                            readOnly
+                                                                        />
+                                                                        <IconButton onClick={() => handleQuantityChange(item.id, 1)}>
+                                                                            <Add />
+                                                                        </IconButton>
+                                                                    </Grid>
+                                                                    <Grid item md={3} sx={{ textAlign: "right" }}>
+                                                                        <Typography>{item.bookPackagePrice.toLocaleString('vi-VN')} VND</Typography>
+                                                                    </Grid>
+                                                                    <Grid item md={1} sx={{ textAlign: "right" }}>
+                                                                        <IconButton onClick={() => handleRemoveItem(item.bookPackageId)}>
+                                                                            <Close />
+                                                                        </IconButton>
+                                                                    </Grid>
+                                                                </Grid>
+                                                            ))}
+                                                        </>
+                                                        :
+                                                        <Typography variant="h4" sx={{
+                                                            textAlign: "center",
+                                                            marginBottom: 50 + 'px'
+                                                        }}>{error}</Typography>
+                                                }
 
                                                 <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 4 }} />
 
@@ -146,15 +175,15 @@ const Cart = () => {
                                                 <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 4 }} />
 
                                                 <Box sx={{ display: "flex", justifyContent: "space-between", mb: 4 }}>
-                                                    <Typography variant="h6">Số sản phẩm {totalItems}</Typography>
-                                                    <Typography variant="h6">{totalPrice} VND</Typography>
+                                                    <Typography variant="h6">Số sản phẩm {totalItems()}</Typography>
+                                                    <Typography variant="h6">{totalPrice().toLocaleString('vi-VN')} VND</Typography>
                                                 </Box>
 
                                                 <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 4 }} />
 
                                                 <Box sx={{ display: "flex", justifyContent: "space-between", mb: 5 }}>
                                                     <Typography variant="h6">Tổng giá tiền</Typography>
-                                                    <Typography variant="h6">{totalPrice} VND</Typography>
+                                                    <Typography variant="h6">{totalPrice().toLocaleString('vi-VN')} VND</Typography>
                                                 </Box>
 
                                                 <Button variant="contained" color="primary" fullWidth
@@ -162,7 +191,7 @@ const Cart = () => {
                                                     Mua hàng
                                                 </Button>
 
-                                            </Box>/
+                                            </Box>
                                         </Grid>
                                     </Grid>
                                 </CardContent>
