@@ -9,18 +9,23 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import storeServices from 'services/storeServices';
 import { Star, StarOutline } from '@mui/icons-material';
+import { Box, Button } from '@mui/material';
 
-export default function Product() {
+export default function Product({ categoryId }) {
     const navigate = useNavigate();
     const [product, setProduct] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
 
     useEffect(() => {
         const callProduct = async () => {
-            let resOfBookPackageFilter = (await storeServices.getAllBookPackageWithFilter()).data;
-            setProduct(resOfBookPackageFilter);
+            let resOfBookPackageFilter = (await storeServices.getAllBookPackageWithFilter(currentPage, 8, categoryId));
+            let { items, totalPages } = resOfBookPackageFilter.data;
+            setProduct(items);
+            setTotalPages(totalPages);
         };
         callProduct();
-    }, []);
+    }, [currentPage, categoryId]);
 
     const renderStarRating = (rating) => {
         let numOfStars = Math.floor(rating.star);
@@ -143,6 +148,21 @@ export default function Product() {
                     </Grid>
                 ))}
             </Grid>
+            {totalPages > 1 && (
+                <Box sx={{ textAlign: 'center', marginTop: 2 }}>
+                    {Array.from({ length: totalPages }, (_, index) => (
+                        <Button
+                            key={index}
+                            variant={currentPage === index ? 'contained' : 'outlined'}
+                            color="primary"
+                            onClick={() => setCurrentPage(index)}
+                            sx={{ marginX: 1 }}
+                        >
+                            {index + 1}
+                        </Button>
+                    ))}
+                </Box>
+            )}
         </Container>
     );
 }

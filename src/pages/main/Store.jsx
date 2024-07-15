@@ -2,8 +2,14 @@ import Navbar from "components/main/Navbar";
 import Footer from "components/main/Footer";
 import Filter from "components/store/Filter";
 import Product from "components/store/Product";
+import { useState } from "react";
 
 const Store = () => {
+    const [selectedCategory, setSelectedCategory] = useState('2');
+
+    const handleFilterChange = (category) => {
+        setSelectedCategory(category);
+    };
     return (
         <>
             <Navbar />
@@ -37,10 +43,10 @@ const Store = () => {
                     <div className="col-12 offset-md-3 col-md-3 align-items-center"
                         style={{ display: "flex" }}
                     >
-                        <Filter />
+                        <Filter handleFilterChange={handleFilterChange} selectedCategory={selectedCategory} />
                     </div>
                 </div>
-                <Product />
+                <Product categoryId={selectedCategory === 'all' ? null : selectedCategory} />
             </div>
             <Footer />
         </>
