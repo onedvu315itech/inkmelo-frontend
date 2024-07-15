@@ -5,18 +5,23 @@ import {
     TextField,
     Button,
     Grid,
-    Paper
+    Paper,
+    CardMedia,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow
 } from '@mui/material';
+import Navbar from 'components/main/Navbar';
 
 class Checkout extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            cartItems: [
-                { title: 'Book Title 1', price: 20, quantity: 1 },
-                { title: 'Book Title 2', price: 25, quantity: 2 }
-            ],
-            total: 70, // Calculate total dynamically in a real app
+            cartItems: JSON.parse(localStorage.getItem("cart")) || [],
+            total: 0,
             userDetails: {
                 name: '',
                 email: '',
@@ -32,22 +37,17 @@ class Checkout extends Component {
             }
         };
 
-        this.handleQuantityChange = this.handleQuantityChange.bind(this);
         this.calculateTotal = this.calculateTotal.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleCheckout = this.handleCheckout.bind(this);
     }
 
-    handleQuantityChange(index, quantity) {
-        const newCartItems = [...this.state.cartItems];
-        newCartItems[index].quantity = quantity;
-        this.setState({ cartItems: newCartItems }, () => {
-            this.calculateTotal(newCartItems);
-        });
+    componentDidMount() {
+        this.calculateTotal(this.state.cartItems);
     }
 
     calculateTotal(items) {
-        const newTotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        const newTotal = items.reduce((sum, item) => sum + item.bookPackagePrice * item.quantity, 0);
         this.setState({ total: newTotal });
     }
 
@@ -62,7 +62,7 @@ class Checkout extends Component {
     }
 
     handleCheckout() {
-        alert('Checkout process initiated.');
+        alert('Quá trình thanh toán được bắt đầu.');
         // Implement actual checkout process here
     }
 
@@ -71,43 +71,67 @@ class Checkout extends Component {
 
         return (
             <>
+                <Navbar />
                 <Container>
                     <Typography variant="h4" gutterBottom>
-                        Checkout
+                        Thanh Toán
                     </Typography>
                     <Grid container spacing={3}>
+                        {/* Cart Items Section */}
                         <Grid item xs={12} md={8}>
                             <Paper style={{ padding: 16, marginBottom: 16 }}>
                                 <Typography variant="h6" gutterBottom>
-                                    Cart Items
+                                    Giỏ Hàng
                                 </Typography>
-                                {cartItems.map((item, index) => (
-                                    <Grid container spacing={2} key={index} style={{ marginBottom: 16 }}>
-                                        <Grid item xs={6}>
-                                            <Typography variant="h6">{item.title}</Typography>
-                                            <Typography>Price: ${item.price}</Typography>
-                                        </Grid>
-                                        <Grid item xs={6}>
-                                            <TextField
-                                                label="Quantity"
-                                                type="number"
-                                                value={item.quantity}
-                                                onChange={(e) => this.handleQuantityChange(index, parseInt(e.target.value))}
-                                                inputProps={{ min: 1 }}
-                                                fullWidth
-                                            />
-                                        </Grid>
-                                    </Grid>
-                                ))}
+                                <TableContainer component={Paper}>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Hình ảnh</TableCell>
+                                                <TableCell>Tên sách</TableCell>
+                                                <TableCell>Đơn giá</TableCell>
+                                                <TableCell>Số lượng</TableCell>
+                                                <TableCell>Thành tiền</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {cartItems.map((item, index) => (
+                                                <TableRow key={index}>
+                                                    <TableCell>
+                                                        <CardMedia
+                                                            component="img"
+                                                            image={item.bookCoverImg}
+                                                            alt={item.bookTitle}
+                                                            sx={{
+                                                                width: 80,
+                                                                height: 80,
+                                                                objectFit: 'cover',
+                                                                borderRadius: 1
+                                                            }}
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Typography variant="h6">{item.bookTitle}</Typography>
+                                                    </TableCell>
+                                                    <TableCell>{item.bookPackagePrice} VND</TableCell>
+                                                    <TableCell>{item.quantity}</TableCell>
+                                                    <TableCell>{item.bookPackagePrice * item.quantity} VND</TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
                             </Paper>
+
+                            {/* User Details Section */}
                             <Paper style={{ padding: 16, marginBottom: 16 }}>
                                 <Typography variant="h6" gutterBottom>
-                                    User Details
+                                    Thông Tin Người Dùng
                                 </Typography>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} sm={6}>
                                         <TextField
-                                            label="Name"
+                                            label="Họ và Tên"
                                             name="name"
                                             value={userDetails.name}
                                             onChange={(e) => this.handleInputChange(e, 'userDetails')}
@@ -126,7 +150,7 @@ class Checkout extends Component {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <TextField
-                                            label="Address"
+                                            label="Địa chỉ"
                                             name="address"
                                             value={userDetails.address}
                                             onChange={(e) => this.handleInputChange(e, 'userDetails')}
@@ -135,7 +159,7 @@ class Checkout extends Component {
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <TextField
-                                            label="City"
+                                            label="Thành phố"
                                             name="city"
                                             value={userDetails.city}
                                             onChange={(e) => this.handleInputChange(e, 'userDetails')}
@@ -144,7 +168,7 @@ class Checkout extends Component {
                                     </Grid>
                                     <Grid item xs={12} sm={3}>
                                         <TextField
-                                            label="State"
+                                            label="Tỉnh"
                                             name="state"
                                             value={userDetails.state}
                                             onChange={(e) => this.handleInputChange(e, 'userDetails')}
@@ -153,7 +177,7 @@ class Checkout extends Component {
                                     </Grid>
                                     <Grid item xs={12} sm={3}>
                                         <TextField
-                                            label="Zip"
+                                            label="Mã bưu điện"
                                             name="zip"
                                             value={userDetails.zip}
                                             onChange={(e) => this.handleInputChange(e, 'userDetails')}
@@ -162,14 +186,16 @@ class Checkout extends Component {
                                     </Grid>
                                 </Grid>
                             </Paper>
-                            <Paper style={{ padding: 16 }}>
+
+                            {/* Payment Details Section */}
+                            <Paper style={{ padding: 16, marginBottom: 16 }}>
                                 <Typography variant="h6" gutterBottom>
-                                    Payment Details
+                                    Chi Tiết Thanh Toán
                                 </Typography>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} sm={8}>
                                         <TextField
-                                            label="Card Number"
+                                            label="Số thẻ"
                                             name="cardNumber"
                                             value={paymentDetails.cardNumber}
                                             onChange={(e) => this.handleInputChange(e, 'paymentDetails')}
@@ -178,7 +204,7 @@ class Checkout extends Component {
                                     </Grid>
                                     <Grid item xs={12} sm={4}>
                                         <TextField
-                                            label="Expiry Date"
+                                            label="Ngày hết hạn"
                                             name="expiryDate"
                                             value={paymentDetails.expiryDate}
                                             onChange={(e) => this.handleInputChange(e, 'paymentDetails')}
@@ -196,15 +222,32 @@ class Checkout extends Component {
                                     </Grid>
                                 </Grid>
                             </Paper>
+
+                            {/* Checkout Button */}
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                fullWidth
+                                onClick={this.handleCheckout}
+                                style={{ marginTop: 16 }}
+                            >
+                                Tiến Hành Thanh Toán
+                            </Button>
                         </Grid>
+
+                        {/* Summary Section */}
                         <Grid item xs={12} md={4}>
-                            <Paper style={{ padding: 16 }}>
+                            <Paper style={{ padding: 16, textAlign: 'center', marginBottom: 16 }}>
                                 <Typography variant="h6" gutterBottom>
-                                    Total: ${total}
+                                    Tổng cộng:
                                 </Typography>
-                                <Button variant="contained" color="primary" fullWidth onClick={this.handleCheckout}>
-                                    Proceed to Payment
-                                </Button>
+                                <Typography
+                                    variant="h4"
+                                    fontWeight="bold"
+                                    style={{ color: '#ff5722' }} // Highlight color
+                                >
+                                    {total} VND
+                                </Typography>
                             </Paper>
                         </Grid>
                     </Grid>
