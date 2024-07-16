@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import storeServices from 'services/storeServices';
@@ -17,8 +17,10 @@ import { toast } from 'react-toastify';
 export default function ProductDetail() {
     const { slug } = useParams();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const username = sessionStorage.getItem('username');
 
+    const [isLoading, setLoading] = useState(false);
     const [product, setProduct] = useState(null);
     const [cart, setCart] = useState([]);
     const [ratings, setRatings] = useState([]);
@@ -33,7 +35,7 @@ export default function ProductDetail() {
             setRatings(resOfRatings.data);
         };
         fetchData();
-        if (sessionStorage.getItem('roles').includes('CUSTOMER')) {
+        if (sessionStorage.getItem('roles') && sessionStorage.getItem('roles').includes('CUSTOMER')) {
             let fetchCart = async () => {
                 try {
                     let resOfCart = await cartServices.getAllCart(username);
@@ -43,10 +45,12 @@ export default function ProductDetail() {
                 }
             };
             fetchCart();
+        } else {
+            setCart([]);
         }
     }, [slug, quantities]);
 
-    if (!product) return <div>Loading...</div>;
+    if (!product) return <div>Đang tải...</div>;
 
     const renderTypeOfBookItem = (item, bookItem, index) => {
         let format = '';
@@ -96,32 +100,42 @@ export default function ProductDetail() {
     }
 
     const handleAddToCart = async (product) => {
-        let isAlreadyInCart = cart.some(item => item.bookPackageId === product.id);
+        if (sessionStorage.getItem('jwtToken')) {
+            let isAlreadyInCart = cart.some(item => item.bookPackageId === product.id);
 
-        if (isAlreadyInCart) {
-            toast.error('Sản phẩm này đã có trong giỏ hàng');
-        } else {
-            let isPaper = product.items.find(item => item.type.includes('PAPER'));
-            if (isPaper) {
-                setCart({ ...cart, product });
-                let bookPackageId = product.id;
-                let data = {
-                    username: sessionStorage.getItem('username'),
-                    bookPackageId: bookPackageId,
-                    quantity: 1
-                }
-                dispatch(addToCartAction(data.username, data.quantity, data));
-                if (sessionStorage.getItem('roles').includes('CUSTOMER')) {
-                    await cartServices.addToCart(data.username, data);
-                } else {
-                    toast.error('Tài khoản của bạn không phải là tài khoản của khách hàng');
-                }
-                setQuantities(quantities + 1);
-                toast.success('Đã thêm thành công vào giỏ hàng');
+            if (isAlreadyInCart) {
+                toast.error('Sản phẩm này đã có trong giỏ hàng');
             } else {
-                toast.error('Gói sách không có bản cứng');
-                toast.info('Mua Audio và PDF vui lòng sử dụng app trên điện thoại');
+                let isPaper = product.items.find(item => item.type.includes('PAPER'));
+                if (isPaper) {
+                    setCart({ ...cart, product });
+                    let bookPackageId = product.id;
+                    let data = {
+                        username: sessionStorage.getItem('username'),
+                        bookPackageId: bookPackageId,
+                        quantity: 1
+                    }
+                    dispatch(addToCartAction(data.username, data.quantity, data));
+                    if (sessionStorage.getItem('roles').includes('CUSTOMER')) {
+                        await cartServices.addToCart(data.username, data);
+                    } else {
+                        toast.error('Tài khoản của bạn không phải là tài khoản của khách hàng');
+                    }
+                    setQuantities(quantities + 1);
+                    toast.success('Đã thêm thành công vào giỏ hàng');
+                } else {
+                    toast.error('Gói sách không có bản cứng');
+                    toast.info('Mua Audio và PDF vui lòng sử dụng app trên điện thoại');
+                }
             }
+        } else {
+            setLoading(true);
+            toast.loading('Vui lòng đăng nhập để mua sản phẩm');
+            setTimeout(() => {
+                setLoading(false);
+                toast.dismiss();
+                navigate('/login');
+            }, 2000);
         }
     };
 

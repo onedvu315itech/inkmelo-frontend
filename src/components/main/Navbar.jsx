@@ -1,11 +1,22 @@
-import React, { useEffect } from 'react';
-import logo from '../../assets/images/icons/logo.png'
-import '../../style/css/Navbar.css'
+import React, { useEffect, useState } from 'react';
+import logo from '../../assets/images/icons/logo.png';
+import logoNotext from '../../assets/images/icons/logo-notext.png';
+import '../../style/css/Navbar.css';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faCartShopping, faFileInvoice, faHeart, faMagnifyingGlass, faSignOut, faUser } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router';
+import storeServices from 'services/storeServices';
+import { toast } from 'react-toastify';
 
 const Navbar = () => {
+    const [query, setQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [isNavigating, setIsNavigating] = useState(false);
+    const navigate = useNavigate();
+
     const role = sessionStorage.getItem('roles');
     const username = sessionStorage.getItem('username');
 
@@ -13,6 +24,111 @@ const Navbar = () => {
         color: '#000000',
         backgroundColor: '#F5F5F5',
         border: 1 + 'px solid rgb(220, 120, 0)'
+    }
+
+    const debounce = (func, delay) => {
+        let timeoutId;
+        return function () {
+            let context = this;
+            let args = arguments;
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => func.apply(context, args), delay);
+        };
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (searchResults.length > 0) {
+                let dropdown = document.getElementById('search-dropdown');
+                if (dropdown && !dropdown.contains(event.target)) {
+                    setSearchResults([]);
+                    setShowDropdown(false);
+                }
+            }
+        };
+
+        document.addEventListener('click', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [searchResults]);
+
+    const handleSearchSubmit = async (event) => {
+        event.preventDefault();
+
+        try {
+            setLoading(true);
+            let res = await storeServices.getAllBookPackageWithFilter(null, null, null, query);
+            if (query.trim() !== '') {
+                setSearchResults(res.data);
+                setShowDropdown(true);
+            } else {
+                setSearchResults([]);
+            }
+        } catch (error) {
+            console.error('Error fetching search results:', error);
+            setSearchResults([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleInputChange = (event) => {
+        let inputValue = event.target.value;
+        setQuery(inputValue);
+        if (inputValue.trim() !== '') {
+            setLoading(true);
+            setSearchResults([]);
+            setShowDropdown(true);
+        } else {
+            setLoading(false);
+            setSearchResults([]);
+            setShowDropdown(false);
+        }
+
+        debounce(async () => {
+            try {
+                if (inputValue.trim() !== '') {
+                    let res = await storeServices.getAllBookPackageWithFilter(null, null, null, inputValue);
+                    setSearchResults(res.data);
+                }
+            } catch (error) {
+                console.error('Error fetching search results:', error);
+                setSearchResults([]);
+            } finally {
+                setLoading(false);
+            }
+        }, 3000)();
+    }
+
+    const handleResultClick = (productId) => {
+        setIsNavigating(true);
+        toast.loading('Đang chuyển hướng đến sản phẩm được chọn');
+        setTimeout(() => {
+            setIsNavigating(false);
+            toast.dismiss();
+            navigate(`/store/product/${productId}`);
+        }, 1000);
+        setSearchResults([]);
+        setQuery('');
+    };
+
+    const renderTypeOfBookItem = (item, bookItem, index) => {
+        let format = '';
+        if (bookItem.type === 'PAPER') {
+            format += 'Bản cứng';
+        } else if (bookItem.type === 'AUDIO') {
+            format += 'Audio';
+        } else if (bookItem.type === 'PDF') {
+            format += 'PDF';
+        }
+
+        if (index < item.items.length - 1) {
+            format += ', ';
+        }
+
+        return format;
     }
 
     return (
@@ -26,8 +142,8 @@ const Navbar = () => {
                         <div className="form-inline col-md-2 my-auto navbar-middle">
                             <nav className="navbar navbar-expand-lg">
                                 <div className="container-fluid">
-                                    <a className="navbar-brand d-block d-sm-block d-md-none d-lg-none" href="/">
-                                        InkMelo
+                                    <a className="col-md-2 navbar-brand d-block d-sm-block d-md-none d-lg-none" href="/">
+                                        <img src={logoNotext} alt="inkmelo-logo" height={50} />
                                     </a>
                                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
                                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -44,9 +160,9 @@ const Navbar = () => {
                                                 <div className="explore-home">
                                                     <a className="dropdown-item explore-home-title" href="/">Trang chủ</a>
                                                     <ul>
-                                                        <li><a className="dropdown-item explore-home-item" href="#unique-content">Nội dung độc
+                                                        <li><a className="dropdown-item explore-home-item" href="/#unique-content">Nội dung độc
                                                             quyền</a></li>
-                                                        <li><a className="dropdown-item explore-home-item" href="#mobile-app-intro">Ứng dụng
+                                                        <li><a className="dropdown-item explore-home-item" href="/#mobile-app-intro">Ứng dụng
                                                             điện thoại</a></li>
                                                     </ul>
                                                 </div>
@@ -71,12 +187,124 @@ const Navbar = () => {
                         </div>
                         <div className="col-md-8 my-auto navbar-end">
                             <ul className="nav justify-content-end">
-                                <form className="form-inline my-2 my-lg-0">
-                                    <input className="form-control" type="search" placeholder="Tìm kiếm sản phẩm" aria-label="Search" />
+                                <form className="form-inline my-2 my-lg-0" onSubmit={handleSearchSubmit}>
+                                    <input className="form-control" type="search"
+                                        placeholder="Tìm kiếm sản phẩm" aria-label="Search"
+                                        value={query} onChange={(event) => handleInputChange(event)} />
                                     <button id="icon-search" className="btn bg-unset" type="submit">
                                         <FontAwesomeIcon icon={faMagnifyingGlass} />
                                     </button>
                                 </form>
+                                {loading && (
+                                    <div className="position-absolute" id='search-dropdown'
+                                        style={{
+                                            width: 'calc(32% - 2px)',
+                                            backgroundColor: '#FFF',
+                                            border: '1px solid #CCC',
+                                            boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+                                            maxHeight: 300,
+                                            overflowY: 'auto',
+                                            left: 'calc(32.3rem - 2px)',
+                                            top: 4 + 'rem',
+                                            wordWrap: 'break-word'
+                                        }}
+                                    >
+                                        <div
+                                            className="dropdown-item"
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                padding: '10px',
+                                                borderBottom: '1px solid #e0e0e0',
+                                                justifyContent: 'center',
+                                            }}
+                                        >
+                                            <div>
+                                                <p>Đang tìm...</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                                {query && searchResults.length > 0 && showDropdown && (
+                                    <div className="position-absolute" id='search-dropdown'
+                                        style={{
+                                            width: 'calc(32% - 2px)',
+                                            backgroundColor: '#FFF',
+                                            border: '1px solid #CCC',
+                                            boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+                                            maxHeight: 300,
+                                            overflowY: 'auto',
+                                            left: 'calc(32.3rem - 2px)',
+                                            top: 4 + 'rem',
+                                            wordWrap: 'break-word'
+                                        }}
+                                    >
+                                        {searchResults.map((product) => (
+                                            <div
+                                                key={product.id}
+                                                className="dropdown-item"
+                                                onClick={() => handleResultClick(product.id)}
+                                                style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    padding: '10px',
+                                                    borderBottom: '1px solid #e0e0e0',
+                                                    cursor: 'pointer'
+                                                }}
+                                            >
+                                                <div style={{ marginRight: '10px' }}>
+                                                    <img src={product.book.bookCoverImg} alt={product.book.title} style={{ width: '50px', height: '70px', objectFit: 'cover' }} />
+                                                </div>
+                                                <div style={{ flex: 1 }}>
+                                                    <h5 style={{
+                                                        fontSize: '1rem',
+                                                        marginBottom: '5px',
+                                                        overflow: 'hidden',
+                                                        textOverflow: 'ellipsis',
+                                                        whiteSpace: 'normal',
+                                                        display: '-webkit-flex',
+                                                        WebkitLineClamp: 2,
+                                                        WebkitBoxOrient: 'vertical',
+                                                        lineHeight: '1.2em',
+                                                        maxHeight: '2.4em'
+                                                    }}>{product.book.title}</h5>
+                                                    <p style={{ fontSize: '0.875rem', color: '#555' }}>Bao gồm {product.items.map((bookItem, index) => renderTypeOfBookItem(product, bookItem, index))}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                                {query && searchResults.length === 0 && !loading && showDropdown && (
+                                    <div className="position-absolute" id='search-dropdown'
+                                        style={{
+                                            width: 'calc(32% - 2px)',
+                                            backgroundColor: '#FFF',
+                                            border: '1px solid #CCC',
+                                            boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+                                            maxHeight: 300,
+                                            overflowY: 'auto',
+                                            left: 'calc(32.3rem - 2px)',
+                                            top: 4 + 'rem',
+                                            wordWrap: 'break-word'
+                                        }}
+                                    >
+                                        <div
+                                            className="dropdown-item"
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                padding: '10px',
+                                                borderBottom: '1px solid #e0e0e0',
+                                                justifyContent: 'center',
+                                            }}
+                                        >
+                                            <div>
+                                                <p>Không tìm thấy tên sách</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
                                 <li className="nav-item">
                                     <div className="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
                                         <FontAwesomeIcon icon={faBell} id="nav-icon" /> <p>Thông báo</p>
@@ -153,8 +381,8 @@ const Navbar = () => {
                         </div>
                     </div>
                 </div>
-            </div >
-        </div >
+            </div>
+        </div>
     );
 };
 
