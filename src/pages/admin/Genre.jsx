@@ -3,6 +3,7 @@ import MainCard from 'components/MainCard';
 import { Component } from 'react';
 import productService from 'services/productServices';
 import ModalCreateGenre from 'modals/ModalCreateGenre';
+import ModalDisplayGenre from 'modals/ModalDisplayGenre'
 import ModalUpdateGenre from 'modals/ModalUpdateGenre';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -15,6 +16,8 @@ class Genre extends Component {
             listGenre: [],
             isOpenedModalCreateGenre: false,
             isOpenedModalUpdateGenre: false,
+            isOpenedModalDisplayGenre: false,
+            genreDisplay: {},
             genreUpdate: {}
         }
     }
@@ -22,6 +25,12 @@ class Genre extends Component {
     toggleCreateGenreModal = () => {
         this.setState({
             isOpenedModalCreateGenre: !this.state.isOpenedModalCreateGenre
+        });
+    }
+
+    toggleDisplayGenreModal = () => {
+        this.setState({
+            isOpenedModalDisplayGenre: !this.state.isOpenedModalDisplayGenre
         });
     }
 
@@ -41,6 +50,14 @@ class Genre extends Component {
             this.setState({ listGenre: res.data });
     }
 
+
+    //Display genre
+    handleDisplayGenre = (genre) => {
+        this.setState({
+            isOpenedModalDisplayGenre: true,
+            genreDisplay: genre
+        })
+    }
     // For add new genre
     handleAddNewGenre = () => {
         this.setState({
@@ -124,6 +141,14 @@ class Genre extends Component {
                             />
                         }
                         {
+                            this.state.isOpenedModalDisplayGenre &&
+                            <ModalDisplayGenre
+                                open={this.state.isOpenedModalDisplayGenre}
+                                toggle={this.toggleDisplayGenreModal}
+                                genre={this.state.genreDisplay}
+                            />
+                        }
+                        {
                             this.state.isOpenedModalUpdateGenre &&
                             <ModalUpdateGenre
                                 open={this.state.isOpenedModalUpdateGenre}
@@ -157,6 +182,16 @@ class Genre extends Component {
 
                                                 <td>
                                                     <button type="button" className="btn btn-primary"
+                                                        onClick={() => this.handleDisplayGenre(data)}>
+                                                        Xem chi tiết
+                                                    </button>
+                                                    <button type="button" className="btn btn-primary"
+                                                        style={{
+                                                            marginLeft: 1 + "rem",
+                                                            color: "white",
+                                                            backgroundColor: "#FF6600",
+                                                            borderColor: "#FF6600"
+                                                        }}
                                                         onClick={() => this.handleUpdateGenre(data)}>
                                                         Cập nhật
                                                     </button>

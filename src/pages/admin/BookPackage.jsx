@@ -2,10 +2,12 @@ import MainCard from 'components/MainCard';
 import { Component } from 'react';
 import productService from 'services/productServices';
 import ModalCreateBookPackage from 'modals/ModalCreateBookPackage';
+import ModalDisplayBookPackage from 'modals/ModalDisplayBookPackage';
 import ModalUpdateBookPackage from 'modals/ModalUpdateBookPackage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { emitter } from 'utils/emitter';
+
 
 class BookPackage extends Component {
     constructor(props) {
@@ -14,6 +16,8 @@ class BookPackage extends Component {
             listBookPackage: [],
             isOpenedModalCreateBookPackage: false,
             isOpenedModalUpdateBookPackage: false,
+            isOpenedModalDisplayBookPackage: false,
+            bookPackageDisplay: {},
             bookPackageUpdate: {},
             bookPackageCreate: {},
         }
@@ -22,6 +26,12 @@ class BookPackage extends Component {
     toggleCreateBookPackageModal = () => {
         this.setState({
             isOpenedModalCreateBookPackage: !this.state.isOpenedModalCreateBookPackage
+        });
+    }
+
+    toggleDisplayBookPackageModal = () => {
+        this.setState({
+            isOpenedModalDisplayBookPackage: !this.state.isOpenedModalDisplayBookPackage
         });
     }
 
@@ -38,6 +48,13 @@ class BookPackage extends Component {
     getAllBookPackage = async () => {
         let res = await productService.getAllBookPackage();
         if (res) this.setState({ listBookPackage: res.data })
+    }
+    //DisplayBookPackage
+    handleDisplayBookPackage = (bookPackage) => {
+        this.setState({
+            isOpenedModalDisplayBookPackage: true,
+            bookPackageDisplay: bookPackage
+        })
     }
 
     // For add new book package
@@ -117,6 +134,14 @@ class BookPackage extends Component {
                             <FontAwesomeIcon icon={faPlus} /> Thêm mới
                         </button>
                         {
+                            this.state.isOpenedModalDisplayBookPackage &&
+                            <ModalDisplayBookPackage
+                                open={this.state.isOpenedModalDisplayBookPackage}
+                                toggle={this.toggleDisplayBookPackageModal}
+                                bookPackage={this.state.bookPackageDisplay}
+                            />
+                        }
+                        {
                             this.state.isOpenedModalCreateBookPackage &&
                             <ModalCreateBookPackage
                                 open={this.state.isOpenedModalCreateBookPackage}
@@ -151,11 +176,25 @@ class BookPackage extends Component {
                                         return (
                                             <tr key={i}>
                                                 <td>{data.id}</td>
-                                                <td>{data.title}</td>
-                                                <td>{data.book.title}</td>
+                                                <td
+                                                    style={{ textOverflow: 'clip', overflow: 'hidden', width: '25rem' }}
+                                                >{data.title}</td>
+                                                <td
+                                                    style={{ textOverflow: 'clip', overflow: 'hidden', width: '25rem' }}
+                                                >{data.book.title}</td>
                                                 <td>{data.status}</td>
                                                 <td>
                                                     <button type="button" className="btn btn-primary"
+                                                        onClick={() => this.handleDisplayBookPackage(data)}>
+                                                        Xem chi tiết
+                                                    </button>
+                                                    <button type="button" className="btn btn-primary"
+                                                        style={{
+                                                            marginLeft: 1 + "rem",
+                                                            color: "white",
+                                                            backgroundColor: "#FF6600",
+                                                            borderColor: "#FF6600"
+                                                        }}
                                                         onClick={() => this.handleUpdateBookPackage(data)}>
                                                         Cập nhật
                                                     </button>

@@ -4,6 +4,7 @@ import productService from "services/productServices";
 import { Component } from "react";
 import ModalUpdateCategory from 'modals/ModalUpdateCategory';
 import ModalCreateCategory from 'modals/ModalCreateCategory';
+import ModalDisplayCategory from 'modals/ModalDisplayCategory';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { emitter } from 'utils/emitter';
@@ -18,6 +19,8 @@ class Category extends Component {
             listCategory: [],
             isOpenedModalCreateCategory: false,
             isOpenedModalUpdateCategory: false,
+            isOpenedModalDisplayCategory: false,
+            categoryDisplay: {},
             categoryUpdate: {},
         }
     }
@@ -25,6 +28,11 @@ class Category extends Component {
     toggleUpdateCategoryModal = () => {
         this.setState({
             isOpenedModalUpdateCategory: !this.state.isOpenedModalUpdateCategory
+        });
+    }
+    toggleDisplayCategoryModal = () => {
+        this.setState({
+            isOpenedModalDisplayCategory: !this.state.isOpenedModalDisplayCategory
         });
     }
 
@@ -41,6 +49,13 @@ class Category extends Component {
     getAllCategory = async () => {
         let res = await productService.getAllCategory();
         if (res) this.setState({ listCategory: res.data })
+    }
+    //Display category
+    handleDisplayCategory = (category) => {
+        this.setState({
+            isOpenedModalDisplayCategory: true,
+            categoryDisplay: category
+        })
     }
 
     // For add new category
@@ -129,6 +144,14 @@ class Category extends Component {
                             />
                         }
                         {
+                            this.state.isOpenedModalDisplayCategory &&
+                            <ModalDisplayCategory
+                                open={this.state.isOpenedModalDisplayCategory}
+                                toggle={this.toggleDisplayCategoryModal}
+                                category={this.state.categoryDisplay}
+                            />
+                        }
+                        {
                             this.state.isOpenedModalUpdateCategory &&
                             <ModalUpdateCategory
                                 open={this.state.isOpenedModalUpdateCategory}
@@ -160,6 +183,16 @@ class Category extends Component {
                                                 <td> {data.status} </td>
                                                 <td>
                                                     <button type="button" className="btn btn-primary"
+                                                        onClick={() => this.handleDisplayCategory(data)}>
+                                                        Xem chi tiết
+                                                    </button>
+                                                    <button type="button" className="btn btn-primary"
+                                                        style={{
+                                                            marginLeft: 1 + "rem",
+                                                            color: "white",
+                                                            backgroundColor: "#FF6600",
+                                                            borderColor: "#FF6600"
+                                                        }}
                                                         onClick={() => { this.handleUpdateCategory(data) }}>
                                                         Cập nhật
                                                     </button>

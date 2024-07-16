@@ -3,6 +3,7 @@ import MainCard from 'components/MainCard';
 import productServices from 'services/productServices';
 import { Component } from "react";
 import ModalCreatePublisher from 'modals/ModalCreatePublisher';
+import ModalDisplayPublisher from 'modals/ModalDisplayPublisher';
 import ModalUpdatePublisher from 'modals/ModalUpdatePublisher';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -15,6 +16,8 @@ class Publisher extends Component {
             listPublisher: [],
             isOpenedModalCreatePublisher: false,
             isOpenedModalUpdatePublisher: false,
+            isOpenedModalDisplayPublisher: false,
+            publisherDisplay: {},
             publisherUpdate: {},
         }
     }
@@ -22,6 +25,12 @@ class Publisher extends Component {
     toggleCreatePublisherModal = () => {
         this.setState({
             isOpenedModalCreatePublisher: !this.state.isOpenedModalCreatePublisher
+        });
+    }
+
+    toggleDisplayPublisherModal = () => {
+        this.setState({
+            isOpenedModalDisplayPublisher: !this.state.isOpenedModalDisplayPublisher
         });
     }
 
@@ -40,6 +49,15 @@ class Publisher extends Component {
         if (res) this.setState({ listPublisher: res.data })
 
     }
+
+    //Display publisher
+    handleDisplayPublisher = (publisher) => {
+        this.setState({
+            isOpenedModalDisplayPublisher: true,
+            publisherDisplay: publisher
+        })
+    }
+
     // For add new publisher
     handleAddNewPublisher = (publisher) => {
         this.setState({
@@ -123,6 +141,14 @@ class Publisher extends Component {
                             />
                         }
                         {
+                            this.state.isOpenedModalDisplayPublisher &&
+                            <ModalDisplayPublisher
+                                open={this.state.isOpenedModalDisplayPublisher}
+                                toggle={this.toggleDisplayPublisherModal}
+                                publisher={this.state.publisherDisplay}
+                            />
+                        }
+                        {
                             this.state.isOpenedModalUpdatePublisher &&
                             <ModalUpdatePublisher
                                 open={this.state.isOpenedModalUpdatePublisher}
@@ -154,6 +180,16 @@ class Publisher extends Component {
                                                 <td>{data.status}</td>
                                                 <td>
                                                     <button type="button" className="btn btn-primary"
+                                                        onClick={() => this.handleDisplayPublisher(data)}>
+                                                        Xem chi tiết
+                                                    </button>
+                                                    <button type="button" className="btn btn-primary"
+                                                        style={{
+                                                            marginLeft: 1 + "rem",
+                                                            color: "white",
+                                                            backgroundColor: "#FF6600",
+                                                            borderColor: "#FF6600"
+                                                        }}
                                                         onClick={() => this.handleUpdatePublisher(data)}>
                                                         Cập nhật
                                                     </button>

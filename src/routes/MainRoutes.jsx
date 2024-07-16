@@ -18,6 +18,7 @@ const User = Loadable(lazy(() => import('pages/admin/User')));
 const BookItem = Loadable(lazy(() => import('pages/admin/BookItem')));
 const Book = Loadable(lazy(() => import('pages/admin/Book')));
 const BookPackage = Loadable(lazy(() => import('pages/admin/BookPackage')));
+const UserOrder = Loadable(lazy(() => import('pages/admin/UserOrder')));
 // render - sample page
 const SamplePage = Loadable(lazy(() => import('pages/extra-pages/sample-page')));
 
@@ -74,6 +75,10 @@ const MainRoutes = {
     {
       path: 'bookPackage',
       element: <BookPackage />
+    },
+    {
+      path: 'userOrder',
+      element: <UserOrder />
     }
   ]
 };

@@ -7,6 +7,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { emitter } from 'utils/emitter';
 import ModalUpdateBookItem from 'modals/ModalUpdateBookItem';
 import ModalCreateBookItem from 'modals/ModalCreateBookItem';
+import ModalDisplayBookItem from 'modals/ModalDisplayBookItem';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
@@ -17,6 +18,8 @@ class BookItem extends Component {
             listBookItem: [],
             isOpenedModalUpdateBookItem: false,
             isOpenedModalCreateBookItem: false,
+            isOpenedModalDisplayBookItem: false,
+            bookItemDisplay: {},
             bookItemUpdate: {},
         }
     }
@@ -24,6 +27,12 @@ class BookItem extends Component {
     toggleUpdateBookItem = () => {
         this.setState({
             isOpenedModalUpdateBookItem: !this.state.isOpenedModalUpdateBookItem
+        });
+    }
+
+    toggleDisplayBookItemModal = () => {
+        this.setState({
+            isOpenedModalDisplayBookItem: !this.state.isOpenedModalDisplayBookItem
         });
     }
 
@@ -40,6 +49,14 @@ class BookItem extends Component {
     getAllBookItem = async () => {
         let res = await productServices.getAllBookItem();
         if (res) this.setState({ listBookItem: res.data });
+    }
+
+    //Display BookItem
+    handleDisplayBookItem = (bookItem) => {
+        this.setState({
+            isOpenedModalDisplayBookItem: true,
+            bookItemDisplay: bookItem
+        })
     }
 
     // For add new Book Item
@@ -125,6 +142,14 @@ class BookItem extends Component {
                             />
                         }
                         {
+                            this.state.isOpenedModalDisplayBookItem &&
+                            <ModalDisplayBookItem
+                                open={this.state.isOpenedModalDisplayBookItem}
+                                toggle={this.toggleDisplayBookItemModal}
+                                bookItem={this.state.bookItemDisplay}
+                            />
+                        }
+                        {
                             this.state.isOpenedModalUpdateBookItem &&
                             <ModalUpdateBookItem
                                 open={this.state.isOpenedModalUpdateBookItem}
@@ -156,6 +181,16 @@ class BookItem extends Component {
                                                 <td>{data.status}</td>
                                                 <td>
                                                     <button type="button" className="btn btn-primary"
+                                                        onClick={() => this.handleDisplayBookItem(data)}>
+                                                        Xem chi tiết
+                                                    </button>
+                                                    <button type="button" className="btn btn-primary"
+                                                        style={{
+                                                            marginLeft: 1 + "rem",
+                                                            color: "white",
+                                                            backgroundColor: "#FF6600",
+                                                            borderColor: "#FF6600"
+                                                        }}
                                                         onClick={() => this.handleUpdateBookItem(data)}>
                                                         Cập nhật
                                                     </button>

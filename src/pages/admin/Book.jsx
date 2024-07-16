@@ -2,6 +2,7 @@ import MainCard from 'components/MainCard';
 import { Component } from 'react';
 import productService from 'services/productServices';
 import ModalCreateBook from 'modals/ModalCreateBook';
+import ModalDisplayBook from 'modals/ModalDisplayBook';
 import ModalUpdateBook from 'modals/ModalUpdateBook';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -14,6 +15,8 @@ class Book extends Component {
             listBook: [],
             isOpenedModalCreateBook: false,
             isOpenedModalUpdateBook: false,
+            isOpenedModalDisplayBook: false,
+            bookDisplay: {},
             bookUpdate: {}
         }
     }
@@ -27,6 +30,12 @@ class Book extends Component {
     toggleUpdateBookModal = () => {
         this.setState({
             isOpenedModalUpdateBook: !this.state.isOpenedModalUpdateBook
+        });
+    }
+
+    toggleDisplayBookModal = () => {
+        this.setState({
+            isOpenedModalDisplayBook: !this.state.isOpenedModalDisplayBook
         });
     }
 
@@ -62,6 +71,13 @@ class Book extends Component {
         } catch (error) {
             console.log(error)
         }
+    }
+    //Display book
+    handleDisplayBook = (book) => {
+        this.setState({
+            isOpenedModalDisplayBook: true,
+            bookDisplay: book
+        })
     }
 
     // For update book
@@ -123,6 +139,14 @@ class Book extends Component {
                             />
                         }
                         {
+                            this.state.isOpenedModalDisplayBook &&
+                            <ModalDisplayBook
+                                open={this.state.isOpenedModalDisplayBook}
+                                toggle={this.toggleDisplayBookModal}
+                                book={this.state.bookDisplay}
+                            />
+                        }
+                        {
                             this.state.isOpenedModalUpdateBook &&
                             <ModalUpdateBook
                                 open={this.state.isOpenedModalUpdateBook}
@@ -140,7 +164,6 @@ class Book extends Component {
                                 <th scope="col">Tác giả</th>
                                 <th scope="col">Trạng thái</th>
                                 <th scope="col">Thao tác</th>
-
                             </tr>
                         </thead>
                         <tbody>
@@ -155,6 +178,16 @@ class Book extends Component {
                                                 <td>{data.status}</td>
                                                 <td>
                                                     <button type="button" className="btn btn-primary"
+                                                        onClick={() => this.handleDisplayBook(data)}>
+                                                        Xem chi tiết
+                                                    </button>
+                                                    <button type="button" className="btn btn-primary"
+                                                        style={{
+                                                            marginLeft: 1 + "rem",
+                                                            color: "white",
+                                                            backgroundColor: "#FF6600",
+                                                            borderColor: "#FF6600"
+                                                        }}
                                                         onClick={() => this.handleUpdateBook(data)}>
                                                         Cập nhật
                                                     </button>
