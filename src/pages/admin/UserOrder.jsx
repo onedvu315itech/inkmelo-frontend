@@ -10,7 +10,7 @@ class UserOrder extends Component {
         this.state = {
             listUserOrder: [],
             isOpenedModalUserOrder: false,
-            userDisplay: {},
+            userOrderDisplay: {},
         }
     }
 
@@ -27,13 +27,13 @@ class UserOrder extends Component {
     getAllUserOrder = async () => {
         let res = await orderServices.getAllUserOrder();
         console.log(res)
-        if (res) this.setState({ listUserOrder: res.data })
+        if (res) this.setState({ listUserOrder: res.data.items })
     }
 
     handleDisplayUserOrder = (user) => {
         this.setState({
             isOpenedModalUserOrder: true,
-            userDisplay: user
+            userOrderDisplay: user
         })
     }
 
@@ -47,7 +47,7 @@ class UserOrder extends Component {
                             <ModalUserOrder
                                 open={this.state.isOpenedModalUserOrder}
                                 toggle={this.toggleUserOrderModal}
-                                currentUserOrder={this.state.userDisplay}
+                                currentUserOrder={this.state.userOrderDisplay}
                                 displayUserOrder={this.handleDisplayUserOrder}
                             />
                         }
@@ -55,28 +55,28 @@ class UserOrder extends Component {
                     <table className="table">
                         <thead>
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">Họ và tên</th>
+                                <th scope="col">ID đơn hàng</th>
+                                <th scope="col">Tên khách hàng</th>
                                 <th scope="col">Email</th>
-                                <th scope="col">Vị trí</th>
-                                <th scope="col">Trạng thái</th>
+                                <th scope="col">Tổng giá tiền</th>
+                                <th scope="col">Tình trạng thanh toán</th>
                                 <th scope="col">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             {
                                 this.state.listUserOrder &&
-                                    Array.isArray(this.state.listUserOrder) ? this.state.listUserOrder.map((data, i) => {
+                                    Array.isArray(this.state.listUserOrder) ? this.state.listUserOrder.map((order, i) => {
                                         return (
                                             <tr key={i}>
-                                                <td>{data.id}</td>
-                                                <td>{data.fullname}</td>
-                                                <td>{data.email}</td>
-                                                <td>{data.role}</td>
-                                                <td>{data.status}</td>
+                                                <td>{order.id}</td>
+                                                <td>{order.customer.fullname}</td>
+                                                <td>{order.customer.email}</td>
+                                                <td>{order.totalPrice}</td>
+                                                <td>{order.status}</td>
                                                 <td>
                                                     <button type="button" className="btn btn-primary"
-                                                        onClick={() => this.handleDisplayUserOrder(data)}>
+                                                        onClick={() => this.handleDisplayUserOrder(order)}>
                                                         Xem chi tiết
                                                     </button>
                                                 </td >
@@ -92,4 +92,4 @@ class UserOrder extends Component {
     }
 }
 
-export default UserOrder
+export default UserOrder;
