@@ -1,49 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardContent, Typography, Avatar, Grid, CircularProgress, IconButton, TextField, Button, Select } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import AddIcon from "@mui/icons-material/Add";
-import UserMainCard from "components/UserMainCard";
+import { CircularProgress, Typography, Button } from "@mui/material";
 import userService from "services/userServices";
-
-const styles = {
-    card: {
-        maxWidth: 600,
-        margin: "auto",
-        marginTop: 20,
-        padding: 20,
-        position: "relative",
-    },
-    avatar: {
-        width: 100,
-        height: 100,
-    },
-    editButton: {
-        position: "absolute",
-        top: 10,
-        right: 10,
-    },
-    addButton: {
-        marginBottom: 10,
-    },
-    form: {
-        width: "100%",
-        marginTop: 10,
-    },
-    submit: {
-        margin: "10px 0",
-
-    },
-    disabledInput: {
-        color: "black",
-    },
-    largeText: {
-        fontSize: '1.25rem', // You can adjust the font size here
-    },
-};
+import UserMainCard from "components/UserMainCard";
+import DisplayShipment from "components/user/DisplayShipment";
+import EditShipment from "components/user/EditShipment";
+import CreateNewShipment from "components/user/CreateNewShipment";
 
 const UserAccount = () => {
-    const [userAccount, setUserAccount] = useState({
-        id: "",
+    const [shipment, setShipment] = useState({
+        receiverName: "",
+        contactNumber: "",
+        description: "",
+        street: "",
+        wardCode: "",
+        ward: "",
+        district: "",
+        districtId: "",
+        province: "",
+        provinceId: "",
+        isDefault: false,
+        status: "ACTIVE",
+    });
+    const [newShipment, setNewShipment] = useState({
         receiverName: "",
         contactNumber: "",
         description: "",
@@ -58,53 +36,94 @@ const UserAccount = () => {
         status: "ACTIVE",
     });
     const [loading, setLoading] = useState(true);
+    const [displayMode, setDisplayMode] = useState(true);
     const [editMode, setEditMode] = useState(false);
     const [addMode, setAddMode] = useState(false);
-    const [newUserAccount, setNewUserAccount] = useState({
-        receiverName: "",
-        contactNumber: "",
-        description: "",
-        street: "",
-        wardCode: "",
-        ward: "",
-        district: "",
-        districtId: "",
-        province: "",
-        provinceId: "",
-        isDefault: false,
-        status: "ACTIVE",
-    });
 
     const [provinceData, setProvinceData] = useState({
-        id: "",
-        name: "",
-    })
-    const [listProvince, seListProvince] = useState([])
+        id: '',
+        name: ''
+    });
+    const [listProvince, setListProvince] = useState([]);
+    const [isGetProvince, setGetProvince] = useState(false);
 
     const [districtData, setDistrictData] = useState({
-        id: "",
-        name: "",
-    })
-    const [listDistrict, setListDistrict] = useState([])
+        id: '',
+        name: ''
+    });
+    const [listDistrict, setListDistrict] = useState([]);
+    const [isGetDistrict, setGetDistrict] = useState(false);
 
     const [wardData, setWardData] = useState({
-        id: "",
-        name: "",
-    })
-    const [listWard, setListWard] = useState([])
-
-
+        code: '',
+        name: ''
+    });
+    const [listWard, setListWard] = useState([]);
 
     const username = sessionStorage.getItem('username');
 
+    // Get province data
+    useEffect(() => {
+        async function getProvinces() {
+            try {
+                let resOfProvince = await userService.getProvinces();
+                if (resOfProvince) {
+                    setListProvince(resOfProvince.data.data);
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        getProvinces();
+    }, []);
+
+    // Get district data
+    useEffect(() => {
+        if (isGetProvince) getDistricts(provinceData.id);
+    }, [isGetProvince, provinceData]);
+
+    const getDistricts = async (provinceId) => {
+        try {
+            let data = {
+                provinceId: provinceId
+            };
+            let resOfDistrict = await userService.getDistricts(data);
+            if (resOfDistrict) {
+                setListDistrict(resOfDistrict.data.data);
+                setGetProvince(false);
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    // Get ward data
+    useEffect(() => {
+        if (isGetDistrict) getWards(districtData.id);
+    }, [isGetDistrict, districtData]);
+
+    const getWards = async (districtId) => {
+        try {
+            let data = {
+                districtId: districtId
+            };
+            let resOfWard = await userService.getWards(data);
+            if (resOfWard) {
+                setListWard(resOfWard.data.data);
+                setGetDistrict(false);
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     useEffect(() => {
-        const fetchUserAccount = async () => {
+        const fetchShipment = async () => {
             try {
                 const resUserInfo = await userService.getDefaultUser(username);
                 if (resUserInfo) {
                     const userInfo = resUserInfo.data.data;
-                    setUserAccount({
+                    setShipment({
                         id: userInfo.id,
                         receiverName: userInfo.receiverName,
                         contactNumber: userInfo.contactNumber,
@@ -116,8 +135,21 @@ const UserAccount = () => {
                         districtId: userInfo.districtId,
                         province: userInfo.province,
                         provinceId: userInfo.provinceId,
+                        isDefault: true,
                         status: "ACTIVE"
                     });
+                    setProvinceData({
+                        id: userInfo.provinceId,
+                        name: userInfo.province,
+                    });
+                    setDistrictData({
+                        id: userInfo.districtId,
+                        name: userInfo.district,
+                    });
+                    setWardData({
+                        code: userInfo.wardCode,
+                        name: userInfo.ward,
+                    })
                 }
             } catch (error) {
                 console.error("Error fetching user account:", error);
@@ -126,23 +158,67 @@ const UserAccount = () => {
             }
         };
 
-        fetchUserAccount();
+        fetchShipment();
     }, [username]);
 
+    const handleChangeProvince = (event) => {
+        let provinceId = event.target.value;
+        setProvinceData({
+            id: provinceId,
+            name: listProvince.find(province => province.ProvinceID === provinceId).ProvinceName
+        });
+        setShipment({
+            ...shipment,
+            provinceId: provinceId,
+            province: listProvince.find(province => province.ProvinceID === provinceId).ProvinceName
+        });
+        setGetProvince(true);
+    }
+
+    const handleChangeDistrict = async (event) => {
+        let districtId = event.target.value;
+        setDistrictData({
+            id: districtId,
+            name: listDistrict.find(district => district.DistrictID === districtId).DistrictName
+        });
+        setShipment({
+            ...shipment,
+            districtId: districtId,
+            district: listDistrict.find(district => district.DistrictID === districtId).DistrictName
+        });
+        setGetDistrict(true);
+    }
+
+    const handleChangeWard = (event) => {
+        let wardId = event.target.value;
+        setWardData({
+            code: wardId,
+            name: listWard.find(ward => ward.WardCode === wardId).WardName
+        });
+        setShipment({
+            ...shipment,
+            wardCode: wardId,
+            ward: listWard.find(ward => ward.WardCode === wardId).WardName
+        });
+    }
+
     const handleEditClick = () => {
+        setDisplayMode(false);
         setEditMode(true);
     };
 
     const handleAddClick = () => {
+        setDisplayMode(false);
         setAddMode(true);
     };
 
     const handleSaveClick = async () => {
-        console.log(userAccount)
+        console.log(shipment)
         try {
-            const res = await userService.updateUser(username, userAccount);
+            const res = await userService.updateUser(username, shipment);
             console.log("User data updated successfully:", res.data);
             setEditMode(false);
+            setDisplayMode(true);
         } catch (error) {
             console.error("Error updating user data:", error);
         }
@@ -150,11 +226,10 @@ const UserAccount = () => {
 
     const handleCreateClick = async () => {
         try {
-            console.log(newUserAccount)
-            const res = await userService.createUserInfor(username, newUserAccount);
+            const res = await userService.createUserInfor(username, shipment);
             console.log("New user created successfully:", res.data);
-
             setAddMode(false);
+            setDisplayMode(true);
         } catch (error) {
             console.error("Error creating new user:", error);
         }
@@ -163,230 +238,61 @@ const UserAccount = () => {
     const handleCancelClick = () => {
         setEditMode(false);
         setAddMode(false);
-    };
-
-    const handleChange = (event, id) => {
-        let copyUser = { ...userAccount }
-        copyUser[id] = event.target.value
-        setUserAccount({ ...copyUser });
-    };
-
-    const handleNewChange = (event, id) => {
-
-        let copyNewUser = { ...newUserAccount }
-        copyNewUser[id] = event.target.value
-        setNewUserAccount({ ...copyNewUser })
+        setDisplayMode(true);
     };
 
     if (loading) {
         return <CircularProgress />;
     }
 
-    if (!userAccount && !addMode) {
+    if (!shipment && !addMode) {
         return <Typography variant="body2">Error loading user account.</Typography>;
     }
 
     return (
         <UserMainCard>
-            <Card style={styles.card}>
-                <CardContent>
-                    <Grid container spacing={2} alignItems="center">
-                        <Grid item xs={12} sm={6}>
-                            {!editMode && !addMode && (
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    startIcon={<AddIcon />}
-                                    onClick={handleAddClick}
-                                    style={styles.addButton}
-                                >
-                                    Add New
-                                </Button>
-                            )}
-                        </Grid>
-                        <Grid item xs={12} sm={6} style={{ textAlign: "right" }}>
-                            {editMode || addMode ? (
-                                <>
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        style={styles.submit}
-                                        onClick={editMode ? handleSaveClick : handleCreateClick}
-                                    >
-                                        {editMode ? "Save" : "Create"}
-                                    </Button>
-                                    <Button
-                                        variant="contained"
-                                        style={styles.submit}
-                                        onClick={handleCancelClick}
-                                    >
-                                        Cancel
-                                    </Button>
-                                </>
-                            ) : (
-                                <IconButton aria-label="edit" onClick={handleEditClick} style={styles.editButton}>
-                                    <EditIcon />
-                                </IconButton>
-                            )}
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Avatar alt={userAccount?.receiverName || newUserAccount.receiverName} src="" style={styles.avatar} />
-                            {editMode ? (
-                                <TextField
-                                    fullWidth
-                                    label="Receiver Name"
-                                    name="receiverName"
-                                    value={userAccount.receiverName}
-                                    onChange={(event) => handleChange(event, 'receiverName')}
-                                    variant="outlined"
-                                    margin="normal"
-                                />
-                            ) : addMode ? (
-                                <TextField
-                                    fullWidth
-                                    label="Receiver Name"
-                                    name="receiverName"
-                                    value={newUserAccount.receiverName}
-                                    onChange={(event) => handleNewChange(event, 'receiverName')}
-                                    variant="outlined"
-                                    margin="normal"
-                                />
-                            ) : (
-                                <Typography variant="h5">{userAccount?.name}</Typography>
-                            )}
-                        </Grid>
-                        <Grid item xs={12}>
-                            <form style={styles.form}>
-                                {editMode || addMode ? (
-                                    <>
-                                        <TextField
-                                            fullWidth
-                                            label="Phone Number"
-                                            name="contactNumber"
-                                            value={editMode ? userAccount.contactNumber : newUserAccount.contactNumber}
-                                            onChange={editMode ? (event) => handleChange(event, 'contactNumber') : (event) => handleNewChange(event, 'contactNumber')}
-                                            variant="outlined"
-                                            margin="normal"
-                                        />
-                                        <TextField
-                                            fullWidth
-                                            label="Description"
-                                            name="description"
-                                            value={editMode ? userAccount.description : newUserAccount.description}
-                                            onChange={editMode ? (event) => handleChange(event, 'description') : (event) => handleNewChange(event, 'description')}
-                                            variant="outlined"
-                                            margin="normal"
-                                            multiline
-                                            rows={3}
-                                        />
-                                        <TextField
-                                            fullWidth
-                                            label="Address"
-                                            name="address"
-                                            value={editMode ? userAccount.street : newUserAccount.street}
-                                            onChange={editMode ? (event) => handleChange(event, 'street') : (event) => handleNewChange(event, 'street')}
-                                            variant="outlined"
-                                            margin="normal"
-                                        />
-                                        <TextField
-                                            fullWidth
-                                            label="Ward"
-                                            name="ward"
-                                            value={editMode ? userAccount.ward : newUserAccount.ward}
-                                            onChange={editMode ? (event) => handleChange(event, 'ward') : (event) => handleNewChange(event, 'ward')}
-                                            variant="outlined"
-                                            margin="normal"
-                                        />
-                                        <TextField
-                                            fullWidth
-                                            label="WardCode"
-                                            name="wardCode"
-                                            value={editMode ? userAccount.wardCode : newUserAccount.wardCode}
-                                            onChange={editMode ? (event) => handleChange(event, 'wardCode') : (event) => handleNewChange(event, 'wardCode')}
-                                            variant="outlined"
-                                            margin="normal"
-                                        />
-                                        <TextField
-                                            fullWidth
-                                            label="District"
-                                            name="district"
-                                            value={editMode ? userAccount.district : newUserAccount.district}
-                                            onChange={editMode ? (event) => handleChange(event, 'district') : (event) => handleNewChange(event, 'district')}
-                                            variant="outlined"
-                                            margin="normal"
-                                        />
-                                        <TextField
-                                            fullWidth
-                                            label="DistrictId"
-                                            name="districtId"
-                                            value={editMode ? userAccount.districtId : newUserAccount.districtId}
-                                            onChange={editMode ? (event) => handleChange(event, 'districtId') : (event) => handleNewChange(event, 'districtId')}
-                                            variant="outlined"
-                                            margin="normal"
-                                        />
-                                        <TextField
-                                            fullWidth
-                                            label="City"
-                                            name="city"
-                                            value={editMode ? userAccount.province : newUserAccount.province}
-                                            onChange={editMode ? (event) => handleChange(event, 'province') : (event) => handleNewChange(event, 'province')}
-                                            variant="outlined"
-                                            margin="normal"
-
-                                        />
-
-                                        <Select>
-
-                                        </Select>
-                                        <TextField
-                                            fullWidth
-                                            label="Zip Code"
-                                            name="zip"
-                                            value={editMode ? userAccount.provinceId : newUserAccount.provinceId}
-                                            onChange={editMode ? (event) => handleChange(event, 'provinceId') : (event) => handleNewChange(event, 'provinceId')}
-                                            variant="outlined"
-                                            margin="normal"
-                                        />
-                                    </>
-                                ) : (
-                                    <>
-                                        <Typography variant="h6" style={styles.largeText}>
-                                            <strong>Receiver Name:</strong> {userAccount?.receiverName}
-                                        </Typography>
-                                        <Typography variant="h6" style={styles.largeText}>
-                                            <strong>Phone Number:</strong> {userAccount?.contactNumber}
-                                        </Typography>
-                                        <Typography variant="h6" style={styles.largeText}>
-                                            <strong>Description:</strong> {userAccount?.description}
-                                        </Typography>
-                                        <Typography variant="h6" style={styles.largeText}>
-                                            <strong>Address:</strong> {userAccount?.street}
-                                        </Typography>
-                                        <Typography variant="h6" style={styles.largeText}>
-                                            <strong>Ward:</strong> {userAccount?.ward}
-                                        </Typography>
-                                        <Typography variant="h6" style={styles.largeText}>
-                                            <strong>Ward Code:</strong> {userAccount?.wardCode}
-                                        </Typography>
-                                        <Typography variant="h6" style={styles.largeText}>
-                                            <strong>District:</strong> {userAccount?.district}
-                                        </Typography>
-                                        <Typography variant="h6" style={styles.largeText}>
-                                            <strong>District Id:</strong> {userAccount?.districtId}
-                                        </Typography>
-                                        <Typography variant="h6" style={styles.largeText}>
-                                            <strong>City:</strong> {userAccount?.province}
-                                        </Typography>
-                                        <Typography variant="h6" style={styles.largeText}>
-                                            <strong>Zip Code:</strong> {userAccount?.provinceId}
-                                        </Typography>
-                                    </>
-                                )}
-                            </form>
-                        </Grid>
-                    </Grid>
-                </CardContent>
-            </Card>
+            {displayMode && (
+                <>
+                    <DisplayShipment shipment={shipment} />
+                    <Button variant="contained" onClick={handleEditClick} sx={{ bgcolor: 'orange', marginRight: 10 + 'px' }}>Chỉnh sửa</Button>
+                    <Button variant="contained" onClick={handleAddClick} sx={{ bgcolor: 'green' }}>Thêm mới</Button>
+                </>
+            )}
+            {editMode && (
+                <EditShipment
+                    shipment={shipment}
+                    setShipment={setShipment}
+                    setProvinceData={setProvinceData}
+                    listProvince={listProvince}
+                    listDistrict={listDistrict}
+                    listWard={listWard}
+                    provinceData={provinceData}
+                    districtData={districtData}
+                    wardData={wardData}
+                    handleChangeProvince={handleChangeProvince}
+                    handleChangeDistrict={handleChangeDistrict}
+                    handleChangeWard={handleChangeWard}
+                    handleSaveClick={handleSaveClick}
+                    handleCancelClick={handleCancelClick}
+                />
+            )}
+            {addMode && (
+                <CreateNewShipment
+                    newShipment={newShipment}
+                    setNewShipment={setNewShipment}
+                    listProvince={listProvince}
+                    listDistrict={listDistrict}
+                    listWard={listWard}
+                    provinceData={provinceData}
+                    districtData={districtData}
+                    wardData={wardData}
+                    handleChangeProvince={handleChangeProvince}
+                    handleChangeDistrict={handleChangeDistrict}
+                    handleChangeWard={handleChangeWard}
+                    handleCreateClick={handleCreateClick}
+                    handleCancelClick={handleCancelClick}
+                />
+            )}
         </UserMainCard>
     );
 };
