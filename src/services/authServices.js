@@ -12,15 +12,12 @@ class AuthService {
         sessionStorage.clear();
     }
 
-    register(username, fullname, email, password, confirmPassword, role) {
-        return axios.post('/api/v1/users/register', {
-            username,
-            fullname,
-            email,
-            password,
-            confirmPassword,
-            role,
-        });
+    async register(registerData) {
+        return axios.post('/store/api/v1/users/register', registerData);
+    }
+
+    async loginGoogle(data) {
+        return await axios.post('/store/api/v1/oauth2/google', data);
     }
 }
 

@@ -26,6 +26,7 @@ import * as Yup from 'yup';
 import authServices from 'services/authServices';
 import { useDispatch } from 'react-redux';
 import { loginAction } from 'contexts/redux/auth/actions';
+import { toast } from 'react-toastify';
 
 const validationSchema = Yup.object().shape({
   username: Yup.string()
@@ -106,12 +107,6 @@ const AuthLogin = () => {
         if (isValid.data.jwtToken) {
           sessionStorage.setItem("jwtToken", JSON.stringify(isValid.data.jwtToken));
         }
-
-        if (isValid.data.roles) {
-          sessionStorage.setItem("roles", JSON.stringify(isValid.data.roles))
-        }
-
-        sessionStorage.setItem("username", isValid.data.username);
         dispatch(loginAction(isValid.data.username, isValid.data.roles));
 
         // Authorization
@@ -119,10 +114,13 @@ const AuthLogin = () => {
 
         if (roles.includes('ADMIN')) {
           navigate('/admin/dashboard');
+          toast.success('Đăng nhập thành công');
         } else if (roles.includes('MANAGER')) {
           navigate('/store');
+          toast.success('Đăng nhập thành công');
         } else {
           navigate('/user');
+          toast.success('Đăng nhập thành công');
         }
       } else {
         let errors = { submit: isValid.response.data.message };
@@ -146,7 +144,6 @@ const AuthLogin = () => {
       if (res) return res;
       else return;
     } catch (err) {
-      console.log(err)
       return err;
     }
   }

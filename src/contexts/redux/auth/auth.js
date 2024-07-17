@@ -6,6 +6,7 @@ export const initialState = {
   isLoggedIn: false,
   isInitialized: false,
   currentUser: '',
+  newUser: {},
   roles: []
 };
 
@@ -17,7 +18,9 @@ const auth = (state = initialState, action) => {
       const { user } = action.payload;
       return {
         ...state,
-        currentUser: user
+        isLoggedIn: true,
+        newUser: user,
+        currentUser: user.username
       };
     }
     case LOGIN: {
@@ -34,8 +37,6 @@ const auth = (state = initialState, action) => {
       return {
         ...state,
         isInitialized: true,
-        isLoggedIn: false,
-        currentUser: ''
       };
     }
     default: {

@@ -23,7 +23,9 @@ import Transitions from 'components/@extended/Transitions';
 // assets
 import LogoutOutlined from '@ant-design/icons/LogoutOutlined';
 import avatar1 from 'assets/images/users/avatar-1.png';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
+import { logoutAction } from 'contexts/redux/auth/actions';
 
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
@@ -40,12 +42,19 @@ export default function Profile() {
   const theme = useTheme();
   const username = useSelector((state) => state.auth.currentUser);
   const role = useSelector((state) => state.auth.roles);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
+
+  const handleLogout = () => {
+    dispatch(logoutAction());
+    navigate('/login');
+  }
 
   const handleClose = (event) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
@@ -117,7 +126,7 @@ export default function Profile() {
                       </Grid>
                       <Grid item>
                         <Tooltip title="Logout">
-                          <IconButton size="large" sx={{ color: 'text.primary' }} href='/login'>
+                          <IconButton size="large" sx={{ color: 'text.primary' }} onClick={handleLogout}>
                             <LogoutOutlined />
                           </IconButton>
                         </Tooltip>

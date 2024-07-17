@@ -8,6 +8,8 @@ import { faBell, faCartShopping, faFileInvoice, faHeart, faMagnifyingGlass, faSi
 import { useNavigate } from 'react-router';
 import storeServices from 'services/storeServices';
 import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { logoutAction } from 'contexts/redux/auth/actions';
 
 const Navbar = () => {
     const [query, setQuery] = useState('');
@@ -16,6 +18,7 @@ const Navbar = () => {
     const [showDropdown, setShowDropdown] = useState(false);
     const [isNavigating, setIsNavigating] = useState(false);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const role = sessionStorage.getItem('roles');
     const username = sessionStorage.getItem('username');
@@ -53,6 +56,11 @@ const Navbar = () => {
             document.removeEventListener('click', handleClickOutside);
         };
     }, [searchResults]);
+
+    const handleLogout = () => {
+        dispatch(logoutAction());
+        navigate('/login');
+    }
 
     const handleSearchSubmit = async (event) => {
         event.preventDefault();
@@ -346,7 +354,13 @@ const Navbar = () => {
                                     role ?
                                         <li className="nav-item dropdown">
                                             <div className="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <FontAwesomeIcon icon={faUser} id="nav-icon" /> <p style={{ textTransform: "capitalize" }}>{username}</p>
+                                                <FontAwesomeIcon icon={faUser} id="nav-icon" /> <p style={{
+                                                    textTransform: "capitalize",
+                                                    textOverflow: 'clip',
+                                                    overflow: 'hidden',
+                                                    whiteSpace: 'nowrap',
+                                                    width: 39 + 'px'
+                                                }}>{username}</p>
                                             </div>
                                             <ul className="dropdown-menu user-nav" aria-labelledby="navbarDropdownMenuLink">
                                                 <li><a className="dropdown-item" href="/user/account">
@@ -355,11 +369,8 @@ const Navbar = () => {
                                                 <li><a className="dropdown-item" href="/user/sales/order/history">
                                                     <FontAwesomeIcon icon={faFileInvoice} id="account-icon" /><p>Đơn hàng của tôi</p>
                                                 </a></li>
-                                                <li><a className="dropdown-item" href="/user/wish-list">
-                                                    <FontAwesomeIcon icon={faHeart} id="account-icon" /><p>Sản phẩm yêu thích</p>
-                                                </a></li>
                                                 <hr className="dropdown-divider" style={{ color: "gray" }} />
-                                                <li><a className="dropdown-item" href="/login">
+                                                <li><a className="dropdown-item" onClick={handleLogout}>
                                                     <FontAwesomeIcon icon={faSignOut} id="account-icon" /><p>Thoát đăng nhập</p>
                                                 </a></li>
                                             </ul>

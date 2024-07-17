@@ -3,62 +3,63 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 
 // assets
-import Google from 'assets/images/icons/google.svg';
-import Twitter from 'assets/images/icons/twitter.svg';
-import Facebook from 'assets/images/icons/facebook.svg';
+import GoogleIcon from 'assets/images/icons/google.svg';
+import { GoogleLogin } from '@react-oauth/google';
+import { useNavigate } from 'react-router';
+import authServices from 'services/authServices';
+import { useDispatch } from 'react-redux';
+import { loginAction } from 'contexts/redux/auth/actions';
+import { toast } from 'react-toastify';
 
 // ==============================|| FIREBASE - SOCIAL BUTTON ||============================== //
 
 export default function FirebaseSocial() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const downSM = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
-  // @ts-ignore
-  const googleHandler = async () => {
-    // login || singup
+  const responseMessage = async (res) => {
+    let dataOfGoogleAcc = {
+      credential: res.credential,
+      clientId: res.clientId,
+      select_by: res.select_by
+    };
+    let resOfGoogleInfo = await authServices.loginGoogle(dataOfGoogleAcc);
+    if (resOfGoogleInfo) {
+      sessionStorage.setItem('jwtToken', JSON.stringify(resOfGoogleInfo.data.jwtToken));
+      dispatch(loginAction(resOfGoogleInfo.data.username, resOfGoogleInfo.data.roles));
+      navigate('/user');
+      toast.success('Đăng nhập thành công');
+    }
   };
 
-  const twitterHandler = async () => {
-    // login || singup
-  };
-
-  const facebookHandler = async () => {
-    // login || singup
+  const errorMessage = (error) => {
+    console.error(error);
   };
 
   return (
     <Stack
       direction="row"
-      spacing={{ xs: 1, sm: 2 }}
-      justifyContent={{ xs: 'space-around', sm: 'space-between' }}
+      justifyContent={{ xs: 'center', sm: 'center' }}
       sx={{ '& .MuiButton-startIcon': { mr: { xs: 0, sm: 1 }, ml: { xs: 0, sm: -0.5 } } }}
     >
-      <Button
-        variant="outlined"
-        color="secondary"
-        fullWidth={!downSM}
-        startIcon={<img src={Google} alt="Google" />}
-        onClick={googleHandler}
-      >
-        {!downSM && 'Google'}
-      </Button>
-      <Button
-        variant="outlined"
-        color="secondary"
-        fullWidth={!downSM}
-        startIcon={<img src={Twitter} alt="Twitter" />}
-        onClick={twitterHandler}
-      >
-        {!downSM && 'Twitter'}
-      </Button>
-      <Button
-        variant="outlined"
-        color="secondary"
-        fullWidth={!downSM}
-        startIcon={<img src={Facebook} alt="Facebook" />}
-        onClick={facebookHandler}
-      >
-        {!downSM && 'Facebook'}
-      </Button>
+      <GoogleLogin
+        clientId="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+        onSuccess={responseMessage}
+        onError={errorMessage}
+        render={(renderProps) => (
+          <Button
+            variant="outlined"
+            color="secondary"
+            fullWidth={true}
+            startIcon={<img src={GoogleIcon} alt="Google" />}
+            onClick={renderProps.onClick}
+            disabled={renderProps.disabled}
+          >
+            {!downSM && 'Đăng nhập với google'}
+          </Button>
+        )}
+      />
     </Stack>
   );
 }
