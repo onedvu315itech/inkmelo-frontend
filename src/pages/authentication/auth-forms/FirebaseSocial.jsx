@@ -46,18 +46,6 @@ export default function FirebaseSocial() {
       <GoogleLogin
         onSuccess={responseMessage}
         onError={errorMessage}
-        render={(renderProps) => (
-          <Button
-            variant="outlined"
-            color="secondary"
-            fullWidth={true}
-            startIcon={<img src={GoogleIcon} alt="Google" />}
-            onClick={renderProps.onClick}
-            disabled={renderProps.disabled}
-          >
-            {!downSM && 'Đăng nhập với google'}
-          </Button>
-        )}
       />
     </Stack>
   );
