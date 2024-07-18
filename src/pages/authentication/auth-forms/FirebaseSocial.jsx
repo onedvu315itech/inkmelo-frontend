@@ -44,7 +44,7 @@ export default function FirebaseSocial() {
       sx={{ '& .MuiButton-startIcon': { mr: { xs: 0, sm: 1 }, ml: { xs: 0, sm: -0.5 } } }}
     >
       <GoogleLogin
-        clientId="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+        clientId="568177000480-k8breplbn16ojtv45njdltfm2928svlh.apps.googleusercontent.com"
         onSuccess={responseMessage}
         onError={errorMessage}
         render={(renderProps) => (
