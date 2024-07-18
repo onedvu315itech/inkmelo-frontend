@@ -199,6 +199,7 @@ const Checkout = () => {
         }
 
         console.log(orderData);
+        sessionStorage.setItem('orderData', orderData);
 
         let resOfCreateOrder = await checkoutServices.createOrder(username, orderData);
         if (resOfCreateOrder) {
