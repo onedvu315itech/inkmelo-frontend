@@ -226,7 +226,7 @@ const UserAccount = () => {
 
     const handleCreateClick = async () => {
         try {
-            const res = await userService.createUserInfor(username, shipment);
+            const res = await userService.createUserInfor(username, newShipment);
             console.log("New user created successfully:", res.data);
             setAddMode(false);
             setDisplayMode(true);
