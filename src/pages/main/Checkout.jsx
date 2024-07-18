@@ -198,6 +198,8 @@ const Checkout = () => {
             redirectUrl: '/store'
         }
 
+        console.log(orderData);
+
         let resOfCreateOrder = await checkoutServices.createOrder(username, orderData);
         if (resOfCreateOrder) {
             paymentUrl = resOfCreateOrder.data.paymentUrl;
