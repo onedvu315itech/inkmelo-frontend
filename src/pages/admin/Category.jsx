@@ -48,7 +48,10 @@ class Category extends Component {
 
     getAllCategory = async () => {
         let res = await productService.getAllCategory();
-        if (res) this.setState({ listCategory: res.data })
+        if (res) {
+            let sortedCategories = res.data.sort((a, b) => a.id - b.id);
+            this.setState({ listCategory: sortedCategories })
+        }
     }
     //Display category
     handleDisplayCategory = (category) => {

@@ -46,8 +46,10 @@ class Publisher extends Component {
 
     getAllPublisher = async () => {
         let res = await productServices.getAllPublisher();
-        if (res) this.setState({ listPublisher: res.data })
-
+        if (res) {
+            let sortedPublishers = res.data.sort((a, b) => a.id - b.id);
+            this.setState({ listPublisher: sortedPublishers });
+        }
     }
 
     //Display publisher

@@ -26,7 +26,10 @@ class User extends Component {
 
     getAllUser = async () => {
         let res = await userServices.getAllUser();
-        if (res) this.setState({ listUser: res.data })
+        if (res) {
+            let sortedUsers = res.data.sort((a, b) => a.id - b.id);
+            this.setState({ listUser: sortedUsers });
+        }
     }
 
     handleDisplayUser = (user) => {

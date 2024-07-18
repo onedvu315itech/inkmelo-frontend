@@ -46,10 +46,11 @@ class Genre extends Component {
 
     getAllGenre = async () => {
         let res = await productService.getAllGenre();
-        if (res)
-            this.setState({ listGenre: res.data });
+        if (res) {
+            let sortedGenres = res.data.sort((a, b) => a.id - b.id);
+            this.setState({ listGenre: sortedGenres });
+        }
     }
-
 
     //Display genre
     handleDisplayGenre = (genre) => {
