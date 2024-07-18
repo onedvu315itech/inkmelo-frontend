@@ -32,7 +32,7 @@ const UserAccount = () => {
         districtId: "",
         province: "",
         provinceId: "",
-        isDefault: false,
+        isDefault: true,
         status: "ACTIVE",
     });
     const [loading, setLoading] = useState(true);
