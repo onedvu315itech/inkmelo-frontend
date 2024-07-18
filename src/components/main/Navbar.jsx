@@ -366,7 +366,7 @@ const Navbar = () => {
                                                 <li><a className="dropdown-item" href="/user/account">
                                                     <FontAwesomeIcon icon={faUser} id="account-icon" /><p>Thông tin tài khoản</p>
                                                 </a></li>
-                                                <li><a className="dropdown-item" href="/user/sales/order/history">
+                                                <li><a className="dropdown-item" href="/user/my-order">
                                                     <FontAwesomeIcon icon={faFileInvoice} id="account-icon" /><p>Đơn hàng của tôi</p>
                                                 </a></li>
                                                 <hr className="dropdown-divider" style={{ color: "gray" }} />

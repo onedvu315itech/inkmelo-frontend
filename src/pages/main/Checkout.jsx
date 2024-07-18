@@ -160,7 +160,7 @@ const Checkout = () => {
             fetchShippingDate();
             setTotalFee(total + (shippingFee !== null ? shippingFee : 0));
         }
-    }, [userDetails, cartItems, selectedShipService, complete1, complete2])
+    }, [userDetails, cartItems, selectedShipService, complete1, complete2, shippingFee])
 
     const calculateTotal = (items) => {
         const newTotal = items.reduce((sum, item) => sum + item.bookPackagePrice * item.quantity, 0);
@@ -183,7 +183,21 @@ const Checkout = () => {
 
     const handleChangeAddress = (event) => {
         let shipmentId = event.target.value;
-        console.log(description)
+        let shipment = listOfShipments.find(shipment => shipment.id = shipmentId);
+        setUserDetails({
+            ...userDetails,
+            id: shipment.id,
+            name: shipment.receiverName,
+            phoneNumber: shipment.contactNumber,
+            description: shipment.description,
+            street: shipment.street,
+            ward: shipment.ward,
+            wardCode: shipment.wardCode,
+            district: shipment.district,
+            districtId: shipment.districtId,
+            province: shipment.province,
+            provinceId: shipment.provinceId,
+        });
     }
 
     const handleCheckout = async () => {

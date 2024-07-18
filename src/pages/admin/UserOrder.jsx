@@ -25,9 +25,12 @@ class UserOrder extends Component {
     }
 
     getAllUserOrder = async () => {
-        let res = await orderServices.getAllUserOrder();
-        console.log(res)
-        if (res) this.setState({ listUserOrder: res.data.items })
+        let res = await orderServices.getAllUserOrder({ size: 100 });
+        if (res) {
+            let sortedOrders = res.data.items.sort((a, b) => b.id - a.id);
+            this.setState({ listUserOrder: sortedOrders });
+        }
+        console.log(res.data);
     }
 
     handleDisplayUserOrder = (user) => {
@@ -73,7 +76,7 @@ class UserOrder extends Component {
                                                 <td>{order.customer.fullname}</td>
                                                 <td>{order.customer.email}</td>
                                                 <td>{order.totalPrice}</td>
-                                                <td>{order.status}</td>
+                                                <td>{order.ghnOrderStatus}</td>
                                                 <td>
                                                     <button type="button" className="btn btn-primary"
                                                         onClick={() => this.handleDisplayUserOrder(order)}>
