@@ -167,11 +167,19 @@ const UserAccount = () => {
             id: provinceId,
             name: listProvince.find(province => province.ProvinceID === provinceId).ProvinceName
         });
-        setShipment({
-            ...shipment,
-            provinceId: provinceId,
-            province: listProvince.find(province => province.ProvinceID === provinceId).ProvinceName
-        });
+        if (editMode) {
+            setShipment({
+                ...shipment,
+                provinceId: provinceId,
+                province: listProvince.find(province => province.ProvinceID === provinceId).ProvinceName
+            });
+        } else if (addMode) {
+            setNewShipment({
+                ...newShipment,
+                provinceId: provinceId,
+                province: listProvince.find(province => province.ProvinceID === provinceId).ProvinceName
+            })
+        }
         setGetProvince(true);
     }
 
@@ -181,11 +189,19 @@ const UserAccount = () => {
             id: districtId,
             name: listDistrict.find(district => district.DistrictID === districtId).DistrictName
         });
-        setShipment({
-            ...shipment,
-            districtId: districtId,
-            district: listDistrict.find(district => district.DistrictID === districtId).DistrictName
-        });
+        if (editMode) {
+            setShipment({
+                ...shipment,
+                districtId: districtId,
+                district: listDistrict.find(district => district.DistrictID === districtId).DistrictName
+            });
+        } else if (addMode) {
+            setNewShipment({
+                ...newShipment,
+                districtId: districtId,
+                district: listDistrict.find(district => district.DistrictID === districtId).DistrictName
+            })
+        }
         setGetDistrict(true);
     }
 
@@ -195,11 +211,19 @@ const UserAccount = () => {
             code: wardId,
             name: listWard.find(ward => ward.WardCode === wardId).WardName
         });
-        setShipment({
-            ...shipment,
-            wardCode: wardId,
-            ward: listWard.find(ward => ward.WardCode === wardId).WardName
-        });
+        if (editMode) {
+            setShipment({
+                ...shipment,
+                wardCode: wardId,
+                ward: listWard.find(ward => ward.WardCode === wardId).WardName
+            });
+        } else if (addMode) {
+            setNewShipment({
+                ...newShipment,
+                wardCode: wardId,
+                ward: listWard.find(ward => ward.WardCode === wardId).WardName
+            })
+        }
     }
 
     const handleEditClick = () => {
@@ -225,6 +249,7 @@ const UserAccount = () => {
     };
 
     const handleCreateClick = async () => {
+        console.log(newShipment)
         try {
             const res = await userService.createUserInfor(username, newShipment);
             console.log("New user created successfully:", res.data);
