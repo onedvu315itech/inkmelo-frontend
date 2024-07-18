@@ -198,20 +198,17 @@ const Checkout = () => {
             redirectUrl: '/store'
         }
 
-        console.log(orderData);
-        sessionStorage.setItem('orderData', orderData);
-
-        // let resOfCreateOrder = await checkoutServices.createOrder(username, orderData);
-        // if (resOfCreateOrder) {
-        //     paymentUrl = resOfCreateOrder.data.paymentUrl;
-        //     setLoading(true);
-        //     toast.loading('Đang chuyển hướng đến trang thanh toán');
-        //     setTimeout(() => {
-        //         setLoading(false);
-        //         toast.dismiss();
-        //         window.location.href = paymentUrl;
-        //     }, 3000);
-        // }
+        let resOfCreateOrder = await checkoutServices.createOrder(username, orderData);
+        if (resOfCreateOrder) {
+            paymentUrl = resOfCreateOrder.data.paymentUrl;
+            setLoading(true);
+            toast.loading('Đang chuyển hướng đến trang thanh toán');
+            setTimeout(() => {
+                setLoading(false);
+                toast.dismiss();
+                window.location.href = paymentUrl;
+            }, 3000);
+        }
     };
 
     return (
