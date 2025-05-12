@@ -1,4 +1,4 @@
-# Welcome to KoiDeli Web App
+# Welcome to InkMelo Web App
 
 ## This repo was generated in purpose of providing web design for purchasing some types of book.
 
